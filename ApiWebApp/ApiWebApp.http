@@ -1,0 +1,49 @@
+@ApiWebApp_HostAddress = http://localhost:5178
+
+# Get all users
+GET {{ApiWebApp_HostAddress}}/api/users
+Accept: application/json
+
+###
+
+# Get user by ID
+GET {{ApiWebApp_HostAddress}}/api/users/{id}
+Accept: application/json
+
+###
+
+# Create a new user
+POST {{ApiWebApp_HostAddress}}/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "firstName": "11231NewUser",
+  "LastName": "11231Userq",
+  "userName": "11231new1user",
+  "email": "11213newuser1@example.com",
+  "password": "123",
+  "confirmPassword": "123",
+  "phoneNumber": "1234567890",
+  "role": "Reviewer"
+}
+
+###
+
+# Update user by ID
+PUT {{ApiWebApp_HostAddress}}/api/users/39b98f38-84e3-4801-9013-2adb5b4dad6f
+Content-Type: application/json
+Accept: application/json
+
+{
+  "firstName": "UpdatedFirstName",
+  "lastName": "UpdatedLastName",
+  "phoneNumber": "0987654321",
+  "role": "Admin"
+}
+
+###
+
+# Delete user by ID
+DELETE {{ApiWebApp_HostAddress}}/api/users/1d933289-d80f-48b5-b5e2-fe70da578309
+Accept: application/json
