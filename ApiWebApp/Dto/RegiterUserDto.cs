@@ -11,9 +11,7 @@ namespace ApiWebApp.Dto
 
         [Required, MinLength(2), MaxLength(25)]
         public required string LastName { get; set; }
-        [Required, MinLength(4), MaxLength(20)]
-        public required string UserName { get; set; }
-
+       
         [Required, DataType(DataType.Password)]
         public required string Password { get; set; }
 

@@ -3,7 +3,7 @@
 # Get all users
 GET {{ApiWebApp_HostAddress}}/api/users
 Accept: application/json
-
+//Delete all Null Fields by include in repository method 11.09.2024
 ###
 
 # Get user by ID
@@ -18,12 +18,12 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "firstName": "11231NewUser",
-  "LastName": "11231Userq",
-  "userName": "11231new1user",
-  "email": "11213newuser1@example.com",
-  "password": "123",
-  "confirmPassword": "123",
+  "firstName": "Meir",
+  "LastName": "Shalom",
+  
+  "email": "Meir@example.com",
+  "password": "1223Ad#21111",
+  "confirmPassword": "1223Ad#21111",
   "phoneNumber": "1234567890",
   "role": "Reviewer"
 }

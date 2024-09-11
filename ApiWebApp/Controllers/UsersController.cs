@@ -56,7 +56,7 @@ namespace ApiWebApp.Controllers
 
             var user = new IdentityUser
             {
-                UserName = regiterUserDto.UserName,
+                UserName = regiterUserDto.Email,
                 Email = regiterUserDto.Email,
                 PhoneNumber = regiterUserDto.PhoneNumber
             };
@@ -76,7 +76,6 @@ namespace ApiWebApp.Controllers
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
                 {
                     user.Id,
-                    user.UserName,
                     user.Email,
                     user.PhoneNumber
                 });
