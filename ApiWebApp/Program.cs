@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using ApiWebApp.Auth;
 
 namespace ApiWebApp
 {
@@ -16,6 +20,32 @@ namespace ApiWebApp
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Bind JWT settings from appsettings.json
+            var jwtSettings = new JwtSettings();
+            builder.Configuration.Bind(nameof(JwtSettings), jwtSettings);
+            builder.Services.AddSingleton(jwtSettings);
+
+            var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
 
             // Add Identity services
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>

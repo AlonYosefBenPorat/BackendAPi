@@ -47,3 +47,16 @@ Accept: application/json
 # Delete user by ID
 DELETE {{ApiWebApp_HostAddress}}/api/users/1d933289-d80f-48b5-b5e2-fe70da578309
 Accept: application/json
+
+
+  ###
+
+# Login
+POST {{ApiWebApp_HostAddress}}/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "Meir@example.com",
+  "password": "1223Ad#21111"
+}
