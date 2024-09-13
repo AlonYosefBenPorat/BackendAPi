@@ -18,10 +18,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "firstName": "Aviho",
-  "LastName": "Galili",
+  "firstName": "Axviho",
+  "LastName": "Gxalili",
   
-  "email": "Aviho@Galili.com",
+  "email": "Axviho@Galili.com",
   "password": "1223Ad#21111",
   "confirmPassword": "1223Ad#21111",
   "phoneNumber": "1234567890",
@@ -57,6 +57,6 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "username": "Meir@example.com",
+  "username": "Aviho@Galili.com",
   "password": "1223Ad#21111"
 }

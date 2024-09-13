@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ApiWebApp.Auth;
+using ApiWebApp.Model;
 
 namespace ApiWebApp
 {
@@ -47,7 +48,7 @@ namespace ApiWebApp
             });
 
             // Add Identity services
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<AppUsers, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequiredLength = 8;
@@ -60,10 +61,9 @@ namespace ApiWebApp
             .AddDefaultTokenProviders();
 
             // Add CORS services
-         //Configure CORS to allow any origin
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("*", 
+                options.AddPolicy("*",
                     builder =>
                     {
                         builder.AllowAnyOrigin()

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using ApiWebApp.Model;
 
 public class WebAppContext : IdentityDbContext<IdentityUser>
     {
@@ -11,6 +12,6 @@ public class WebAppContext : IdentityDbContext<IdentityUser>
         {
         }
 
-        //public DbSet<AppUsers> AppUsers { get; set; } = default!;
+        public DbSet<AppUsers> AppUsers { get; set; } = default!;
         //public DbSet<AppRole> AppRoles { get; set; } = default!;
     }

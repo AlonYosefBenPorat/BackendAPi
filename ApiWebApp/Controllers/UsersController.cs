@@ -1,4 +1,5 @@
 ﻿using ApiWebApp.Dto;
+using ApiWebApp.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
@@ -11,10 +12,10 @@ namespace ApiWebApp.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUsers> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UsersController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(UserManager<AppUsers> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -22,15 +23,14 @@ namespace ApiWebApp.Controllers
 
         [EnableCors("*")]
         [HttpGet]
-      
         public IActionResult GetUsers()
         {
             var users = _userManager.Users.ToList();
             return Ok(users);
         }
+
         [EnableCors("*")]
         [HttpGet("{id}")]
-     
         public async Task<IActionResult> GetUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -43,37 +43,39 @@ namespace ApiWebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegiterUserDto regiterUserDto)
+        public async Task<IActionResult> Register([FromBody] RegiterUserDto registerUserDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (regiterUserDto.Password != regiterUserDto.ConfirmPassword)
+            if (registerUserDto.Password != registerUserDto.ConfirmPassword)
             {
                 ModelState.AddModelError("Password", "The password and confirmation password do not match.");
                 return BadRequest(ModelState);
             }
 
-            var user = new IdentityUser
+            var user = new AppUsers
             {
-                UserName = regiterUserDto.Email,
-                Email = regiterUserDto.Email,
-                PhoneNumber = regiterUserDto.PhoneNumber
+                UserName = registerUserDto.Email,
+                Email = registerUserDto.Email,
+                PhoneNumber = registerUserDto.PhoneNumber,
+                FirstName = registerUserDto.FirstName,
+                LastName = registerUserDto.LastName
             };
 
-            var result = await _userManager.CreateAsync(user, regiterUserDto.Password);
+            var result = await _userManager.CreateAsync(user, registerUserDto.Password);
             if (result.Succeeded)
             {
                 // Check if the role exists
-                if (!await _roleManager.RoleExistsAsync(regiterUserDto.Role))
+                if (!await _roleManager.RoleExistsAsync(registerUserDto.Role))
                 {
-                    return BadRequest($"Role '{regiterUserDto.Role}' does not exist.");
+                    return BadRequest($"Role '{registerUserDto.Role}' does not exist.");
                 }
 
                 // Assign role to the user
-                await _userManager.AddToRoleAsync(user, regiterUserDto.Role);
+                await _userManager.AddToRoleAsync(user, registerUserDto.Role);
 
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
                 {
@@ -107,7 +109,8 @@ namespace ApiWebApp.Controllers
             }
 
             user.PhoneNumber = updateUserDto.PhoneNumber;
-          
+            user.FirstName = updateUserDto.FirstName;
+            user.LastName = updateUserDto.LastName;
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
@@ -122,36 +125,29 @@ namespace ApiWebApp.Controllers
 
             return BadRequest(ModelState);
         }
-    
-    [HttpDelete("{id}")]
-    [AllowAnonymous]
-    public async Task<IActionResult> DeleteUser(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null)
-        {
-            return NotFound($"{id} Not Found");
-        }
 
-        var result = await _userManager.DeleteAsync(user);
-        if (result.Succeeded)
+        [HttpDelete("{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DeleteUser(string id)
         {
-                // Delete the user id Deleted Sucssesfuly
-            return Ok($"User Id: {id} Deleted Sucssesfuly");
-        }
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound($"{id} Not Found");
+            }
 
-        foreach (var error in result.Errors)
-        {
-            ModelState.AddModelError(string.Empty, error.Description);
-        }
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok($"User Id: {id} Deleted Successfully");
+            }
 
-        return BadRequest(ModelState);
-    
-}
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return BadRequest(ModelState);
+        }
     }
-
 }
-
-//to prevent ssrf attacks, you should validate the url before making a request to it.
-
-
