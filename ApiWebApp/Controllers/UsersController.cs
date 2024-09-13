@@ -1,5 +1,6 @@
 ﻿using ApiWebApp.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -19,16 +20,17 @@ namespace ApiWebApp.Controllers
             _roleManager = roleManager;
         }
 
+        [EnableCors("*")]
         [HttpGet]
-        [AllowAnonymous]
+      
         public IActionResult GetUsers()
         {
             var users = _userManager.Users.ToList();
             return Ok(users);
         }
-
+        [EnableCors("*")]
         [HttpGet("{id}")]
-        [AllowAnonymous]
+     
         public async Task<IActionResult> GetUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

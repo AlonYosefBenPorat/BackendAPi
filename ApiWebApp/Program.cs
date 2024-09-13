@@ -46,7 +46,6 @@ namespace ApiWebApp
                 };
             });
 
-
             // Add Identity services
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
@@ -60,6 +59,19 @@ namespace ApiWebApp
             .AddEntityFrameworkStores<WebAppContext>()
             .AddDefaultTokenProviders();
 
+            // Add CORS services
+         //Configure CORS to allow any origin
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("*", 
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -70,7 +82,13 @@ namespace ApiWebApp
             }
 
             app.UseHttpsRedirection();
+
+            // Use the CORS policy globally
+            app.UseCors("*");
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
 
             // Seed roles

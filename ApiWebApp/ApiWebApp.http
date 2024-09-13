@@ -18,10 +18,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "firstName": "Meir",
-  "LastName": "Shalom",
+  "firstName": "Aviho",
+  "LastName": "Galili",
   
-  "email": "Meir@example.com",
+  "email": "Aviho@Galili.com",
   "password": "1223Ad#21111",
   "confirmPassword": "1223Ad#21111",
   "phoneNumber": "1234567890",
