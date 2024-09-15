@@ -57,12 +57,15 @@ namespace ApiWebApp.Controllers
             }
 
             var user = new AppUsers
-            {
+            {   FirstName = registerUserDto.FirstName,
+                LastName = registerUserDto.LastName,
                 UserName = registerUserDto.Email,
                 Email = registerUserDto.Email,
                 PhoneNumber = registerUserDto.PhoneNumber,
-                FirstName = registerUserDto.FirstName,
-                LastName = registerUserDto.LastName
+                DateOfBirth = registerUserDto.DateOfBirth,
+                JobTitle = registerUserDto.JobTitle
+               
+               
             };
 
             var result = await _userManager.CreateAsync(user, registerUserDto.Password);
@@ -79,9 +82,18 @@ namespace ApiWebApp.Controllers
 
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
                 {
+
                     user.Id,
                     user.Email,
-                    user.PhoneNumber
+                    user.PhoneNumber,
+                    
+                    user.FirstName,
+                    user.LastName,
+                    user.DateOfBirth,
+                    user.JobTitle, 
+                    user.UserName,
+                    
+                   
                 });
             }
 

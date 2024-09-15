@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto
@@ -27,6 +27,11 @@ namespace ApiWebApp.Dto
         [Required]
         public required string Role { get; set; }
 
-        
+        public DateTime? DateOfBirth { get; set; }
+
+        [Required]
+        public required string JobTitle { get; set; }
+
+
     }
 }

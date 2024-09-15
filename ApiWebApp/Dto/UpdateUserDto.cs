@@ -4,10 +4,13 @@ namespace ApiWebApp.Dto
 {
     public class UpdateUserDto
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? Role { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public required string PhoneNumber { get; set; }
+        public required string Role { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        
+        public required string JobTitle { get; set; }
     }
 
 }

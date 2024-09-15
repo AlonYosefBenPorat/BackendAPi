@@ -18,12 +18,13 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "firstName": "Axviho",
-  "LastName": "Gxalili",
-  
-  "email": "Axviho@Galili.com",
+  "firstName": "mimi",
+  "lastName": "1gbben",   
+  "email": "Mimi@alon.com",
   "password": "1223Ad#21111",
   "confirmPassword": "1223Ad#21111",
+  "dateOfBirth": "1988-06-26",   
+  "jobTitle": "Developer",
   "phoneNumber": "1234567890",
   "role": "Reviewer"
 }
@@ -45,8 +46,7 @@ Accept: application/json
 ###
 
 # Delete user by ID
-DELETE {{ApiWebApp_HostAddress}}/api/users/1d933289-d80f-48b5-b5e2-fe70da578309
-Accept: application/json
+DELETE {{ApiWebApp_HostAddress}}/api/users/c7f2411a-8c46-4175-947b-52656e38cb0a
 
 
   ###

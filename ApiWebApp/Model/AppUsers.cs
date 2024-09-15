@@ -5,8 +5,14 @@ namespace ApiWebApp.Model
 {
     public class AppUsers: IdentityUser
     {
-       public string? FirstName { get; set; }
-        public string? LastName { get; set; }
+        [Required, MinLength(2), MaxLength(40)]
+       public required string FirstName { get; set; }
+        [Required, MinLength(2), MaxLength(40)]
+        public required string LastName { get; set; }
+
+        public DateTime? DateOfBirth { get; set; }
+        [Required]
+        public required string JobTitle { get; set; }
 
        
         
