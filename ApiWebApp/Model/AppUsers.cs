@@ -13,6 +13,10 @@ namespace ApiWebApp.Model
         public DateTime? DateOfBirth { get; set; }
         [Required]
         public required string JobTitle { get; set; }
+        public bool IsEnabled { get; set; } 
+        public string? ProfileImage { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } 
 
        
         

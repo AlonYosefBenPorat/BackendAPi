@@ -21,12 +21,34 @@ namespace ApiWebApp.Controllers
             _roleManager = roleManager;
         }
 
-        [EnableCors("*")]
-        [HttpGet]
-        public IActionResult GetUsers()
+      [EnableCors("*")]
+      [HttpGet]
+        public async Task<IActionResult> GetUsers()
         {
             var users = _userManager.Users.ToList();
-            return Ok(users);
+            var userList = new List<object>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userList.Add(new
+                {
+                    user.Id,
+                    user.Email,
+                    user.PhoneNumber,
+                    user.FirstName,
+                    user.LastName,
+                    user.DateOfBirth,
+                    user.JobTitle,
+                    user.IsEnabled,
+                    user.ProfileImage,
+                    user.CreatedAt,
+                    user.UpdatedAt,
+                    Roles = roles
+                });
+            }
+
+            return Ok(userList);
         }
 
         [EnableCors("*")]
@@ -36,13 +58,26 @@ namespace ApiWebApp.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
-                return Ok(user);
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(new
+                {
+                    user.Id,
+                    user.Email,
+                    user.PhoneNumber,
+                    user.FirstName,
+                    user.LastName,
+                    user.DateOfBirth,
+                    user.JobTitle,
+                   user.ProfileImage,
+                    user.IsEnabled,
+                    Roles= roles,
+                });
             }
             return NotFound();
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        
         public async Task<IActionResult> Register([FromBody] RegiterUserDto registerUserDto)
         {
             if (!ModelState.IsValid)
@@ -63,7 +98,9 @@ namespace ApiWebApp.Controllers
                 Email = registerUserDto.Email,
                 PhoneNumber = registerUserDto.PhoneNumber,
                 DateOfBirth = registerUserDto.DateOfBirth,
-                JobTitle = registerUserDto.JobTitle
+                JobTitle = registerUserDto.JobTitle,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = null
                
                
             };
@@ -92,6 +129,7 @@ namespace ApiWebApp.Controllers
                     user.DateOfBirth,
                     user.JobTitle, 
                     user.UserName,
+                   
                     
                    
                 });
@@ -123,6 +161,10 @@ namespace ApiWebApp.Controllers
             user.PhoneNumber = updateUserDto.PhoneNumber;
             user.FirstName = updateUserDto.FirstName;
             user.LastName = updateUserDto.LastName;
+           user.UpdatedAt = DateTime.Now;
+            user.JobTitle = updateUserDto.JobTitle;
+            user.IsEnabled = updateUserDto.IsEnabled;
+
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)

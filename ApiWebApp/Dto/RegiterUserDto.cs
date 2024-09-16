@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto
 {
@@ -8,10 +7,9 @@ namespace ApiWebApp.Dto
         [Required, MinLength(2), MaxLength(25)]
         public required string FirstName { get; set; }
 
-
         [Required, MinLength(2), MaxLength(25)]
         public required string LastName { get; set; }
-       
+
         [Required, DataType(DataType.Password)]
         public required string Password { get; set; }
 
@@ -22,7 +20,7 @@ namespace ApiWebApp.Dto
         public required string Email { get; set; }
 
         [Phone]
-        public  string PhoneNumber { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required]
         public required string Role { get; set; }
@@ -32,6 +30,16 @@ namespace ApiWebApp.Dto
         [Required]
         public required string JobTitle { get; set; }
 
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        public string? ProfileImage { get; set; }
+
+        // Add the IsEnabled property
+        public bool IsEnabled { get; set; }
+
+        public RegiterUserDto()
+        {
+            IsEnabled = true; // Default value set to true
+        }
     }
 }

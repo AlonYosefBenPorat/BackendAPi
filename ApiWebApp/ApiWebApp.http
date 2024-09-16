@@ -18,9 +18,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "firstName": "mimi",
-  "lastName": "1gbben",   
-  "email": "Mimi@alon.com",
+  "firstName": "Nomi",
+  "lastName": "sss",   
+  "email": "Nomi@alon.com",
   "password": "1223Ad#21111",
   "confirmPassword": "1223Ad#21111",
   "dateOfBirth": "1988-06-26",   
