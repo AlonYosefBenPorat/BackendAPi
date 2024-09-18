@@ -33,6 +33,7 @@ namespace ApiWebApp
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -40,10 +41,13 @@ namespace ApiWebApp
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
                 };
             });
 
@@ -63,11 +67,12 @@ namespace ApiWebApp
             // Add CORS services
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("*",
+                options.AddPolicy("AllowAll",
                     builder =>
                     {
                         builder.AllowAnyOrigin()
                                .AllowAnyHeader()
+                               
                                .AllowAnyMethod();
                     });
             });
@@ -84,10 +89,26 @@ namespace ApiWebApp
             app.UseHttpsRedirection();
 
             // Use the CORS policy globally
-            app.UseCors("*");
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.MapControllers();
+
+            app.Use(async (context, next) =>
+            {
+                var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+                if (!context.User.Identity.IsAuthenticated)
+                {
+                    logger.LogWarning("User is not authenticated.");
+                }
+                else
+                {
+                    logger.LogInformation("User is authenticated.");
+                }
+
+                await next.Invoke();
+            });
 
             app.MapControllers();
 

@@ -31,7 +31,7 @@ namespace ApiWebApp.Controllers
         }
 
         // Login action
-     [EnableCors("*")]
+        [EnableCors("AllowAll")]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login login)
         {
@@ -54,7 +54,7 @@ namespace ApiWebApp.Controllers
         }
 
         // Method to generate JWT token
-        private string GenerateJwtToken(IdentityUser user)
+        private string GenerateJwtToken(AppUsers user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
@@ -63,9 +63,10 @@ namespace ApiWebApp.Controllers
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id)
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddHours(24),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Audience = _jwtSettings.Audience,
                 Issuer = _jwtSettings.Issuer

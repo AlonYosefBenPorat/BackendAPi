@@ -16,11 +16,14 @@ Accept: application/json
 POST {{ApiWebApp_HostAddress}}/api/users
 Content-Type: application/json
 Accept: application/json
+Authorization:`Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InJvb3RAcm9vdC5jb20iLCJuYW1laWQiOiJmM2JmN2YxYS1hMzM4LTQwN2ItOGY3ZS00ZDlhMzU2NWZkYjgiLCJuYmYiOjE3MjY2Nzg3OTMsImV4cCI6MTcyNjY4MjM5MywiaWF0IjoxNzI2Njc4NzkzfQ.9QpH6_dLvhiIjfSKL-mgqr0Kr46G_aEx6bdVUb_cjQY`
+
+
 
 {
   "firstName": "Michael",
   "lastName": "sss",   
-  "email": "NMIN@alon.com",
+  "email": "Root2@a.com",
   "password": "1223Ad#21111",
   "confirmPassword": "1223Ad#21111",
   "dateOfBirth": "1988-06-26",   

@@ -21,8 +21,11 @@ namespace ApiWebApp.Controllers
             _roleManager = roleManager;
         }
 
-      [EnableCors("*")]
-      [HttpGet]
+        [EnableCors("AllowAll")]
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+       
+
         public async Task<IActionResult> GetUsers()
         {
             var users = _userManager.Users.ToList();
@@ -51,8 +54,11 @@ namespace ApiWebApp.Controllers
             return Ok(userList);
         }
 
-        [EnableCors("*")]
+        [EnableCors("AllowAll")]
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+       
+
         public async Task<IActionResult> GetUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -76,73 +82,81 @@ namespace ApiWebApp.Controllers
             return NotFound();
         }
 
+
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         
         public async Task<IActionResult> Register([FromBody] RegiterUserDto registerUserDto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
-
-            if (registerUserDto.Password != registerUserDto.ConfirmPassword)
-            {
-                ModelState.AddModelError("Password", "The password and confirmation password do not match.");
-                return BadRequest(ModelState);
-            }
-
-            var user = new AppUsers
-            {   FirstName = registerUserDto.FirstName,
-                LastName = registerUserDto.LastName,
-                UserName = registerUserDto.Email,
-                Email = registerUserDto.Email,
-                PhoneNumber = registerUserDto.PhoneNumber,
-                DateOfBirth = registerUserDto.DateOfBirth,
-                JobTitle = registerUserDto.JobTitle,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = null
-               
-               
-            };
-
-            var result = await _userManager.CreateAsync(user, registerUserDto.Password);
-            if (result.Succeeded)
-            {
-                // Check if the role exists
-                if (!await _roleManager.RoleExistsAsync(registerUserDto.Role))
+                if (!ModelState.IsValid)
                 {
-                    return BadRequest($"Role '{registerUserDto.Role}' does not exist.");
+                    return BadRequest(ModelState);
                 }
 
-                // Assign role to the user
-                await _userManager.AddToRoleAsync(user, registerUserDto.Role);
-
-                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
+                if (registerUserDto.Password != registerUserDto.ConfirmPassword)
                 {
-                    user.Id,
-                    user.Email,
-                    user.PhoneNumber,
-                    user.FirstName,
-                    user.LastName,
-                    user.DateOfBirth,
-                    user.JobTitle, 
-                    user.UserName,
-                   
-                    
-                   
-                });
-            }
+                    ModelState.AddModelError("Password", "The password and confirmation password do not match.");
+                    return BadRequest(ModelState);
+                }
 
-            foreach (var error in result.Errors)
+                var user = new AppUsers
+                {
+                    FirstName = registerUserDto.FirstName,
+                    LastName = registerUserDto.LastName,
+                    UserName = registerUserDto.Email,
+                    Email = registerUserDto.Email,
+                    PhoneNumber = registerUserDto.PhoneNumber,
+                    DateOfBirth = registerUserDto.DateOfBirth,
+                    JobTitle = registerUserDto.JobTitle,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = null
+                };
+
+                var result = await _userManager.CreateAsync(user, registerUserDto.Password);
+                if (result.Succeeded)
+                {
+                    // Check if the role exists
+                    if (!await _roleManager.RoleExistsAsync(registerUserDto.Role))
+                    {
+                        return BadRequest($"Role '{registerUserDto.Role}' does not exist.");
+                    }
+
+                    // Assign role to the user
+                    await _userManager.AddToRoleAsync(user, registerUserDto.Role);
+
+                    return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
+                    {
+                        user.Id,
+                        user.Email,
+                        user.PhoneNumber,
+                        user.FirstName,
+                        user.LastName,
+                        user.DateOfBirth,
+                        user.JobTitle,
+                        user.UserName
+                    });
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                // Log the exception (ex) here if needed
+                return StatusCode(500, "Internal server error. Please try again later.");
             }
-
-            return BadRequest(ModelState);
         }
 
+
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+  
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto updateUserDto)
         {
             if (!ModelState.IsValid)
@@ -220,7 +234,8 @@ namespace ApiWebApp.Controllers
 
 
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+      
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
