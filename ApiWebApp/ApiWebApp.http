@@ -7,7 +7,7 @@ Accept: application/json
 ###
 
 # Get user by ID
-GET {{ApiWebApp_HostAddress}}/api/users/{id}
+GET {{ApiWebApp_HostAddress}}/api/users/2837b9d5-d02f-40b3-ab76-b6195a2ba850
 Accept: application/json
 
 ###
@@ -18,9 +18,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "firstName": "Nomi",
+  "firstName": "Michael",
   "lastName": "sss",   
-  "email": "Nomi@alon.com",
+  "email": "NMIN@alon.com",
   "password": "1223Ad#21111",
   "confirmPassword": "1223Ad#21111",
   "dateOfBirth": "1988-06-26",   
@@ -32,15 +32,17 @@ Accept: application/json
 ###
 
 # Update user by ID
-PUT {{ApiWebApp_HostAddress}}/api/users/39b98f38-84e3-4801-9013-2adb5b4dad6f
+PUT {{ApiWebApp_HostAddress}}/api/users/2837b9d5-d02f-40b3-ab76-b6195a2ba850
 Content-Type: application/json
 Accept: application/json
 
 {
-  "firstName": "UpdatedFirstName",
+  "firstName": "1UscpdategdFirstName",
   "lastName": "UpdatedLastName",
   "phoneNumber": "0987654321",
-  "role": "Admin"
+  
+  "jobTitle": "UpdatedJobTitle"
+  
 }
 
 ###

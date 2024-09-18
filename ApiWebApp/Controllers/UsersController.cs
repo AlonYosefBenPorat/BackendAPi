@@ -119,11 +119,9 @@ namespace ApiWebApp.Controllers
 
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
                 {
-
                     user.Id,
                     user.Email,
                     user.PhoneNumber,
-                    
                     user.FirstName,
                     user.LastName,
                     user.DateOfBirth,
@@ -155,16 +153,55 @@ namespace ApiWebApp.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return NotFound();
+                ModelState.AddModelError("UserNotFound", "User with the specified ID was not found.");
+                return NotFound(ModelState);
+            }
+
+            if (updateUserDto.FirstName != null)
+            {
+                user.FirstName = updateUserDto.FirstName;
+            }
+
+            if (updateUserDto.LastName != null)
+            {
+                user.LastName = updateUserDto.LastName;
             }
 
             user.PhoneNumber = updateUserDto.PhoneNumber;
-            user.FirstName = updateUserDto.FirstName;
-            user.LastName = updateUserDto.LastName;
-           user.UpdatedAt = DateTime.Now;
             user.JobTitle = updateUserDto.JobTitle;
             user.IsEnabled = updateUserDto.IsEnabled;
+            user.UpdatedAt = DateTime.UtcNow;
 
+            // Update roles if Role is provided
+            if (!string.IsNullOrEmpty(updateUserDto.Role))
+            {
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                if (!removeRolesResult.Succeeded)
+                {
+                    foreach (var error in removeRolesResult.Errors)
+                    {
+                        ModelState.AddModelError("RoleRemovalError", error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
+
+                if (!await _roleManager.RoleExistsAsync(updateUserDto.Role))
+                {
+                    ModelState.AddModelError("RoleNotFound", $"Role '{updateUserDto.Role}' does not exist.");
+                    return BadRequest(ModelState);
+                }
+
+                var addRoleResult = await _userManager.AddToRoleAsync(user, updateUserDto.Role);
+                if (!addRoleResult.Succeeded)
+                {
+                    foreach (var error in addRoleResult.Errors)
+                    {
+                        ModelState.AddModelError("RoleAdditionError", error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
+            }
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
@@ -174,11 +211,13 @@ namespace ApiWebApp.Controllers
 
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError("UpdateError", error.Description);
             }
 
             return BadRequest(ModelState);
         }
+
+
 
         [HttpDelete("{id}")]
         [AllowAnonymous]

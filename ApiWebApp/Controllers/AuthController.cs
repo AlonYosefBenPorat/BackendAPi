@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 using ApiWebApp.Auth;
+using Microsoft.AspNetCore.Cors;
+using ApiWebApp.Model;
 
 namespace ApiWebApp.Controllers
 {
@@ -16,12 +18,12 @@ namespace ApiWebApp.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUsers> _userManager;
         private readonly IConfiguration _configuration;
         private readonly JwtSettings _jwtSettings;
 
         // Constructor to inject dependencies
-        public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration, JwtSettings jwtSettings)
+        public AuthController(UserManager<AppUsers> userManager, IConfiguration configuration, JwtSettings jwtSettings)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -29,6 +31,7 @@ namespace ApiWebApp.Controllers
         }
 
         // Login action
+     [EnableCors("*")]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login login)
         {
