@@ -34,7 +34,7 @@ namespace ApiWebApp.Dto
 
         public string? ProfileImage { get; set; }
 
-        // Add the IsEnabled property
+    
         public bool IsEnabled { get; set; }
 
         public RegiterUserDto()

@@ -9,6 +9,7 @@ using ApiWebApp.Model;
 using ApiWebApp.Repositry;
 using WebApp.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using ApiWebApp.Repositories;
 
 namespace ApiWebApp
 {
@@ -71,11 +72,13 @@ namespace ApiWebApp
             builder.Services.AddScoped<TokenService>();
 
             // Register RoleManager<AppRole> and IRoleStore<AppRole>
-            builder.Services.AddScoped<RoleManager<AppRole>>(); // <-- Added this line
+            builder.Services.AddScoped<RoleManager<AppRole>>(); 
             builder.Services.AddScoped<IRoleStore<AppRole>, RoleStore<AppRole, WebAppContext>>(); // <-- Added this line
 
             // Register the repository
-            builder.Services.AddScoped<IUserRepository, UserRepository>(); // <-- Added this line
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
 
             // Add CORS services
             builder.Services.AddCors(options =>

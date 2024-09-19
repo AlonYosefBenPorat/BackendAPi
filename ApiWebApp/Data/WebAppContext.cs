@@ -13,5 +13,6 @@ public class WebAppContext : IdentityDbContext<IdentityUser>
         }
 
         public DbSet<AppUsers> AppUsers { get; set; } = default!;
-        //public DbSet<AppRole> AppRoles { get; set; } = default!;
+        public DbSet<Customer> Customers { get; set; } = default!;
+      
     }
