@@ -3,7 +3,11 @@
 namespace ApiWebApp.Dto
 {
     public class AddCustomerDto
+
     {
+        public Guid Id { get; set; }
+
+
         [Required, MinLength(2), MaxLength(50)]
         public required string Name { get; set; }
 
@@ -28,9 +32,17 @@ namespace ApiWebApp.Dto
 
         public required string Domain { get; set; }
 
-        [Required, MinLength(4),MaxLength(15)]
+        [Required]
         public int BnNumber { get; set; }
 
         public bool IsActive { get; set; }
+
+
+        public AddCustomerDto()
+        {
+            IsActive = true;
+            Id = Guid.NewGuid();
+        }
+
     }
 }

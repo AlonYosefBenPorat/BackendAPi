@@ -16,6 +16,6 @@ public class UpdateUserDto
 
     public  bool IsEnabled { get; set; }
     public string? ProfileImage { get; set; }
-    public DateTime UpdatedAt { get; set; } 
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
 }

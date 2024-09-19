@@ -39,7 +39,7 @@ namespace ApiWebApp.Dto
 
         public RegiterUserDto()
         {
-            IsEnabled = true; // Default value set to true
+            IsEnabled = true;
         }
     }
 }
