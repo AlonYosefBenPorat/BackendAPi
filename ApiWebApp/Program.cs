@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ApiWebApp.Auth;
 using ApiWebApp.Model;
+using ApiWebApp.Repositry;
+using WebApp.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ApiWebApp
 {
@@ -64,6 +67,16 @@ namespace ApiWebApp
             .AddEntityFrameworkStores<WebAppContext>()
             .AddDefaultTokenProviders();
 
+            // Register TokenService
+            builder.Services.AddScoped<TokenService>();
+
+            // Register RoleManager<AppRole> and IRoleStore<AppRole>
+            builder.Services.AddScoped<RoleManager<AppRole>>(); // <-- Added this line
+            builder.Services.AddScoped<IRoleStore<AppRole>, RoleStore<AppRole, WebAppContext>>(); // <-- Added this line
+
+            // Register the repository
+            builder.Services.AddScoped<IUserRepository, UserRepository>(); // <-- Added this line
+
             // Add CORS services
             builder.Services.AddCors(options =>
             {
@@ -72,7 +85,6 @@ namespace ApiWebApp
                     {
                         builder.AllowAnyOrigin()
                                .AllowAnyHeader()
-                               
                                .AllowAnyMethod();
                     });
             });
