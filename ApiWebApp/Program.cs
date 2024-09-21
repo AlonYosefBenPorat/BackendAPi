@@ -59,10 +59,10 @@ namespace ApiWebApp
             builder.Services.AddIdentity<AppUsers, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = false;
                 options.Password.RequiredUniqueChars = 1;
             })
             .AddEntityFrameworkStores<WebAppContext>()
@@ -72,13 +72,12 @@ namespace ApiWebApp
             builder.Services.AddScoped<TokenService>();
 
             // Register RoleManager<AppRole> and IRoleStore<AppRole>
-            builder.Services.AddScoped<RoleManager<AppRole>>(); 
+            builder.Services.AddScoped<RoleManager<AppRole>>();
             builder.Services.AddScoped<IRoleStore<AppRole>, RoleStore<AppRole, WebAppContext>>(); // <-- Added this line
 
             // Register the repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-
 
             // Add CORS services
             builder.Services.AddCors(options =>
@@ -127,13 +126,15 @@ namespace ApiWebApp
 
             app.MapControllers();
 
-            // Seed roles
+            // Seed roles and other data
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
-                    await SeedData.Initialize(services);
+                    var context = services.GetRequiredService<WebAppContext>();
+                    context.Database.Migrate(); // Apply any pending migrations
+                    await SeedData.Initialize(services); // Seed the database
                 }
                 catch (Exception ex)
                 {

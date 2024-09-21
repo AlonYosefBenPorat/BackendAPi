@@ -5,6 +5,7 @@ using ApiWebApp.Dto;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace ApiWebApp.Controllers
 {
@@ -34,7 +35,7 @@ namespace ApiWebApp.Controllers
             var customer = await _customerRepository.GetCustomerByIdAsync(id);
             if (customer == null)
             {
-                return NotFound();
+                return NotFound(new {Message=$"Customer With ID:{id} Not Found"});
             }
             return Ok(customer);
         }
@@ -84,7 +85,7 @@ namespace ApiWebApp.Controllers
             customer.UpdatedAt = updateCustomerDto.UpdatedAt;
 
             await _customerRepository.UpdateCustomerAsync(customer);
-            return NoContent();
+            return Ok(new {Message=$"{customer.Name} Updated!"});
         }
 
         // Delete a customer
@@ -98,7 +99,7 @@ namespace ApiWebApp.Controllers
             }
 
             await _customerRepository.DeleteCustomerAsync(id);
-            return NoContent();
+            return Ok(new {Message=$" {customer.Name} Customer Deleted Sucsseful"});
         }
     }
 }

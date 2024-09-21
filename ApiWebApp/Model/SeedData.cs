@@ -4,29 +4,26 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ApiWebApp.Model;
-using Microsoft.EntityFrameworkCore;
 
-public static class SeedData
+namespace ApiWebApp.Model
 {
-    public static async Task Initialize(IServiceProvider serviceProvider)
+    public static class SeedData
     {
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("SeedData");
-        var context = serviceProvider.GetRequiredService<WebAppContext>();
-
-        string[] roleNames = { "Manager", "User", "Reviewer" };
-        IdentityResult roleResult;
-
-        foreach (var roleName in roleNames)
+        public static async Task Initialize(IServiceProvider serviceProvider)
         {
-            try
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<AppUsers>>();
+            var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("SeedData");
+            var context = serviceProvider.GetRequiredService<WebAppContext>();
+
+            // Seed Roles
+            string[] roleNames = { "Manager", "User", "Reviewer" };
+            foreach (var roleName in roleNames)
             {
-                var roleExist = await roleManager.RoleExistsAsync(roleName);
-                if (!roleExist)
+                if (!await roleManager.RoleExistsAsync(roleName))
                 {
                     logger.LogInformation($"Creating role: {roleName}");
-                    roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
                     if (roleResult.Succeeded)
                     {
                         logger.LogInformation($"Role {roleName} created successfully.");
@@ -41,50 +38,36 @@ public static class SeedData
                     logger.LogInformation($"Role {roleName} already exists.");
                 }
             }
-            catch (Exception ex)
+
+            // Seed Root User
+            var rootUserEmail = "root@example.com";
+            if (!userManager.Users.Any(u => u.Email == rootUserEmail))
             {
-                logger.LogError($"Exception while creating role {roleName}: {ex.Message}");
-            }
-        }
+                var rootUser = new AppUsers
+                {
+                    UserName = rootUserEmail,
+                    Email = rootUserEmail,
+                    EmailConfirmed = true,
+                    FirstName = "Root",
+                    LastName = "User",
+                    JobTitle = "Administrator"
+                };
 
-        // Seed Customers
-        if (!context.Customers.Any())
-        {
-            context.Customers.AddRange(
-                new Customer
+                var result = await userManager.CreateAsync(rootUser, "RootPassword123!");
+                if (result.Succeeded)
                 {
-                    Id = Guid.NewGuid(),
-                    Name = "Customer 1",
-                    Country = "Country 1",
-                    City = "City 1",
-                    Address = "Address 1",
-                    Phone = "1234567890",
-                    ContactPerson = "Contact 1",
-                    Domain = "domain1.com",
-                    BnNumber = 123456,
-                    IsActive = true
-                },
-                new Customer
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Customer 2",
-                    Country = "Country 2",
-                    City = "City 2",
-                    Address = "Address 2",
-                    Phone = "0987654321",
-                    ContactPerson = "Contact 2",
-                    Domain = "domain2.com",
-                    BnNumber = 654321,
-                    IsActive = true
+                    logger.LogInformation($"Root user {rootUserEmail} created successfully.");
+                    await userManager.AddToRoleAsync(rootUser, "Manager");
                 }
-            );
-
-            await context.SaveChangesAsync();
-            logger.LogInformation("Customers seeded successfully.");
-        }
-        else
-        {
-            logger.LogInformation("Customers already exist in the database.");
+                else
+                {
+                    logger.LogError($"Error creating root user {rootUserEmail}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                }
+            }
+            else
+            {
+                logger.LogInformation($"Root user {rootUserEmail} already exists.");
+            }
         }
     }
 }

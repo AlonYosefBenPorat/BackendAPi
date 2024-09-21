@@ -5,7 +5,7 @@
 namespace ApiWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class Update : Migration
+    public partial class SeedUsers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

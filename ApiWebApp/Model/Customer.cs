@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Model
@@ -18,6 +19,11 @@ namespace ApiWebApp.Model
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
+
+        // Navigation properties
+        public ICollection<Server> Servers { get; set; } = new List<Server>();
+        public ICollection<NetworkDevice> NetworkDevices { get; set; } = new List<NetworkDevice>();
+        public ICollection<Gateway> Gateways { get; set; } = new List<Gateway>();
 
         public Customer()
         {

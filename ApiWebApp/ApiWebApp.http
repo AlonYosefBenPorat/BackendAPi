@@ -65,3 +65,31 @@ Accept: application/json
   "username": "Aviho@Galili.com",
   "password": "1223Ad#21111"
 }
+###
+# Get customer 
+GET {{ApiWebApp_HostAddress}}/api/customer/
+Accept: application/json
+
+###
+
+# Update customer by ID
+PUT {{ApiWebApp_HostAddress}}/api/customer/9f936217-46d9-4476-84de-4a67953e69fa
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "UpdatedName",
+  "country": "UpdatedCountry",
+  "city": "UpdatedCity",
+  "address": "UpdatedAddress",
+  "phone": "0987654321",
+  "contactPerson": "UpdatedContactPerson",
+  "domain": "http://updatedexample.com",
+  "bnNumber": 654321,
+  "isActive": false
+  
+}
+###
+# Delete customer by ID
+DELETE {{ApiWebApp_HostAddress}}/api/customer/9f936217-46d9-4476-84de-4a67953e69fa
+Accept: application/json
