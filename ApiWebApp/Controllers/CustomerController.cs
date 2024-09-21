@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ApiWebApp.Repositories;
 using ApiWebApp.Model;
 using ApiWebApp.Dto;
-using System.Collections.Generic;
-using System;
-using System.Threading.Tasks;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+
 
 namespace ApiWebApp.Controllers
 {
@@ -56,7 +52,13 @@ namespace ApiWebApp.Controllers
                 Domain = addCustomerDto.Domain,
                 BnNumber = addCustomerDto.BnNumber,
                 IsActive = addCustomerDto.IsActive,
-                CreatedAt = DateTime.UtcNow // Set current time
+                CreatedAt = DateTime.UtcNow,
+                Logo = new Logo
+                {
+                    Alt = addCustomerDto.LogoAlt,
+                    Src = addCustomerDto.LogoSrc
+                }
+                
             };
 
             await _customerRepository.AddCustomerAsync(customer);
@@ -82,7 +84,13 @@ namespace ApiWebApp.Controllers
             customer.Domain = updateCustomerDto.Domain ?? customer.Domain;
             customer.BnNumber = updateCustomerDto.BnNumber != 0 ? updateCustomerDto.BnNumber : customer.BnNumber;
             customer.IsActive = updateCustomerDto.IsActive;
+           
             customer.UpdatedAt = updateCustomerDto.UpdatedAt;
+            customer.Logo = new Logo
+            {
+                Alt = updateCustomerDto.LogoAlt ?? customer.Logo.Alt,
+                Src = updateCustomerDto.LogoSrc ?? customer.Logo.Src
+            };
 
             await _customerRepository.UpdateCustomerAsync(customer);
             return Ok(new {Message=$"{customer.Name} Updated!"});

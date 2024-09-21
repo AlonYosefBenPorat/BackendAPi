@@ -11,6 +11,8 @@
         public string Domain { get; set; }
         public int BnNumber { get; set; }
         public bool IsActive { get; set; }
+        public string LogoAlt { get; set; }
+        public string LogoSrc { get; set; }
 
         public DateTime UpdatedAt { get; set;} = DateTime.UtcNow;
 

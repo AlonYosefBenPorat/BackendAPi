@@ -15,7 +15,8 @@ public class UpdateUserDto
     public string? JobTitle { get; set; }
 
     public  bool IsEnabled { get; set; }
-    public string? ProfileImage { get; set; }
+    public string? ProfileAlt { get; set; }
+    public string? ProfileSrc { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
 }

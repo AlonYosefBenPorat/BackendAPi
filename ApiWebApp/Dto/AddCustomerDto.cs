@@ -37,6 +37,9 @@ namespace ApiWebApp.Dto
 
         public bool IsActive { get; set; }
 
+        public string LogoAlt { get; set; }
+        public string LogoSrc { get; set; }
+
 
         public AddCustomerDto()
         {

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ApiWebApp.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto
 {
@@ -32,11 +33,12 @@ namespace ApiWebApp.Dto
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public string? ProfileImage { get; set; }
-
+        
     
         public bool IsEnabled { get; set; }
-        
+        public string? ProfileAlt { get; set; }
+        public string? ProfileSrc { get; set; }
+
 
         public RegiterUserDto()
         {

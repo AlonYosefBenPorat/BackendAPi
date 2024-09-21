@@ -36,10 +36,15 @@ public class UsersController : ControllerBase
                 user.DateOfBirth,
                 user.JobTitle,
                 user.IsEnabled,
-                user.ProfileImage,
+                Roles = roles,
                 user.CreatedAt,
                 user.UpdatedAt,
-                Roles = roles
+                ProfileImage = new ProfileImage
+                {
+                 Alt = user.ProfileImage?.Alt,
+                 Src = user.ProfileImage?.Src
+                }
+                
             });
         }
 
@@ -64,9 +69,13 @@ public class UsersController : ControllerBase
                 user.LastName,
                 user.DateOfBirth,
                 user.JobTitle,
-                user.ProfileImage,
                 user.IsEnabled,
                 Roles = roles,
+                ProfileImage = new ProfileImage
+                {
+                Alt = user.ProfileImage?.Alt,
+                Src = user.ProfileImage?.Src
+                }
             });
         }
         return NotFound();
@@ -98,9 +107,13 @@ public class UsersController : ControllerBase
                 PhoneNumber = registerUserDto.PhoneNumber,
                 DateOfBirth = registerUserDto.DateOfBirth,
                 JobTitle = registerUserDto.JobTitle,
-               
                 CreatedAt = DateTime.Now,
-                UpdatedAt = null
+                UpdatedAt = null,
+                ProfileImage = new ProfileImage
+                {
+                    Alt = registerUserDto.ProfileAlt,
+                    Src = registerUserDto.ProfileSrc
+                }
             };
 
             var result = await _userRepository.CreateUserAsync(user, registerUserDto.Password);

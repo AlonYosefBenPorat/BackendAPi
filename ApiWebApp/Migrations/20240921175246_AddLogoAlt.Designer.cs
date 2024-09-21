@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiWebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    partial class WebAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240921175246_AddLogoAlt")]
+    partial class AddLogoAlt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,6 +88,9 @@ namespace ApiWebApp.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -473,31 +479,6 @@ namespace ApiWebApp.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Servers", (string)null);
-                });
-
-            modelBuilder.Entity("ApiWebApp.Model.AppUsers", b =>
-                {
-                    b.OwnsOne("ApiWebApp.Model.ProfileImage", "ProfileImage", b1 =>
-                        {
-                            b1.Property<string>("AppUsersId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<string>("Alt")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Src")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("AppUsersId");
-
-                            b1.ToTable("AspNetUsers");
-
-                            b1.WithOwner()
-                                .HasForeignKey("AppUsersId");
-                        });
-
-                    b.Navigation("ProfileImage")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ApiWebApp.Model.Customer", b =>

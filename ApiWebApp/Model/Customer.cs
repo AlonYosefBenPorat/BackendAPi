@@ -19,6 +19,7 @@ namespace ApiWebApp.Model
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
+        public Logo Logo { get; set; }
 
         // Navigation properties
         public ICollection<Server> Servers { get; set; } = new List<Server>();
