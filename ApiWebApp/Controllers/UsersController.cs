@@ -17,7 +17,7 @@ public class UsersController : ControllerBase
 
     [EnableCors("AllowAll")]
     [HttpGet]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
+    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await _userRepository.GetAllUsersAsync();
@@ -48,7 +48,7 @@ public class UsersController : ControllerBase
 
     [EnableCors("AllowAll")]
     [HttpGet("{id}")]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
+    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
     public async Task<IActionResult> GetUser(string id)
     {
         var user = await _userRepository.GetUserByIdAsync(id);
@@ -73,7 +73,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
     public async Task<IActionResult> Register([FromBody] RegiterUserDto registerUserDto)
     {
         try
@@ -98,6 +98,7 @@ public class UsersController : ControllerBase
                 PhoneNumber = registerUserDto.PhoneNumber,
                 DateOfBirth = registerUserDto.DateOfBirth,
                 JobTitle = registerUserDto.JobTitle,
+               
                 CreatedAt = DateTime.Now,
                 UpdatedAt = null
             };
@@ -110,7 +111,15 @@ public class UsersController : ControllerBase
                     return BadRequest($"Role '{registerUserDto.Role}' does not exist.");
                 }
 
-                await _userRepository.AddUserToRoleAsync(user, registerUserDto.Role);
+                var roleResult = await _userRepository.AddUserToRoleAsync(user, registerUserDto.Role);
+                if (!roleResult.Succeeded)
+                {
+                    foreach (var error in roleResult.Errors)
+                    {
+                        ModelState.AddModelError("RoleAssignmentError", error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
 
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
                 {
@@ -134,12 +143,12 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, "Internal server error. Please try again later.");
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 
     [HttpPut("{id}")]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
+    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
     public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto updateUserDto)
     {
         if (!ModelState.IsValid)
@@ -214,7 +223,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
     public async Task<IActionResult> DeleteUser(string id)
     {
         var user = await _userRepository.GetUserByIdAsync(id);

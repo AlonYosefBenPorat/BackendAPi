@@ -36,6 +36,7 @@ namespace ApiWebApp.Dto
 
     
         public bool IsEnabled { get; set; }
+        
 
         public RegiterUserDto()
         {

@@ -1,20 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// File: ApiWebApp/Data/WebAppContext.cs
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 using ApiWebApp.Model;
 
-public class WebAppContext : IdentityDbContext<IdentityUser>
+public class WebAppContext : IdentityDbContext<AppUsers>
 {
     public WebAppContext(DbContextOptions<WebAppContext> options)
         : base(options)
     {
     }
 
-    public DbSet<AppUsers> AppUsers { get; set; } = default!;
-    public DbSet<Customer> Customers { get; set; } = default!;
-    public DbSet<Server> Servers { get; set; } = default!;
-    public DbSet<NetworkDevice> NetworkDevices { get; set; } = default!;
-    public DbSet<Gateway> Gateways { get; set; } = default!;
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Server> Servers { get; set; }
+    public DbSet<NetworkDevice> NetworkDevices { get; set; }
+    public DbSet<Gateway> Gateways { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,7 +29,6 @@ public class WebAppContext : IdentityDbContext<IdentityUser>
             .ToTable("Servers");
 
         modelBuilder.Entity<Gateway>()
-      
             .ToTable("Gateways");
 
         // Configure foreign key relationships

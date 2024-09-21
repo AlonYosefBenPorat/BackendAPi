@@ -7,9 +7,9 @@ namespace ApiWebApp.Repositry;
 public class UserRepository : IUserRepository
 {
     private readonly UserManager<AppUsers> _userManager;
-    private readonly RoleManager<AppRole> _roleManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public UserRepository(UserManager<AppUsers> userManager, RoleManager<AppRole> roleManager)
+    public UserRepository(UserManager<AppUsers> userManager, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _roleManager = roleManager;
