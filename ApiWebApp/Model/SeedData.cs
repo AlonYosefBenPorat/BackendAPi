@@ -68,6 +68,65 @@ namespace ApiWebApp.Model
             {
                 logger.LogInformation($"Root user {rootUserEmail} already exists.");
             }
+
+            // Seed Customer
+            Customer customer = null;
+            if (!context.Customers.Any())
+            {
+                customer = new Customer
+                {
+                    Name = "Acme Corporation",
+                    Country = "USA",
+                    City = "New York",
+                    Address = "123 Main St",
+                    Phone = "123-456-7890",
+                    ContactPerson = "Jane Doe",
+                    Domain = "acme.com",
+                    BnNumber = 123456789,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+
+                context.Customers.Add(customer);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Customer Acme Corporation created successfully.");
+            }
+            else
+            {
+                customer = context.Customers.First();
+                logger.LogInformation("Customers already exist.");
+            }
+
+            // Seed Server
+            if (customer != null && !context.Servers.Any())
+            {
+                var server = new Server
+                {
+                    CustomerId = customer.Id,
+                    IpAddress = "192.168.1.1",
+                    Hostname = "server1.acme.com",
+                    SerialNumber = "SN123456789",
+                    Model = "ProLiant DL380 Gen10",
+                    Brand = "HP",
+                    Type = "Rack",
+                    Vendor = "HP",
+                    Ram = "64GB",
+                    Storage = "2TB SSD",
+                    OperatingSystem = "Windows Server 2019",
+                    WarrantyExpiration = DateTime.UtcNow.AddYears(3),
+                    Roles = "Web Server, Database Server",
+                    Description = "Primary server for Acme Corporation",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                context.Servers.Add(server);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Server for Acme Corporation created successfully.");
+            }
+            else
+            {
+                logger.LogInformation("Servers already exist.");
+            }
         }
     }
 }

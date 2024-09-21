@@ -28,6 +28,7 @@ public class WebAppContext : IdentityDbContext<IdentityUser>
             .ToTable("Servers");
 
         modelBuilder.Entity<Gateway>()
+      
             .ToTable("Gateways");
 
         // Configure foreign key relationships
