@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -78,6 +77,10 @@ namespace ApiWebApp
             // Register the repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddScoped<IServerRepository, ServerRepository>();
+            builder.Services.AddScoped<INetworkDeviceRepository, NetworkDeviceRepository>();
+            builder.Services.AddScoped<IGatewayRepository, GatewayRepository>();
+            builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 
             // Add CORS services
             builder.Services.AddCors(options =>

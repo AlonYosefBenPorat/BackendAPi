@@ -16,6 +16,8 @@ public class WebAppContext : IdentityDbContext<AppUsers>
     public DbSet<Server> Servers { get; set; }
     public DbSet<NetworkDevice> NetworkDevices { get; set; }
     public DbSet<Gateway> Gateways { get; set; }
+    public DbSet<Backup> Backups { get; set; }
+    public DbSet<Asset> Assets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,6 +32,13 @@ public class WebAppContext : IdentityDbContext<AppUsers>
 
         modelBuilder.Entity<Gateway>()
             .ToTable("Gateways");
+
+        modelBuilder.Entity<Backup>()
+            .ToTable("Backups");
+
+        modelBuilder.Entity<Asset>()
+            .ToTable("Assets");
+       
 
         // Configure foreign key relationships
         modelBuilder.Entity<Customer>()
@@ -49,6 +58,19 @@ public class WebAppContext : IdentityDbContext<AppUsers>
             .WithOne(g => g.Customer)
             .HasForeignKey(g => g.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Customer>()
+            .HasMany(c => c.Backups)
+            .WithOne(b => b.Customer)
+            .HasForeignKey(b => b.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Customer>()
+            .HasMany(c => c.Assets)
+            .WithOne(a => a.Customer)
+            .HasForeignKey(a => a.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
 
         // Configure the Logo property as an owned type
         modelBuilder.Entity<Customer>(entity =>

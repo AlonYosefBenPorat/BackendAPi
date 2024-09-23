@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using ApiWebApp.DTOs;
+
+using ApiWebApp.Repositry;
 
 namespace ApiWebApp.Controllers
 {
@@ -12,51 +10,18 @@ namespace ApiWebApp.Controllers
     [ApiController]
     public class ServerController : ControllerBase
     {
-        private readonly WebAppContext _context;
+        private readonly IServerRepository _serverRepository;
 
-        public ServerController(WebAppContext context)
+        public ServerController(IServerRepository serverRepository)
         {
-            _context = context;
+            _serverRepository = serverRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
+        public async Task<ActionResult<IEnumerable<AddServerDto>>> GetServers()
         {
-            return await _context.Servers
-                .Select(s => new ServerDto
-                {
-                    Id = s.Id,
-                    IpAddress = s.IpAddress,
-                    Hostname = s.Hostname,
-                    SerialNumber = s.SerialNumber,
-                    Model = s.Model,
-                    Brand = s.Brand,
-                    Type = s.Type,
-                    Vendor = s.Vendor,
-                    Description = s.Description,
-                    CreatedAt = s.CreatedAt,
-                    UpdatedAt = s.UpdatedAt,
-                    WarrantyExpiration = s.WarrantyExpiration,
-                    CustomerId = s.CustomerId,
-                    Ram = s.Ram,
-                    Storage = s.Storage,
-                    OperatingSystem = s.OperatingSystem,
-                    Roles = s.Roles
-                })
-                .ToListAsync();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ServerDto>> GetServer(Guid id)
-        {
-            var server = await _context.Servers.FindAsync(id);
-
-            if (server == null)
-            {
-                return NotFound();
-            }
-
-            return new ServerDto
+            var servers = await _serverRepository.GetAllServersAsync();
+            var serverDtos = servers.Select(server => new AddServerDto
             {
                 Id = server.Id,
                 IpAddress = server.IpAddress,
@@ -66,118 +31,131 @@ namespace ApiWebApp.Controllers
                 Brand = server.Brand,
                 Type = server.Type,
                 Vendor = server.Vendor,
+                Ram = server.Ram,
+                Storage = server.Storage,
+                OperatingSystem = server.OperatingSystem,
+                Roles = server.Roles,
                 Description = server.Description,
                 CreatedAt = server.CreatedAt,
                 UpdatedAt = server.UpdatedAt,
                 WarrantyExpiration = server.WarrantyExpiration,
                 CustomerId = server.CustomerId,
+                Customer = server.Customer
+            }).ToList();
+
+            return Ok(serverDtos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AddServerDto>> GetServer(Guid id)
+        {
+            var server = await _serverRepository.GetServerByIdAsync(id);
+            if (server == null)
+            {
+                return NotFound();
+            }
+
+            var serverDto = new AddServerDto
+            {
+                Id = server.Id,
+                IpAddress = server.IpAddress,
+                Hostname = server.Hostname,
+                SerialNumber = server.SerialNumber,
+                Model = server.Model,
+                Brand = server.Brand,
+                Type = server.Type,
+                Vendor = server.Vendor,
                 Ram = server.Ram,
                 Storage = server.Storage,
                 OperatingSystem = server.OperatingSystem,
-                Roles = server.Roles
+                Roles = server.Roles,
+                Description = server.Description,
+                CreatedAt = server.CreatedAt,
+                UpdatedAt = server.UpdatedAt,
+                WarrantyExpiration = server.WarrantyExpiration,
+                CustomerId = server.CustomerId,
+                Customer = server.Customer
             };
+
+            return Ok(serverDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Server>> PostServer(ServerDto serverDto)
+        public async Task<ActionResult> AddServer(AddServerDto serverDto)
         {
             var server = new Server
             {
                 Id = serverDto.Id,
-                IpAddress = serverDto.IpAddress ?? string.Empty,
-                Hostname = serverDto.Hostname ?? string.Empty,
-                SerialNumber = serverDto.SerialNumber ?? string.Empty,
-                Model = serverDto.Model ?? string.Empty,
-                Brand = serverDto.Brand ?? string.Empty,
-                Type = serverDto.Type ?? string.Empty,
-                Vendor = serverDto.Vendor ?? string.Empty,
-                Ram = serverDto.Ram ?? string.Empty,
-                Storage = serverDto.Storage ?? string.Empty,
-                OperatingSystem = serverDto.OperatingSystem ?? string.Empty,
-                Roles = serverDto.Roles ?? string.Empty,
-                Description = serverDto.Description ?? string.Empty,
+                IpAddress = serverDto.IpAddress,
+                Hostname = serverDto.Hostname,
+                SerialNumber = serverDto.SerialNumber,
+                Model = serverDto.Model,
+                Brand = serverDto.Brand,
+                Type = serverDto.Type,
+                Vendor = serverDto.Vendor,
+                Ram = serverDto.Ram,
+                Storage = serverDto.Storage,
+                OperatingSystem = serverDto.OperatingSystem,
+                Roles = serverDto.Roles,
+                Description = serverDto.Description,
                 CreatedAt = serverDto.CreatedAt,
                 UpdatedAt = serverDto.UpdatedAt,
                 WarrantyExpiration = serverDto.WarrantyExpiration,
-                CustomerId = serverDto.CustomerId
+                CustomerId = serverDto.CustomerId,
+                Customer = serverDto.Customer
             };
 
-            _context.Servers.Add(server);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetServer), new { id = server.Id }, server);
+            await _serverRepository.AddServerAsync(server);
+            return CreatedAtAction(nameof(GetServer), new { id = server.Id }, serverDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutServer(Guid id, ServerDto serverDto)
+        public async Task<IActionResult> UpdateServer(Guid id, AddServerDto serverDto)
         {
             if (id != serverDto.Id)
             {
                 return BadRequest();
             }
 
-            var server = await _context.Servers.FindAsync(id);
+            var server = await _serverRepository.GetServerByIdAsync(id);
             if (server == null)
             {
                 return NotFound();
             }
 
-            server.IpAddress = serverDto.IpAddress ?? string.Empty;
-            server.Hostname = serverDto.Hostname ?? string.Empty;
-            server.SerialNumber = serverDto.SerialNumber ?? string.Empty;
-            server.Model = serverDto.Model ?? string.Empty;
-            server.Brand = serverDto.Brand ?? string.Empty;
-            server.Type = serverDto.Type ?? string.Empty;
-            server.Vendor = serverDto.Vendor ?? string.Empty;
-            server.Ram = serverDto.Ram ?? string.Empty;
-            server.Storage = serverDto.Storage ?? string.Empty;
-            server.OperatingSystem = serverDto.OperatingSystem ?? string.Empty;
-            server.Roles = serverDto.Roles ?? string.Empty;
-            server.Description = serverDto.Description ?? string.Empty;
+            server.IpAddress = serverDto.IpAddress;
+            server.Hostname = serverDto.Hostname;
+            server.SerialNumber = serverDto.SerialNumber;
+            server.Model = serverDto.Model;
+            server.Brand = serverDto.Brand;
+            server.Type = serverDto.Type;
+            server.Vendor = serverDto.Vendor;
+            server.Ram = serverDto.Ram;
+            server.Storage = serverDto.Storage;
+            server.OperatingSystem = serverDto.OperatingSystem;
+            server.Roles = serverDto.Roles;
+            server.Description = serverDto.Description;
             server.CreatedAt = serverDto.CreatedAt;
             server.UpdatedAt = serverDto.UpdatedAt;
             server.WarrantyExpiration = serverDto.WarrantyExpiration;
             server.CustomerId = serverDto.CustomerId;
+            server.Customer = serverDto.Customer;
 
-            _context.Entry(server).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ServerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _serverRepository.UpdateServerAsync(server);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteServer(Guid id)
         {
-            var server = await _context.Servers.FindAsync(id);
+            var server = await _serverRepository.GetServerByIdAsync(id);
             if (server == null)
             {
                 return NotFound();
             }
 
-            _context.Servers.Remove(server);
-            await _context.SaveChangesAsync();
-
+            await _serverRepository.DeleteServerAsync(id);
             return NoContent();
-        }
-
-        private bool ServerExists(Guid id)
-        {
-            return _context.Servers.Any(e => e.Id == id);
         }
     }
 }

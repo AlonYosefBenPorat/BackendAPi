@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiWebApp.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository(WebAppContext context) : ICustomerRepository
     {
-        private readonly WebAppContext _context;
-
-        public CustomerRepository(WebAppContext context)
-        {
-            _context = context;
-        }
+        private readonly WebAppContext _context = context;
 
         public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
         {
@@ -19,8 +14,12 @@ namespace ApiWebApp.Repositories
         }
 
         public async Task<Customer> GetCustomerByIdAsync(Guid id)
+
         {
-            return await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+                throw new NotImplementedException($"{id} Of Customer Item not found.");
+            return customer;
         }
 
         public async Task AddCustomerAsync(Customer customer)

@@ -25,6 +25,9 @@ namespace ApiWebApp.Model
         public ICollection<Server> Servers { get; set; } = new List<Server>();
         public ICollection<NetworkDevice> NetworkDevices { get; set; } = new List<NetworkDevice>();
         public ICollection<Gateway> Gateways { get; set; } = new List<Gateway>();
+        public ICollection<Asset> Assets { get; set; } = new List<Asset>();
+        public ICollection<Backup> Backups { get; set; } = new List<Backup>();
+        
 
         public Customer()
         {

@@ -1,7 +1,10 @@
-﻿namespace ApiWebApp.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ApiWebApp.Model
 {
     public class Backup
     {
+        [Key]
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public string BackupProvider { get; set; }  

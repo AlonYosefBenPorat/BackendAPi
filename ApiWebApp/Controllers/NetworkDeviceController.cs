@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiWebApp.DTOs;
 using ApiWebApp.Model;
+using ApiWebApp.Repositry;
 
 namespace ApiWebApp.Controllers
 {
@@ -13,46 +13,47 @@ namespace ApiWebApp.Controllers
     [ApiController]
     public class NetworkDeviceController : ControllerBase
     {
-        private readonly WebAppContext _context;
+        private readonly INetworkDeviceRepository _networkDeviceRepository;
 
-        public NetworkDeviceController(WebAppContext context)
+        public NetworkDeviceController(INetworkDeviceRepository networkDeviceRepository)
         {
-            _context = context;
+            _networkDeviceRepository = networkDeviceRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NetworkDeviceDto>>> GetNetworkDevices()
+        public async Task<ActionResult<IEnumerable<AddNetworkDeviceDto>>> GetNetworkDevices()
         {
-            return await _context.NetworkDevices
-                .Select(nd => new NetworkDeviceDto
-                {
-                    Id = nd.Id,
-                    IpAddress = nd.IpAddress,
-                    SerialNumber = nd.SerialNumber,
-                    Model = nd.Model,
-                    Brand = nd.Brand,
-                    Type = nd.Type,
-                    Vendor = nd.Vendor,
-                    Description = nd.Description,
-                    CreatedAt = nd.CreatedAt,
-                    UpdatedAt = nd.UpdatedAt,
-                    WarrantyExpiration = nd.WarrantyExpiration,
-                    CustomerId = nd.CustomerId
-                })
-                .ToListAsync();
+            var networkDevices = await _networkDeviceRepository.GetAllNetworkDevicesAsync();
+            var networkDeviceDtos = networkDevices.Select(nd => new AddNetworkDeviceDto
+            {
+                Id = nd.Id,
+                IpAddress = nd.IpAddress,
+                SerialNumber = nd.SerialNumber,
+                Model = nd.Model,
+                Brand = nd.Brand,
+                Type = nd.Type,
+                Vendor = nd.Vendor,
+                Description = nd.Description,
+                CreatedAt = nd.CreatedAt,
+                UpdatedAt = nd.UpdatedAt,
+                WarrantyExpiration = nd.WarrantyExpiration,
+                CustomerId = nd.CustomerId,
+                Customer = nd.Customer
+            }).ToList();
+
+            return Ok(networkDeviceDtos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<NetworkDeviceDto>> GetNetworkDevice(Guid id)
+        public async Task<ActionResult<AddNetworkDeviceDto>> GetNetworkDevice(Guid id)
         {
-            var networkDevice = await _context.NetworkDevices.FindAsync(id);
-
+            var networkDevice = await _networkDeviceRepository.GetNetworkDeviceByIdAsync(id);
             if (networkDevice == null)
             {
                 return NotFound();
             }
 
-            return new NetworkDeviceDto
+            var networkDeviceDto = new AddNetworkDeviceDto
             {
                 Id = networkDevice.Id,
                 IpAddress = networkDevice.IpAddress,
@@ -65,12 +66,15 @@ namespace ApiWebApp.Controllers
                 CreatedAt = networkDevice.CreatedAt,
                 UpdatedAt = networkDevice.UpdatedAt,
                 WarrantyExpiration = networkDevice.WarrantyExpiration,
-                CustomerId = networkDevice.CustomerId
+                CustomerId = networkDevice.CustomerId,
+                Customer = networkDevice.Customer
             };
+
+            return Ok(networkDeviceDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<NetworkDevice>> PostNetworkDevice(NetworkDeviceDto networkDeviceDto)
+        public async Task<ActionResult> PostNetworkDevice(AddNetworkDeviceDto networkDeviceDto)
         {
             var networkDevice = new NetworkDevice
             {
@@ -85,24 +89,23 @@ namespace ApiWebApp.Controllers
                 CreatedAt = networkDeviceDto.CreatedAt,
                 UpdatedAt = networkDeviceDto.UpdatedAt,
                 WarrantyExpiration = networkDeviceDto.WarrantyExpiration,
-                CustomerId = networkDeviceDto.CustomerId
+                CustomerId = networkDeviceDto.CustomerId,
+                Customer = networkDeviceDto.Customer
             };
 
-            _context.NetworkDevices.Add(networkDevice);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetNetworkDevice), new { id = networkDevice.Id }, networkDevice);
+            await _networkDeviceRepository.AddNetworkDeviceAsync(networkDevice);
+            return CreatedAtAction(nameof(GetNetworkDevice), new { id = networkDevice.Id }, networkDeviceDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutNetworkDevice(Guid id, NetworkDeviceDto networkDeviceDto)
+        public async Task<IActionResult> PutNetworkDevice(Guid id, AddNetworkDeviceDto networkDeviceDto)
         {
             if (id != networkDeviceDto.Id)
             {
                 return BadRequest();
             }
 
-            var networkDevice = await _context.NetworkDevices.FindAsync(id);
+            var networkDevice = await _networkDeviceRepository.GetNetworkDeviceByIdAsync(id);
             if (networkDevice == null)
             {
                 return NotFound();
@@ -119,46 +122,23 @@ namespace ApiWebApp.Controllers
             networkDevice.UpdatedAt = networkDeviceDto.UpdatedAt;
             networkDevice.WarrantyExpiration = networkDeviceDto.WarrantyExpiration;
             networkDevice.CustomerId = networkDeviceDto.CustomerId;
+            networkDevice.Customer = networkDeviceDto.Customer;
 
-            _context.Entry(networkDevice).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NetworkDeviceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _networkDeviceRepository.UpdateNetworkDeviceAsync(networkDevice);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNetworkDevice(Guid id)
         {
-            var networkDevice = await _context.NetworkDevices.FindAsync(id);
+            var networkDevice = await _networkDeviceRepository.GetNetworkDeviceByIdAsync(id);
             if (networkDevice == null)
             {
                 return NotFound();
             }
 
-            _context.NetworkDevices.Remove(networkDevice);
-            await _context.SaveChangesAsync();
-
+            await _networkDeviceRepository.DeleteNetworkDeviceAsync(id);
             return NoContent();
-        }
-
-        private bool NetworkDeviceExists(Guid id)
-        {
-            return _context.NetworkDevices.Any(e => e.Id == id);
         }
     }
 }

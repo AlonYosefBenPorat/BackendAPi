@@ -1,6 +1,20 @@
-﻿namespace ApiWebApp.Dto
-{
-    public class UpdateNetworkDeviceDto
+﻿namespace ApiWebApp.Dto;
+
+public class UpdateNetworkDeviceDto
+
     {
+     
+        public string IpAddress { get; set; }
+        public string SerialNumber { get; set; }
+        public string Model { get; set; }
+        public string Brand { get; set; }
+        public string Type { get; set; }
+        public string Vendor { get; set; }
+        public DateTime WarrantyExpiration { get; set; }
+        public string Description { get; set; }
+            public DateTime UpdatedAt { get; set; }
     }
-}
+
+
+
+

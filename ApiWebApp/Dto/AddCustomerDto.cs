@@ -40,6 +40,8 @@ namespace ApiWebApp.Dto
         public string LogoAlt { get; set; }
         public string LogoSrc { get; set; }
 
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
 
         public AddCustomerDto()
         {

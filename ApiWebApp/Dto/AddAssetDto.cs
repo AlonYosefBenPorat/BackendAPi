@@ -1,4 +1,6 @@
-﻿namespace ApiWebApp.Dto
+﻿using ApiWebApp.Model;
+
+namespace ApiWebApp.Dto
 {
     public class AddAssetDto
     {
@@ -8,11 +10,14 @@
         public string Url { get; set; }
 
         public string License { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+       
 
 
         public string SupportExpiration { get; set; }
         public string Notes { get; set; }
+        public Guid CustomerId { get; set; }
+        public Customer Customer { get; set; }
+
     }
 }

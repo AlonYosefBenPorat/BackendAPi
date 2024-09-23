@@ -17,12 +17,16 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<AppUsers>> GetAllUsersAsync()
     {
-        return await Task.FromResult(_userManager.Users.ToList()); // Ensure this is awaited
+        return await Task.Run(() => _userManager.Users.ToList());
+
     }
 
     public async Task<AppUsers> GetUserByIdAsync(string id)
     {
-        return await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            throw new NotImplementedException($"{id} Of User Item not found.");
+        return user;
     }
 
     public async Task<IdentityResult> CreateUserAsync(AppUsers user, string password)

@@ -1,8 +1,10 @@
 ﻿using ApiWebApp.Model;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 public class Server
 {
+    [Key]
     public Guid Id { get; set; }
     public Guid CustomerId { get; set; }
     public string IpAddress { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiWebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    partial class WebAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240923141045_BuilAllModelsInDb")]
+    partial class BuilAllModelsInDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,7 +158,7 @@ namespace ApiWebApp.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Assets", (string)null);
+                    b.ToTable("Assets");
                 });
 
             modelBuilder.Entity("ApiWebApp.Model.Backup", b =>
@@ -210,7 +213,7 @@ namespace ApiWebApp.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Backups", (string)null);
+                    b.ToTable("Backups");
                 });
 
             modelBuilder.Entity("ApiWebApp.Model.Customer", b =>
@@ -605,7 +608,7 @@ namespace ApiWebApp.Migrations
             modelBuilder.Entity("ApiWebApp.Model.Asset", b =>
                 {
                     b.HasOne("ApiWebApp.Model.Customer", "Customer")
-                        .WithMany("Assets")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -616,7 +619,7 @@ namespace ApiWebApp.Migrations
             modelBuilder.Entity("ApiWebApp.Model.Backup", b =>
                 {
                     b.HasOne("ApiWebApp.Model.Customer", "Customer")
-                        .WithMany("Backups")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -737,10 +740,6 @@ namespace ApiWebApp.Migrations
 
             modelBuilder.Entity("ApiWebApp.Model.Customer", b =>
                 {
-                    b.Navigation("Assets");
-
-                    b.Navigation("Backups");
-
                     b.Navigation("Gateways");
 
                     b.Navigation("NetworkDevices");

@@ -1,9 +1,11 @@
 ﻿using ApiWebApp.Model;
 using System;
+using System.ComponentModel.DataAnnotations;
 namespace ApiWebApp.Model
 {
     public class NetworkDevice
     {
+        [Key]
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public string IpAddress { get; set; }

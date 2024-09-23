@@ -2,13 +2,12 @@
 
 namespace ApiWebApp.Model
 {
-    public class NetworkDeviceDto
+    public class AddNetworkDeviceDto
     {
-        [Key]
+        
         public Guid Id { get; set; }
         public string? IpAddress { get; set; }
-        public Guid CustomerId { get; set; }
-        public Customer Customer { get; set; } 
+       
         public string? SerialNumber { get; set; }
         public string? Model { get; set; }
 
@@ -19,6 +18,8 @@ namespace ApiWebApp.Model
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; }
         public DateTime WarrantyExpiration { get; set; }
-        
+        public Guid CustomerId { get; set; }
+        public Customer Customer { get; set; }
+
     }
 }

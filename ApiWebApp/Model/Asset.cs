@@ -1,7 +1,10 @@
-﻿namespace ApiWebApp.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ApiWebApp.Model
 {
     public class Asset
     {
+        [Key]
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public string Type { get; set; }
