@@ -127,6 +127,111 @@ namespace ApiWebApp.Model
             {
                 logger.LogInformation("Servers already exist.");
             }
+
+            // Seed Asset
+            if (customer != null && !context.Assets.Any())
+            {
+                var asset = new Asset
+                {
+                    CustomerId = customer.Id,
+                    Type = "Laptop",
+                    IpAddress = "192.168.1.10",
+                    Url = "http://asset.acme.com",
+                    License = "XYZ-123-ABC",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    SupportExpiration = DateTime.UtcNow.AddYears(1).ToString("yyyy-MM-dd"),
+                    Notes = "Primary laptop for Acme Corporation"
+                };
+
+                context.Assets.Add(asset);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Asset for Acme Corporation created successfully.");
+            }
+            else
+            {
+                logger.LogInformation("Assets already exist.");
+            }
+
+            // Seed NetworkDevice
+            if (customer != null && !context.NetworkDevices.Any(nd => nd.CustomerId == customer.Id))
+            {
+                var networkDevice = new NetworkDevice
+                {
+                    CustomerId = customer.Id,
+                    IpAddress = "192.168.1.2",
+                    SerialNumber = "ND123456789",
+                    Model = "Cisco ISR 4451",
+                    Brand = "Cisco",
+                    Type = "Router",
+                    Vendor = "Cisco",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    WarrantyExpiration = DateTime.UtcNow.AddYears(3),
+                    Description = "Primary router for Acme Corporation"
+                };
+
+                context.NetworkDevices.Add(networkDevice);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Network device for Acme Corporation created successfully.");
+            }
+            else
+            {
+                logger.LogInformation("Network devices already exist.");
+            }
+
+            // Seed Gateway
+            if (customer != null && !context.Gateways.Any(g => g.CustomerId == customer.Id))
+            {
+                var gateway = new Gateway
+                {
+                    CustomerId = customer.Id,
+                    IpAddress = "10.0.0.138",
+                    SerialNumber = "GW123456789",
+                    Model = "ChekPoint 15600",
+                    Brand = "1530",
+                    Type = "Firewall",
+                    Vendor = "CheckPoint",
+                    Description = "Primary gateway for Acme Corporation", // Provide a non-null value for Description
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    WarrantyExpiration = DateTime.UtcNow.AddYears(3)
+                };
+
+                context.Gateways.Add(gateway);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Gateway for Acme Corporation created successfully.");
+            }
+            else
+            {
+                logger.LogInformation("Gateways already exist.");
+            }
+
+            // Seed Backup
+            if (customer != null && !context.Backups.Any(b => b.CustomerId == customer.Id))
+            {
+                var backup = new Backup
+                {
+                    CustomerId = customer.Id,
+                    BackupProvider = "Veeam",
+                    BackupData = "Acme Corporation Backup",
+                    Rpo = "24 hours",
+                    Rto = "4 hours",
+                    BackupStorge = "NAS",
+                    BackupEncrypted = true,
+                    BackupRetntion = "30 days",
+                    Capacity = 2,
+                    LastRestore = DateTime.UtcNow.AddDays(-7),
+                };
+
+                context.Backups.Add(backup);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Backup for Acme Corporation created successfully.");
+            }
+            else
+            {
+                logger.LogInformation("Backups already exist.");
+            }
         }
     }
 }
