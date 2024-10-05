@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using ApiWebApp.Model;
-using ApiWebApp.Dto;
-
+using ApiWebApp.Repositories;
 
 namespace ApiWebApp.Controllers
 {
@@ -31,69 +33,72 @@ namespace ApiWebApp.Controllers
             var customer = await _customerRepository.GetCustomerByIdAsync(id);
             if (customer == null)
             {
-                return NotFound(new {Message=$"Customer With ID:{id} Not Found"});
+                return NotFound(new { Message = $"Customer with ID:{id} not found." });
             }
             return Ok(customer);
         }
 
-        // Add a new customer
-        [HttpPost]
-        public async Task<IActionResult> AddCustomer(AddCustomerDto addCustomerDto)
+        // Get customer with assets by CustomerID
+        [HttpGet("{id}/assets")]
+        public async Task<IActionResult> GetCustomerWithAssets(Guid id)
         {
-            var customer = new Customer
+            var customers = await _customerRepository.GetCustomerWithAssetsAsync(id);
+            if (customers == null || !customers.Any())
             {
-                Id = Guid.NewGuid(), // Generate new ID
-                Name = addCustomerDto.Name,
-                Country = addCustomerDto.Country,
-                City = addCustomerDto.City,
-                Address = addCustomerDto.Address,
-                Phone = addCustomerDto.Phone,
-                ContactPerson = addCustomerDto.ContactPerson,
-                Domain = addCustomerDto.Domain,
-                BnNumber = addCustomerDto.BnNumber,
-                IsActive = addCustomerDto.IsActive,
-                CreatedAt = DateTime.UtcNow,
-                Logo = new Logo
+                return NotFound(new { Message = $"Customer with ID:{id} not found." });
+            }
+
+            var customer = customers.First();
+            var result = new
+            {
+                customer.Id,
+                customer.Name,
+                customer.Country,
+                customer.City,
+                customer.Address,
+                customer.Phone,
+                customer.ContactPerson,
+                customer.Domain,
+                customer.BnNumber,
+                customer.CreatedAt,
+                customer.UpdatedAt,
+                customer.IsActive,
+                customer.Logo,
+                Assets = customer.Assets.Select(a => new
                 {
-                    Alt = addCustomerDto.LogoAlt,
-                    Src = addCustomerDto.LogoSrc
-                }
-                
+                    a.Id,
+                    a.Type,
+                    a.IpAddress,
+                    a.Url,
+                    a.License,
+                    a.SupportExpiration,
+                    a.Notes,
+                    a.UpdatedAt
+                })
             };
 
+            return Ok(result);
+        }
+
+        // Add a new customer
+        [HttpPost]
+        public async Task<IActionResult> AddCustomer(Customer customer)
+        {
             await _customerRepository.AddCustomerAsync(customer);
             return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
         }
 
         // Update an existing customer
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCustomer(Guid id, UpdateCustomerDto updateCustomerDto)
+        public async Task<IActionResult> UpdateCustomer(Guid id, Customer customer)
         {
-            var customer = await _customerRepository.GetCustomerByIdAsync(id);
-            if (customer == null)
+            if (id != customer.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            customer.Name = updateCustomerDto.Name ?? customer.Name;
-            customer.Country = updateCustomerDto.Country ?? customer.Country;
-            customer.City = updateCustomerDto.City ?? customer.City;
-            customer.Address = updateCustomerDto.Address ?? customer.Address;
-            customer.Phone = updateCustomerDto.Phone ?? customer.Phone;
-            customer.ContactPerson = updateCustomerDto.ContactPerson ?? customer.ContactPerson;
-            customer.Domain = updateCustomerDto.Domain ?? customer.Domain;
-            customer.BnNumber = updateCustomerDto.BnNumber != 0 ? updateCustomerDto.BnNumber : customer.BnNumber;
-            customer.IsActive = updateCustomerDto.IsActive;
-           
-            customer.UpdatedAt = updateCustomerDto.UpdatedAt;
-            customer.Logo = new Logo
-            {
-                Alt = updateCustomerDto.LogoAlt ?? customer.Logo.Alt,
-                Src = updateCustomerDto.LogoSrc ?? customer.Logo.Src
-            };
-
             await _customerRepository.UpdateCustomerAsync(customer);
-            return Ok(new {Message=$"{customer.Name} Updated!"});
+            return NoContent();
         }
 
         // Delete a customer
@@ -107,7 +112,7 @@ namespace ApiWebApp.Controllers
             }
 
             await _customerRepository.DeleteCustomerAsync(id);
-            return Ok(new {Message=$" {customer.Name} Customer Deleted Sucsseful"});
+            return NoContent();
         }
     }
 }

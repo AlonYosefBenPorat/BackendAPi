@@ -2,6 +2,7 @@
 using ApiWebApp.Dto;
 using ApiWebApp.Model;
 using ApiWebApp.Repositry;
+using ApiWebApp.Repositories;
 
 namespace ApiWebApp.Controllers
 {

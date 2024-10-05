@@ -2,6 +2,10 @@
 using ApiWebApp.Model;
 using Microsoft.EntityFrameworkCore;
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace ApiWebApp.Repositories
 {
     public class CustomerRepository(WebAppContext context) : ICustomerRepository
@@ -43,5 +47,18 @@ namespace ApiWebApp.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+
+
+
+        public async Task<IEnumerable<Customer>> GetCustomerWithAssetsAsync(Guid id)
+        {
+            return await _context.Customers
+                .Include(c => c.Assets)
+                .Where(c => c.Id == id)
+                .ToListAsync();
+        }
+
+       
     }
 }

@@ -19,6 +19,7 @@ namespace ApiWebApp.Model
        
         public string SupportExpiration { get; set; }
         public string Notes { get; set; }
+      
         // Navigation property
         public Customer Customer { get; set; }
 
