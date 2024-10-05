@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiWebApp.Model;
 using ApiWebApp.Repositories;
+using ApiWebApp.DAL.Model;
+using ApiWebApp.Dto;
+using ApiWebApp.Mapping; // Add this line
 
 namespace ApiWebApp.Controllers
 {
@@ -82,24 +85,41 @@ namespace ApiWebApp.Controllers
 
         // Add a new customer
         [HttpPost]
-        public async Task<IActionResult> AddCustomer(Customer customer)
+        public async Task<IActionResult> AddCustomer([FromBody] AddCustomerDto addCustomerDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var customer = addCustomerDto.ToEntity();
+
             await _customerRepository.AddCustomerAsync(customer);
             return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
         }
 
         // Update an existing customer
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCustomer(Guid id, Customer customer)
+        public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] UpdateCustomerDto updateCustomerDto)
         {
-            if (id != customer.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
+            var customer = await _customerRepository.GetCustomerByIdAsync(id);
+            if (customer == null)
+            {
+                return Ok(ModelState);
+            }
+
+            updateCustomerDto.UpdateEntity(customer);
+
             await _customerRepository.UpdateCustomerAsync(customer);
-            return NoContent();
+            return Ok(ModelState);
         }
+
+
 
         // Delete a customer
         [HttpDelete("{id}")]
@@ -108,11 +128,11 @@ namespace ApiWebApp.Controllers
             var customer = await _customerRepository.GetCustomerByIdAsync(id);
             if (customer == null)
             {
-                return NotFound();
+                return NotFound(id);
             }
 
             await _customerRepository.DeleteCustomerAsync(id);
-            return NoContent();
+            return Ok();
         }
     }
 }

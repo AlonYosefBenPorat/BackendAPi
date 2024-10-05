@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Cors;
 using ApiWebApp.Auth;
-using ApiWebApp.Model;
+using ApiWebApp.DAL.Model;
 
-namespace ApiWebApp.Controllers
+namespace ApiWebApp.DAL.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

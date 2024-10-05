@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ApiWebApp.DAL.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto
 {
@@ -36,11 +37,12 @@ namespace ApiWebApp.Dto
         public int BnNumber { get; set; }
 
         public bool IsActive { get; set; }
+        public Logo Logo { get; set; }
+    
 
-        public string LogoAlt { get; set; }
-        public string LogoSrc { get; set; }
+   
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 
         public AddCustomerDto()

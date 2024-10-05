@@ -6,9 +6,12 @@ using System.Text;
 using ApiWebApp.Auth;
 using ApiWebApp.Model;
 using ApiWebApp.Repositry;
-using WebApp.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ApiWebApp.Repositories;
+using WebApp.DAL.Model;
+using DAL.Repositories;
+using ApiWebApp.DAL.Repositry;
+using ApiWebApp.DAL.Model;
 
 namespace ApiWebApp
 {
@@ -18,7 +21,8 @@ namespace ApiWebApp
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<WebAppContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("WebAppContext") ?? throw new InvalidOperationException("Connection string 'WebAppContext' not found.")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("WebAppContext") ?? throw new InvalidOperationException("Connection string 'WebAppContext' not found."),
+                b => b.MigrationsAssembly("ApiWebApp"))); // Specify the migrations assembly
 
             // Add services to the container.
             builder.Services.AddControllers();
@@ -72,7 +76,7 @@ namespace ApiWebApp
 
             // Register RoleManager<AppRole> and IRoleStore<AppRole>
             builder.Services.AddScoped<RoleManager<AppRole>>();
-            builder.Services.AddScoped<IRoleStore<AppRole>, RoleStore<AppRole, WebAppContext>>(); // <-- Added this line
+            builder.Services.AddScoped<IRoleStore<AppRole>, RoleStore<AppRole, WebAppContext>>();
 
             // Register the repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -115,7 +119,7 @@ namespace ApiWebApp
             app.Use(async (context, next) =>
             {
                 var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-                if (!context.User.Identity.IsAuthenticated)
+                if (context.User?.Identity?.IsAuthenticated != true)
                 {
                     logger.LogWarning("User is not authenticated.");
                 }

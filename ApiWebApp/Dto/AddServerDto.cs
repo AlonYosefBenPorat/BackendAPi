@@ -1,4 +1,5 @@
-﻿using ApiWebApp.Model;
+﻿using ApiWebApp.DAL.Model;
+using ApiWebApp.Model;
 using System;
 
 namespace ApiWebApp.DTOs

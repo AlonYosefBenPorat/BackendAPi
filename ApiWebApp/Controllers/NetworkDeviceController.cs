@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ApiWebApp.DTOs;
 using ApiWebApp.Model;
 using ApiWebApp.Repositry;
+using ApiWebApp.DAL.Model;
 
 namespace ApiWebApp.Controllers
 {

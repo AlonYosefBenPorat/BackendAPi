@@ -1,4 +1,6 @@
-﻿namespace ApiWebApp.Dto
+﻿using ApiWebApp.DAL.Model;
+
+namespace ApiWebApp.Dto
 {
     public class UpdateCustomerDto
     {
@@ -11,8 +13,7 @@
         public string Domain { get; set; }
         public int BnNumber { get; set; }
         public bool IsActive { get; set; }
-        public string LogoAlt { get; set; }
-        public string LogoSrc { get; set; }
+       public Logo Logo { get; set; }
 
         public DateTime UpdatedAt { get; set;} = DateTime.UtcNow;
 

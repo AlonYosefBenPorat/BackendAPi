@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ApiWebApp.Model;
 using ApiWebApp.Auth;
+using ApiWebApp.DAL.Model;
 
 public class TokenService
 {

@@ -1,8 +1,9 @@
 ﻿using ApiWebApp.Dto;
-using ApiWebApp.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using DAL.Repositories;
+using ApiWebApp.DAL.Model;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -41,10 +42,9 @@ public class UsersController : ControllerBase
                 user.UpdatedAt,
                 ProfileImage = new ProfileImage
                 {
-                 Alt = user.ProfileImage?.Alt,
-                 Src = user.ProfileImage?.Src
+                    Alt = user.ProfileImage?.Alt ?? string.Empty,
+                    Src = user.ProfileImage?.Src ?? string.Empty
                 }
-                
             });
         }
 
@@ -73,8 +73,8 @@ public class UsersController : ControllerBase
                 Roles = roles,
                 ProfileImage = new ProfileImage
                 {
-                Alt = user.ProfileImage?.Alt,
-                Src = user.ProfileImage?.Src
+                    Alt = user.ProfileImage?.Alt ?? string.Empty,
+                    Src = user.ProfileImage?.Src ?? string.Empty
                 }
             });
         }
@@ -92,7 +92,6 @@ public class UsersController : ControllerBase
                 return BadRequest(ModelState);
             }
 
-
             var user = new AppUsers
             {
                 FirstName = registerUserDto.FirstName,
@@ -101,13 +100,13 @@ public class UsersController : ControllerBase
                 Email = registerUserDto.Email,
                 PhoneNumber = registerUserDto.PhoneNumber,
                 DateOfBirth = registerUserDto.DateOfBirth,
-                JobTitle = registerUserDto.JobTitle,
+                JobTitle = registerUserDto.JobTitle ?? string.Empty,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = null,
                 ProfileImage = new ProfileImage
                 {
-                    Alt = registerUserDto.ProfileAlt,
-                    Src = registerUserDto.ProfileSrc
+                    Alt = registerUserDto.ProfileAlt ?? string.Empty,
+                    Src = registerUserDto.ProfileSrc ?? string.Empty
                 }
             };
 
@@ -182,7 +181,7 @@ public class UsersController : ControllerBase
         }
 
         user.PhoneNumber = updateUserDto.PhoneNumber;
-        user.JobTitle = updateUserDto.JobTitle;
+        user.JobTitle = updateUserDto.JobTitle ?? string.Empty;
         user.IsEnabled = updateUserDto.IsEnabled;
         user.UpdatedAt = DateTime.UtcNow;
 
@@ -254,5 +253,3 @@ public class UsersController : ControllerBase
         return BadRequest(ModelState);
     }
 }
-
-

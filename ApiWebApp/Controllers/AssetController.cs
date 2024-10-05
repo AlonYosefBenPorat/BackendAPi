@@ -3,6 +3,7 @@ using ApiWebApp.Dto;
 using ApiWebApp.Model;
 using ApiWebApp.Repositry;
 using ApiWebApp.Repositories;
+using ApiWebApp.DAL.Model;
 
 namespace ApiWebApp.Controllers
 {
@@ -44,7 +45,7 @@ namespace ApiWebApp.Controllers
 
             var assetDto = new AddAssetDto
             {
-            
+             Id = asset.Id,
                 Type = asset.Type,
                 IpAddress = asset.IpAddress,
                 Url = asset.Url,
