@@ -222,6 +222,7 @@ namespace ApiWebApp.Model
                     BackupRetntion = "30 days",
                     Capacity = 2,
                     LastRestore = DateTime.UtcNow.AddDays(-7),
+                    Customer = customer,
                 };
 
                 context.Backups.Add(backup);

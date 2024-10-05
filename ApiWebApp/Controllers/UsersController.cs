@@ -92,11 +92,6 @@ public class UsersController : ControllerBase
                 return BadRequest(ModelState);
             }
 
-            if (registerUserDto.Password != registerUserDto.ConfirmPassword)
-            {
-                ModelState.AddModelError("Password", "The password and confirmation password do not match.");
-                return BadRequest(ModelState);
-            }
 
             var user = new AppUsers
             {

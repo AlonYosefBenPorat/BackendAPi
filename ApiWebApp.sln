@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiWebApp", "ApiWebApp\ApiWebApp.csproj", "{FBFE2266-BBD6-4216-8285-4B7899D25052}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiWebApp", "ApiWebApp\ApiWebApp.csproj", "{FBFE2266-BBD6-4216-8285-4B7899D25052}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{BB51B7F1-3490-4924-9CFA-37929FD6ECE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{FBFE2266-BBD6-4216-8285-4B7899D25052}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBFE2266-BBD6-4216-8285-4B7899D25052}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBFE2266-BBD6-4216-8285-4B7899D25052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB51B7F1-3490-4924-9CFA-37929FD6ECE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB51B7F1-3490-4924-9CFA-37929FD6ECE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB51B7F1-3490-4924-9CFA-37929FD6ECE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB51B7F1-3490-4924-9CFA-37929FD6ECE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

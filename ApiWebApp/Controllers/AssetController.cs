@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ApiWebApp.Dto;
 using ApiWebApp.Model;
 using ApiWebApp.Repositry;
@@ -11,9 +7,10 @@ namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetController(IAssetRepository assetRepository) : ControllerBase
+    public class AssetController(IAssetRepository assetRepository, ICustomerRepository customerRepository) : ControllerBase
     {
         private readonly IAssetRepository _assetRepository = assetRepository;
+        private readonly ICustomerRepository _customerRepository = customerRepository;
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AddAssetDto>>> GetAssets()
@@ -21,6 +18,7 @@ namespace ApiWebApp.Controllers
             var assets = await _assetRepository.GetAllAssetsAsync();
             var assetDtos = assets.Select(asset => new AddAssetDto
             {
+                Id = asset.Id,
                 Type = asset.Type,
                 IpAddress = asset.IpAddress,
                 Url = asset.Url,
@@ -29,8 +27,7 @@ namespace ApiWebApp.Controllers
                 SupportExpiration = asset.SupportExpiration,
                 Notes = asset.Notes,
                 CustomerId = asset.CustomerId,
-                Customer = asset.Customer
-            }).ToList();
+            });
 
             return Ok(assetDtos);
         }
@@ -46,6 +43,7 @@ namespace ApiWebApp.Controllers
 
             var assetDto = new AddAssetDto
             {
+            
                 Type = asset.Type,
                 IpAddress = asset.IpAddress,
                 Url = asset.Url,
@@ -54,7 +52,6 @@ namespace ApiWebApp.Controllers
                 SupportExpiration = asset.SupportExpiration,
                 Notes = asset.Notes,
                 CustomerId = asset.CustomerId,
-                Customer = asset.Customer
             };
 
             return Ok(assetDto);
@@ -63,6 +60,17 @@ namespace ApiWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAsset(AddAssetDto assetDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var customer = await _customerRepository.GetCustomerByIdAsync(assetDto.CustomerId);
+            if (customer == null)
+            {
+                return BadRequest("Invalid customer ID");
+            }
+
             var asset = new Asset
             {
                 Type = assetDto.Type,
@@ -70,18 +78,35 @@ namespace ApiWebApp.Controllers
                 Url = assetDto.Url,
                 License = assetDto.License,
                 CreatedAt = assetDto.CreatedAt,
+                UpdatedAt = assetDto.UpdatedAt = DateTime.UtcNow,
                 SupportExpiration = assetDto.SupportExpiration,
                 Notes = assetDto.Notes,
                 CustomerId = assetDto.CustomerId,
-                Customer = assetDto.Customer
             };
 
             await _assetRepository.AddAssetAsync(asset);
-            return CreatedAtAction(nameof(GetAsset), new { id = asset.Id }, assetDto);
+
+            var createdAsset = await _assetRepository.GetAssetByIdAsync(asset.Id);
+
+            var assetResponseDto = new AddAssetDto
+            {
+                Id = createdAsset.Id,
+                Type = createdAsset.Type,
+                IpAddress = createdAsset.IpAddress,
+                Url = createdAsset.Url,
+                License = createdAsset.License,
+                CreatedAt = createdAsset.CreatedAt,
+                SupportExpiration = createdAsset.SupportExpiration,
+                Notes = createdAsset.Notes,
+                CustomerId = createdAsset.CustomerId,
+            };
+
+            return CreatedAtAction(nameof(GetAsset), new { id = createdAsset.Id }, assetResponseDto);
         }
 
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsset(Guid id, AddAssetDto assetDto)
+        public async Task<IActionResult> UpdateAsset(Guid id, UpdateAssetDTO assetDto)
         {
             var asset = await _assetRepository.GetAssetByIdAsync(id);
             if (asset == null)
@@ -93,14 +118,15 @@ namespace ApiWebApp.Controllers
             asset.IpAddress = assetDto.IpAddress;
             asset.Url = assetDto.Url;
             asset.License = assetDto.License;
-            asset.CreatedAt = assetDto.CreatedAt;
             asset.SupportExpiration = assetDto.SupportExpiration;
             asset.Notes = assetDto.Notes;
-            asset.CustomerId = assetDto.CustomerId;
-            asset.Customer = assetDto.Customer;
-
+            asset.UpdatedAt = DateTime.UtcNow;
             await _assetRepository.UpdateAssetAsync(asset);
-            return NoContent();
+            assetDto.Id = asset.Id;
+            assetDto.CustomerId = asset.CustomerId;
+            
+            
+            return Ok(assetDto);
         }
 
         [HttpDelete("{id}")]
@@ -113,7 +139,7 @@ namespace ApiWebApp.Controllers
             }
 
             await _assetRepository.DeleteAssetAsync(id);
-            return NoContent();
+            return Ok($"{id} deleted sucssesful");
         }
     }
 }

@@ -14,13 +14,18 @@ namespace ApiWebApp.Model
       
        public string License { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         
        
         public string SupportExpiration { get; set; }
         public string Notes { get; set; }
         // Navigation property
         public Customer Customer { get; set; }
+
+            public Asset()
+        {
+            Id = Guid.NewGuid();
+        }
 
     }
 }

@@ -10,6 +10,6 @@ namespace ApiWebApp.Repositry
         Task AddBackupAsync(Backup backup);
         Task UpdateBackupAsync(Backup backup);
         Task DeleteBackupAsync(Guid id);
-
+        Task<Customer> GetCustomerByIdAsync(object customerId);
     }
 }

@@ -93,3 +93,24 @@ Accept: application/json
 # Delete customer by ID
 DELETE {{ApiWebApp_HostAddress}}/api/customer/9f936217-46d9-4476-84de-4a67953e69fa
 Accept: application/json
+
+###
+# Add a new asset
+POST {{ApiWebApp_HostAddress}}/api/asset
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "Server",
+  "ipAddress": "192.168.1.1",
+  "url": "http://example.com",
+  "license": "GPL",
+  "createdAt": "2023-10-01T00:00:00Z",
+  "supportExpiration": "2024-10-01T00:00:00Z",
+  "notes": "This is a test asset",
+  "customerId": "2837b9d5-d02f-40b3-ab76-b6195a2ba850",
+  "customer": {
+    "id": "2837b9d5-d02f-40b3-ab76-b6195a2ba850",
+    "name": "Test Customer"
+  }
+}

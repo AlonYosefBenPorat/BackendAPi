@@ -25,4 +25,8 @@ public class Server
 
     // Navigation property
     public Customer Customer { get; set; }
+    public Server()
+    {
+        Id = Guid.NewGuid();
+    }   
 }

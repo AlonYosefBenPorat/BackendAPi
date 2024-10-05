@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ApiWebApp.Dto;
 using ApiWebApp.Model;
 using ApiWebApp.Repositry;
@@ -70,8 +66,10 @@ namespace ApiWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddBackup(AddBackupDto backupDto)
         {
+           
             var backup = new Backup
             {
+                
                 BackupProvider = backupDto.BackupProvider,
                 BackupData = backupDto.BackupData,
                 Rpo = backupDto.Rpo,
@@ -81,48 +79,51 @@ namespace ApiWebApp.Controllers
                 BackupRetntion = backupDto.BackupRetntion,
                 Capacity = backupDto.Capacity,
                 LastRestore = backupDto.LastRestore,
-                CreatedAt = backupDto.CreatedAt
+                CreatedAt = backupDto.CreatedAt,
+                
+
             };
 
             await _backupRepository.AddBackupAsync(backup);
-            return CreatedAtAction(nameof(GetBackup), new { id = backup.Id }, backupDto);
+            return CreatedAtAction(nameof(GetBackup), new { id = backup.Id
+    }, backupDto);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBackup(Guid id, AddBackupDto backupDto)
-        {
-            var backup = await _backupRepository.GetBackupByIdAsync(id);
-            if (backup == null)
-            {
-                return NotFound();
-            }
+[HttpPut("{id}")]
+public async Task<IActionResult> UpdateBackup(Guid id, AddBackupDto backupDto)
+{
+    var backup = await _backupRepository.GetBackupByIdAsync(id);
+    if (backup == null)
+    {
+        return NotFound();
+    }
 
-            backup.BackupProvider = backupDto.BackupProvider;
-            backup.BackupData = backupDto.BackupData;
-            backup.Rpo = backupDto.Rpo;
-            backup.Rto = backupDto.Rto;
-            backup.BackupStorge = backupDto.BackupStorge;
-            backup.BackupEncrypted = backupDto.BackupEncrypted;
-            backup.BackupRetntion = backupDto.BackupRetntion;
-            backup.Capacity = backupDto.Capacity;
-            backup.LastRestore = backupDto.LastRestore;
-            backup.CreatedAt = backupDto.CreatedAt;
+    backup.BackupProvider = backupDto.BackupProvider;
+    backup.BackupData = backupDto.BackupData;
+    backup.Rpo = backupDto.Rpo;
+    backup.Rto = backupDto.Rto;
+    backup.BackupStorge = backupDto.BackupStorge;
+    backup.BackupEncrypted = backupDto.BackupEncrypted;
+    backup.BackupRetntion = backupDto.BackupRetntion;
+    backup.Capacity = backupDto.Capacity;
+    backup.LastRestore = backupDto.LastRestore;
+    backup.CreatedAt = backupDto.CreatedAt;
 
-            await _backupRepository.UpdateBackupAsync(backup);
-            return NoContent();
-        }
+    await _backupRepository.UpdateBackupAsync(backup);
+    return NoContent();
+}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBackup(Guid id)
-        {
-            var backup = await _backupRepository.GetBackupByIdAsync(id);
-            if (backup == null)
-            {
-                return NotFound();
-            }
+[HttpDelete("{id}")]
+public async Task<IActionResult> DeleteBackup(Guid id)
+{
+    var backup = await _backupRepository.GetBackupByIdAsync(id);
+    if (backup == null)
+    {
+        return NotFound();
+    }
 
-            await _backupRepository.DeleteBackupAsync(id);
-            return NoContent();
-        }
+    await _backupRepository.DeleteBackupAsync(id);
+    return NoContent();
+}
     }
 }

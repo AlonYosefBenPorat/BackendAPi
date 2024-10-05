@@ -11,6 +11,7 @@ namespace ApiWebApp.Model
         public required string LastName { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
+
         [Required]
         public required string JobTitle { get; set; }
         

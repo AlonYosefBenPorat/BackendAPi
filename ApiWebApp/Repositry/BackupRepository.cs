@@ -42,6 +42,11 @@ namespace ApiWebApp.Repositry
             return backup;
         }
 
+        public Task<Customer> GetCustomerByIdAsync(object customerId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async  Task UpdateBackupAsync(Backup backup)
         {
             if (backup == null)

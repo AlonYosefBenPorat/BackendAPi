@@ -21,5 +21,9 @@ namespace ApiWebApp.Model
     
         // Navigation property
         public Customer Customer { get; set; }
+        public NetworkDevice()
+        {
+            Id = Guid.NewGuid();
+        }
     }
 }

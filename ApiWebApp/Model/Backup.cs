@@ -27,7 +27,13 @@ namespace ApiWebApp.Model
 
         // Navigation property
         [Required]
-        public required Customer Customer { get; set; }
+        public  Customer Customer { get; set; }
+
+        public Backup()
+        {
+            Id = Guid.NewGuid();
+            CreatedAt = DateTime.UtcNow;
+        }
 
 
     }
