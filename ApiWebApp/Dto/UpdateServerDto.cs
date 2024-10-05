@@ -1,6 +1,6 @@
 ﻿namespace ApiWebApp.Dto;
 
-public class UpdateSeverDto
+public class UpdateServerDto
 {
   
 public string IpAddress { get; set; }

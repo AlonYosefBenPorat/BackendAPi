@@ -2,6 +2,7 @@
 {
     public class AddGatwayDto
     {
+        public Guid Id { get; set; }
         public string IpAddress { get; set; }
         public string SerialNumber { get; set; }
         public string Model { get; set; }
@@ -16,5 +17,6 @@
         public string SupportExpiration { get; set; }
         public string Notes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public Guid CustomerId { get; set; }
     }
 }

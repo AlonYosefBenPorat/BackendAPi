@@ -1,30 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ApiWebApp.DTOs;
 using ApiWebApp.Model;
-using ApiWebApp.Repositry;
 using ApiWebApp.DAL.Model;
+using ApiWebApp.Repositories;
+using DAL.Data;
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NetworkDeviceController : ControllerBase
+    public class NetworkDeviceController(IRepository<NetworkDevice> networkDeviceRepository, ICustomerRepository customerRepository) : ControllerBase
     {
-        private readonly INetworkDeviceRepository _networkDeviceRepository;
-
-        public NetworkDeviceController(INetworkDeviceRepository networkDeviceRepository)
-        {
-            _networkDeviceRepository = networkDeviceRepository;
-        }
+        private readonly IRepository<NetworkDevice> _networkDeviceRepository = networkDeviceRepository ?? throw new ArgumentNullException(nameof(networkDeviceRepository));
+        private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AddNetworkDeviceDto>>> GetNetworkDevices()
         {
-            var networkDevices = await _networkDeviceRepository.GetAllNetworkDevicesAsync();
+            var networkDevices = await _networkDeviceRepository.GetAllAsync();
             var networkDeviceDtos = networkDevices.Select(nd => new AddNetworkDeviceDto
             {
                 Id = nd.Id,
@@ -48,7 +40,7 @@ namespace ApiWebApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AddNetworkDeviceDto>> GetNetworkDevice(Guid id)
         {
-            var networkDevice = await _networkDeviceRepository.GetNetworkDeviceByIdAsync(id);
+            var networkDevice = await _networkDeviceRepository.GetByIdAsync(id);
             if (networkDevice == null)
             {
                 return NotFound();
@@ -94,7 +86,7 @@ namespace ApiWebApp.Controllers
                 Customer = networkDeviceDto.Customer
             };
 
-            await _networkDeviceRepository.AddNetworkDeviceAsync(networkDevice);
+            await _networkDeviceRepository.AddAsync(networkDevice);
             return CreatedAtAction(nameof(GetNetworkDevice), new { id = networkDevice.Id }, networkDeviceDto);
         }
 
@@ -106,7 +98,7 @@ namespace ApiWebApp.Controllers
                 return BadRequest();
             }
 
-            var networkDevice = await _networkDeviceRepository.GetNetworkDeviceByIdAsync(id);
+            var networkDevice = await _networkDeviceRepository.GetByIdAsync(id);
             if (networkDevice == null)
             {
                 return NotFound();
@@ -125,20 +117,20 @@ namespace ApiWebApp.Controllers
             networkDevice.CustomerId = networkDeviceDto.CustomerId;
             networkDevice.Customer = networkDeviceDto.Customer;
 
-            await _networkDeviceRepository.UpdateNetworkDeviceAsync(networkDevice);
+            await _networkDeviceRepository.UpdateAsync(networkDevice);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNetworkDevice(Guid id)
         {
-            var networkDevice = await _networkDeviceRepository.GetNetworkDeviceByIdAsync(id);
+            var networkDevice = await _networkDeviceRepository.GetByIdAsync(id);
             if (networkDevice == null)
             {
                 return NotFound();
             }
 
-            await _networkDeviceRepository.DeleteNetworkDeviceAsync(id);
+            await _networkDeviceRepository.DeleteAsync(id);
             return NoContent();
         }
     }

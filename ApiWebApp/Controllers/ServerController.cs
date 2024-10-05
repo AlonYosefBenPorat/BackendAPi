@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using ApiWebApp.Dto;
+using ApiWebApp.Model;
+using ApiWebApp.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ApiWebApp.DTOs;
-
-using ApiWebApp.Repositry;
-using ApiWebApp.DAL.Repositry;
+using DAL.Data;
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServerController : ControllerBase
+    public class ServerController(IRepository<Server> serverRepository, ICustomerRepository customerRepository) : ControllerBase
     {
-        private readonly IServerRepository _serverRepository;
-
-        public ServerController(IServerRepository serverRepository)
-        {
-            _serverRepository = serverRepository;
-        }
+        private readonly IRepository<Server> _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
+        private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AddServerDto>>> GetServers()
         {
-            var servers = await _serverRepository.GetAllServersAsync();
+            var servers = await _serverRepository.GetAllAsync();
             var serverDtos = servers.Select(server => new AddServerDto
             {
                 Id = server.Id,
@@ -41,8 +41,7 @@ namespace ApiWebApp.Controllers
                 UpdatedAt = server.UpdatedAt,
                 WarrantyExpiration = server.WarrantyExpiration,
                 CustomerId = server.CustomerId,
-                Customer = server.Customer
-            }).ToList();
+            });
 
             return Ok(serverDtos);
         }
@@ -50,7 +49,7 @@ namespace ApiWebApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AddServerDto>> GetServer(Guid id)
         {
-            var server = await _serverRepository.GetServerByIdAsync(id);
+            var server = await _serverRepository.GetByIdAsync(id);
             if (server == null)
             {
                 return NotFound();
@@ -75,7 +74,6 @@ namespace ApiWebApp.Controllers
                 UpdatedAt = server.UpdatedAt,
                 WarrantyExpiration = server.WarrantyExpiration,
                 CustomerId = server.CustomerId,
-                Customer = server.Customer
             };
 
             return Ok(serverDto);
@@ -84,9 +82,19 @@ namespace ApiWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddServer(AddServerDto serverDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var customer = await _customerRepository.GetCustomerByIdAsync(serverDto.CustomerId);
+            if (customer == null)
+            {
+                return BadRequest("Invalid customer ID");
+            }
+
             var server = new Server
             {
-                Id = serverDto.Id,
                 IpAddress = serverDto.IpAddress,
                 Hostname = serverDto.Hostname,
                 SerialNumber = serverDto.SerialNumber,
@@ -100,25 +108,43 @@ namespace ApiWebApp.Controllers
                 Roles = serverDto.Roles,
                 Description = serverDto.Description,
                 CreatedAt = serverDto.CreatedAt,
-                UpdatedAt = serverDto.UpdatedAt,
+                UpdatedAt = DateTime.UtcNow,
                 WarrantyExpiration = serverDto.WarrantyExpiration,
                 CustomerId = serverDto.CustomerId,
-                Customer = serverDto.Customer
             };
 
-            await _serverRepository.AddServerAsync(server);
-            return CreatedAtAction(nameof(GetServer), new { id = server.Id }, serverDto);
+            await _serverRepository.AddAsync(server);
+
+            var createdServer = await _serverRepository.GetByIdAsync(server.Id);
+
+            var serverResponseDto = new AddServerDto
+            {
+                Id = createdServer.Id,
+                IpAddress = createdServer.IpAddress,
+                Hostname = createdServer.Hostname,
+                SerialNumber = createdServer.SerialNumber,
+                Model = createdServer.Model,
+                Brand = createdServer.Brand,
+                Type = createdServer.Type,
+                Vendor = createdServer.Vendor,
+                Ram = createdServer.Ram,
+                Storage = createdServer.Storage,
+                OperatingSystem = createdServer.OperatingSystem,
+                Roles = createdServer.Roles,
+                Description = createdServer.Description,
+                CreatedAt = createdServer.CreatedAt,
+                UpdatedAt = createdServer.UpdatedAt,
+                WarrantyExpiration = createdServer.WarrantyExpiration,
+                CustomerId = createdServer.CustomerId,
+            };
+
+            return CreatedAtAction(nameof(GetServer), new { id = createdServer.Id }, serverResponseDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateServer(Guid id, AddServerDto serverDto)
+        public async Task<IActionResult> UpdateServer(Guid id, UpdateServerDto serverDto)
         {
-            if (id != serverDto.Id)
-            {
-                return BadRequest();
-            }
-
-            var server = await _serverRepository.GetServerByIdAsync(id);
+            var server = await _serverRepository.GetByIdAsync(id);
             if (server == null)
             {
                 return NotFound();
@@ -136,27 +162,25 @@ namespace ApiWebApp.Controllers
             server.OperatingSystem = serverDto.OperatingSystem;
             server.Roles = serverDto.Roles;
             server.Description = serverDto.Description;
-            server.CreatedAt = serverDto.CreatedAt;
-            server.UpdatedAt = serverDto.UpdatedAt;
+            server.UpdatedAt = DateTime.UtcNow;
             server.WarrantyExpiration = serverDto.WarrantyExpiration;
-            server.CustomerId = serverDto.CustomerId;
-            server.Customer = serverDto.Customer;
+            await _serverRepository.UpdateAsync(server);
+            
 
-            await _serverRepository.UpdateServerAsync(server);
-            return NoContent();
+            return Ok(serverDto);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteServer(Guid id)
         {
-            var server = await _serverRepository.GetServerByIdAsync(id);
+            var server = await _serverRepository.GetByIdAsync(id);
             if (server == null)
             {
                 return NotFound();
             }
 
-            await _serverRepository.DeleteServerAsync(id);
-            return NoContent();
+            await _serverRepository.DeleteAsync(id);
+            return Ok($"{id} deleted successfully");
         }
     }
 }

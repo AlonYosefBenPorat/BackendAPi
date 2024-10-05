@@ -5,13 +5,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ApiWebApp.Auth;
 using ApiWebApp.Model;
-using ApiWebApp.Repositry;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ApiWebApp.Repositories;
 using WebApp.DAL.Model;
 using DAL.Repositories;
-using ApiWebApp.DAL.Repositry;
+
 using ApiWebApp.DAL.Model;
+using DAL.Data;
 
 namespace ApiWebApp
 {
@@ -81,10 +82,11 @@ namespace ApiWebApp
             // Register the repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-            builder.Services.AddScoped<IServerRepository, ServerRepository>();
-            builder.Services.AddScoped<INetworkDeviceRepository, NetworkDeviceRepository>();
-            builder.Services.AddScoped<IGatewayRepository, GatewayRepository>();
-            builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+            builder.Services.AddScoped<IRepository<Server>, Repository<Server>>();
+            builder.Services.AddScoped<IRepository<Backup>, Repository<Backup>>();
+            builder.Services.AddScoped<IRepository<NetworkDevice>, Repository<NetworkDevice>>();
+            builder.Services.AddScoped<IRepository<Gateway>, Repository<Gateway>>();
+            builder.Services.AddScoped<IRepository<Asset>, Repository<Asset>>();
 
             // Add CORS services
             builder.Services.AddCors(options =>

@@ -1,11 +1,13 @@
 ﻿using ApiWebApp.DAL.Model;
 using ApiWebApp.Model;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto
 {
     public class AddBackupDto
     {
+        public Guid Id { get; set; }
        
         [Required, MinLength(2), MaxLength(40)]
         public string BackupProvider { get; set; }
@@ -24,7 +26,7 @@ namespace ApiWebApp.Dto
         public int Capacity { get; set; }
         public DateTime LastRestore { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public Customer Customer { get; set; }
+        
+        public Guid CustomerId { get; set; }
     }
 }
