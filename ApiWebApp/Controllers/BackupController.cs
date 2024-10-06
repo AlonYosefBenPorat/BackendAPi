@@ -90,7 +90,23 @@ namespace ApiWebApp.Controllers
             };
 
             await _backupRepository.AddAsync(backup);
-            return CreatedAtAction(nameof(GetBackup), new { id = backup.Id }, backupDto);
+            var  createdBackup = await _backupRepository.GetByIdAsync(backup.Id);
+            var backupResponseDto = new AddBackupDto
+            {
+                Id = createdBackup.Id,
+                BackupProvider = createdBackup.BackupProvider,
+                BackupData = createdBackup.BackupData,
+                Rpo = createdBackup.Rpo,
+                Rto = createdBackup.Rto,
+                BackupStorge = createdBackup.BackupStorge,
+                BackupEncrypted = createdBackup.BackupEncrypted,
+                BackupRetntion = createdBackup.BackupRetntion,
+                Capacity = createdBackup.Capacity,
+                LastRestore = createdBackup.LastRestore,
+                CreatedAt = createdBackup.CreatedAt,
+                CustomerId = createdBackup.CustomerId
+            };
+            return CreatedAtAction(nameof(GetBackup), new { id = backupResponseDto.Id }, backupResponseDto);
         }
 
         [HttpPut("{id}")]

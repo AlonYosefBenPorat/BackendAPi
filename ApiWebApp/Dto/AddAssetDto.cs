@@ -17,6 +17,6 @@ namespace ApiWebApp.Dto
         public string SupportExpiration { get; set; }
         public string Notes { get; set; }
         public Guid CustomerId { get; set; }
-       
+
     }
 }

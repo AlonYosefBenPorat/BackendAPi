@@ -1,0 +1,144 @@
+﻿using ApiWebApp.Dto;
+using ApiWebApp.Repositories;
+using DAL.Data;
+using DAL.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace ApiWebApp.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FirewallController(IRepository<Firewall> firewallRepository, ICustomerRepository customerRepository) : ControllerBase
+    {
+        private readonly IRepository<Firewall> _firewallRepository = firewallRepository ?? throw new ArgumentNullException(nameof(firewallRepository));
+        private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Firewall>>> GetFirewalls()
+        {
+            var firewalls = await _firewallRepository.GetAllAsync();
+            var firewallDtos = firewalls.Select(firewall => new FirewallDto
+            {
+                Id = firewall.Id,
+                Version = firewall.Version,
+                Model = firewall.Model,
+                SerialNumber = firewall.SerialNumber,
+                IpAddress = firewall.IpAddress,
+                MacAddress = firewall.MacAddress,
+                License = firewall.License,
+                CreatedAt = firewall.CreatedAt,
+                UpdatedAt = firewall.UpdatedAt,
+                IsActive = firewall.IsActive,
+                CustomerId = firewall.CustomerId
+            }).ToList();
+            
+            return Ok(firewallDtos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FirewallDto>> GetFirewall(Guid id)
+        {
+            var firewall = await _firewallRepository.GetByIdAsync(id);
+            if (firewall == null)
+            {
+                return NotFound();
+            }
+            var firewallDto = new FirewallDto
+            {
+                Id = firewall.Id,
+                Version = firewall.Version,
+                Model = firewall.Model,
+                SerialNumber = firewall.SerialNumber,
+                IpAddress = firewall.IpAddress,
+                MacAddress = firewall.MacAddress,
+                License = firewall.License,
+                CreatedAt = firewall.CreatedAt,
+                UpdatedAt = firewall.UpdatedAt,
+                IsActive = firewall.IsActive,
+                CustomerId = firewall.CustomerId
+            };
+
+            return Ok(firewallDto);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddFirewall(FirewallDto firewallDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            // Validate CustomerId
+            var customer = await _customerRepository.GetCustomerByIdAsync(firewallDto.CustomerId);
+            if (customer == null)
+            {
+                return BadRequest("Invalid CustomerId");
+            }
+
+            var firewall = new Firewall
+            {
+               
+                Version = firewallDto.Version,
+                Model = firewallDto.Model,
+                SerialNumber = firewallDto.SerialNumber,
+                IpAddress = firewallDto.IpAddress,
+                MacAddress = firewallDto.MacAddress,
+                License = firewallDto.License,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = firewallDto.UpdatedAt,
+                IsActive = firewallDto.IsActive,
+                CustomerId = firewallDto.CustomerId // Ensure this is set
+            };
+
+            await _firewallRepository.AddAsync(firewall);
+
+            var createdFirewall = await _firewallRepository.GetByIdAsync(firewall.Id);
+            var firewallResponseDto = new FirewallDto
+            {
+                Id = createdFirewall.Id,
+                Version = createdFirewall.Version,
+                Model = createdFirewall.Model,
+                SerialNumber = createdFirewall.SerialNumber,
+                IpAddress = createdFirewall.IpAddress,
+                MacAddress = createdFirewall.MacAddress,
+                License = createdFirewall.License,
+                CreatedAt = createdFirewall.CreatedAt,
+                UpdatedAt = createdFirewall.UpdatedAt,
+                IsActive = createdFirewall.IsActive,
+                CustomerId = createdFirewall.CustomerId
+            };
+
+            return CreatedAtAction(nameof(GetFirewall), new { id = createdFirewall.Id }, firewallResponseDto);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutFirewall(Guid id, Firewall firewall)
+        {
+            if (id != firewall.Id)
+            {
+                return BadRequest();
+            }
+
+            await _firewallRepository.UpdateAsync(firewall);
+
+            return NoContent();
+        }
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteFirewall(Guid id)
+        //{
+        //    var firewall = await _firewallRepository.GetByIdAsync(id);
+        //    if (firewall == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    await _firewallRepository.DeleteAsync(firewall);
+
+        //    return NoContent();
+        //}
+    }
+}

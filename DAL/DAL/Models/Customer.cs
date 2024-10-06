@@ -1,10 +1,13 @@
 ﻿
+using DAL.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.DAL.Model
 {
     public class Customer
     {
+        internal object firewalls;
+
         [Key]
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -25,7 +28,7 @@ namespace ApiWebApp.DAL.Model
         // Navigation properties
         public ICollection<Server> Servers { get; set; } = new List<Server>();
         public ICollection<NetworkDevice> NetworkDevices { get; set; } = new List<NetworkDevice>();
-        public ICollection<Gateway> Gateways { get; set; } = new List<Gateway>();
+        public ICollection<Firewall>Firewalls { get; set; } = new List<Firewall>();
         public ICollection<Asset> Assets { get; set; } = new List<Asset>();
         public ICollection<Backup> Backups { get; set; } = new List<Backup>();
         

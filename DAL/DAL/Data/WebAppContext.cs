@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 using ApiWebApp.DAL.Model;
+using DAL.Models;
 
 public class WebAppContext : IdentityDbContext<AppUsers>
 {
@@ -15,14 +16,13 @@ public class WebAppContext : IdentityDbContext<AppUsers>
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Server> Servers { get; set; }
     public DbSet<NetworkDevice> NetworkDevices { get; set; }
-    public DbSet<Gateway> Gateways { get; set; }
+    public DbSet<Firewall> Firewalls { get; set; }
     public DbSet<Backup> Backups { get; set; }
     public DbSet<Asset> Assets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
         // Configure TPT inheritance
         modelBuilder.Entity<NetworkDevice>()
             .ToTable("NetworkDevices");
@@ -30,14 +30,15 @@ public class WebAppContext : IdentityDbContext<AppUsers>
         modelBuilder.Entity<Server>()
             .ToTable("Servers");
 
-        modelBuilder.Entity<Gateway>()
-            .ToTable("Gateways");
+        modelBuilder.Entity<Firewall>()
+            .ToTable("Firewalls");
 
         modelBuilder.Entity<Backup>()
             .ToTable("Backups");
 
         modelBuilder.Entity<Asset>()
             .ToTable("Assets");
+            
        
 
         // Configure foreign key relationships
@@ -53,11 +54,6 @@ public class WebAppContext : IdentityDbContext<AppUsers>
             .HasForeignKey(nd => nd.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Customer>()
-            .HasMany(c => c.Gateways)
-            .WithOne(g => g.Customer)
-            .HasForeignKey(g => g.CustomerId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Customer>()
             .HasMany(c => c.Backups)
@@ -69,6 +65,12 @@ public class WebAppContext : IdentityDbContext<AppUsers>
             .HasMany(c => c.Assets)
             .WithOne(a => a.Customer)
             .HasForeignKey(a => a.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+       modelBuilder.Entity<Customer>()
+            .HasMany(f => f.Firewalls)
+            .WithOne(f => f.Customer)
+            .HasForeignKey(b => b.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
 
 
