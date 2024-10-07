@@ -3,9 +3,7 @@ using ApiWebApp.Repositories;
 using DAL.Data;
 using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace ApiWebApp.Controllers
 {
@@ -115,30 +113,40 @@ namespace ApiWebApp.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFirewall(Guid id, Firewall firewall)
+        public async Task<IActionResult> PutFirewall(Guid id, FirewallDto firewallDto)
         {
-            if (id != firewall.Id)
+            var firewall = await _firewallRepository.GetByIdAsync(id);
+            if (firewall == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            await _firewallRepository.UpdateAsync(firewall);
+            firewall.Version = firewall.Version;
+            firewall.Model = firewall.Model;
+            firewall.SerialNumber = firewall.SerialNumber;
+            firewall.IpAddress = firewall.IpAddress;
+            firewall.MacAddress = firewall.MacAddress;
+            firewall.License = firewall.License;
+            firewall.UpdatedAt = firewall.UpdatedAt;
+            firewall.IsActive = firewall.IsActive;
+            firewall.CustomerId = firewall.CustomerId;
+
+
+            return Ok(firewall);
+          
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFirewall(Guid id)
+        {
+            var firewall = await _firewallRepository.GetByIdAsync(id);
+            if (firewall == null)
+            {
+                return NotFound();
+            }
+
+            await _firewallRepository.DeleteAsync(id);
 
             return NoContent();
         }
-
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteFirewall(Guid id)
-        //{
-        //    var firewall = await _firewallRepository.GetByIdAsync(id);
-        //    if (firewall == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    await _firewallRepository.DeleteAsync(firewall);
-
-        //    return NoContent();
-        //}
     }
 }
