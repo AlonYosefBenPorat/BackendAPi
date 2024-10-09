@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Repositories;
 using ApiWebApp.DAL.Model;
 
+// build wiht genric repository
+// using DAL.Repositories;
+//put method add updateAt 
+//add maping  
+
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
@@ -70,12 +75,16 @@ public class UsersController : ControllerBase
                 user.DateOfBirth,
                 user.JobTitle,
                 user.IsEnabled,
+                user.CreatedAt,
+                user.UpdatedAt,
                 Roles = roles,
+                
                 ProfileImage = new ProfileImage
                 {
                     Alt = user.ProfileImage?.Alt ?? string.Empty,
                     Src = user.ProfileImage?.Src ?? string.Empty
                 }
+
             });
         }
         return NotFound();
@@ -83,7 +92,7 @@ public class UsersController : ControllerBase
 
     [HttpPost]
     //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
-    public async Task<IActionResult> Register([FromBody] RegiterUserDto registerUserDto)
+    public async Task<IActionResult> Register([FromBody] UserDto registerUserDto)
     {
         try
         {
@@ -101,7 +110,7 @@ public class UsersController : ControllerBase
                 PhoneNumber = registerUserDto.PhoneNumber,
                 DateOfBirth = registerUserDto.DateOfBirth,
                 JobTitle = registerUserDto.JobTitle ?? string.Empty,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 UpdatedAt = null,
                 ProfileImage = new ProfileImage
                 {
@@ -137,7 +146,16 @@ public class UsersController : ControllerBase
                     user.LastName,
                     user.DateOfBirth,
                     user.JobTitle,
-                    user.UserName
+                    user.UserName,
+                    user.IsEnabled,
+                    user.CreatedAt,
+                    user.UpdatedAt,
+                    ProfileImage = new ProfileImage
+                    {
+                        Alt = user.ProfileImage?.Alt ?? string.Empty,
+                        Src = user.ProfileImage?.Src ?? string.Empty
+                    }
+
                 });
             }
 
@@ -156,7 +174,7 @@ public class UsersController : ControllerBase
 
     [HttpPut("{id}")]
     //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
-    public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto updateUserDto)
+    public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDto updateUserDto)
     {
         if (!ModelState.IsValid)
         {

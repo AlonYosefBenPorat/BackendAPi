@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class Seed : Migration
+    public partial class LAstLogonAdd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,6 +39,7 @@ namespace ApiWebApp.Migrations
                     ProfileImage_Src = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastLogon = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -245,27 +246,26 @@ namespace ApiWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Gateways",
+                name: "Firewalls",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Version = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Vendor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MacAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    License = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    WarrantyExpiration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Gateways", x => x.Id);
+                    table.PrimaryKey("PK_Firewalls", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Gateways_Customers_CustomerId",
+                        name: "FK_Firewalls_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
@@ -383,8 +383,8 @@ namespace ApiWebApp.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Gateways_CustomerId",
-                table: "Gateways",
+                name: "IX_Firewalls_CustomerId",
+                table: "Firewalls",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
@@ -423,7 +423,7 @@ namespace ApiWebApp.Migrations
                 name: "Backups");
 
             migrationBuilder.DropTable(
-                name: "Gateways");
+                name: "Firewalls");
 
             migrationBuilder.DropTable(
                 name: "NetworkDevices");

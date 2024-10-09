@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto
 {
-    public class AddCustomerDto
+    public class CustomerDto
 
     {
         public Guid Id { get; set; }
@@ -32,6 +32,8 @@ namespace ApiWebApp.Dto
             ErrorMessage = "Invalid domain format")]
 
         public required string Domain { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } 
 
         [Required]
         public int BnNumber { get; set; }
@@ -42,10 +44,10 @@ namespace ApiWebApp.Dto
 
    
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+  
 
 
-        public AddCustomerDto()
+        public CustomerDto()
         {
             IsActive = true;
             Id = Guid.NewGuid();

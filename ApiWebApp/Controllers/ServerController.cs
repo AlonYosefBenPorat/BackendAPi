@@ -19,10 +19,10 @@ namespace ApiWebApp.Controllers
         private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AddServerDto>>> GetServers()
+        public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
         {
             var servers = await _serverRepository.GetAllAsync();
-            var serverDtos = servers.Select(server => new AddServerDto
+            var serverDtos = servers.Select(server => new ServerDto
             {
                 Id = server.Id,
                 IpAddress = server.IpAddress,
@@ -47,7 +47,7 @@ namespace ApiWebApp.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AddServerDto>> GetServer(Guid id)
+        public async Task<ActionResult<ServerDto>> GetServer(Guid id)
         {
             var server = await _serverRepository.GetByIdAsync(id);
             if (server == null)
@@ -55,7 +55,7 @@ namespace ApiWebApp.Controllers
                 return NotFound();
             }
 
-            var serverDto = new AddServerDto
+            var serverDto = new ServerDto
             {
                 Id = server.Id,
                 IpAddress = server.IpAddress,
@@ -80,7 +80,7 @@ namespace ApiWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddServer(AddServerDto serverDto)
+        public async Task<ActionResult> AddServer(ServerDto serverDto)
         {
             if (!ModelState.IsValid)
             {
@@ -108,7 +108,7 @@ namespace ApiWebApp.Controllers
                 Roles = serverDto.Roles,
                 Description = serverDto.Description,
                 CreatedAt = serverDto.CreatedAt,
-                UpdatedAt = DateTime.UtcNow,
+                UpdatedAt = null,
                 WarrantyExpiration = serverDto.WarrantyExpiration,
                 CustomerId = serverDto.CustomerId,
             };
@@ -117,7 +117,7 @@ namespace ApiWebApp.Controllers
 
             var createdServer = await _serverRepository.GetByIdAsync(server.Id);
 
-            var serverResponseDto = new AddServerDto
+            var serverResponseDto = new ServerDto
             {
                 Id = createdServer.Id,
                 IpAddress = createdServer.IpAddress,
@@ -142,7 +142,7 @@ namespace ApiWebApp.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateServer(Guid id, UpdateServerDto serverDto)
+        public async Task<IActionResult> UpdateServer(Guid id, ServerDto serverDto)
         {
             var server = await _serverRepository.GetByIdAsync(id);
             if (server == null)

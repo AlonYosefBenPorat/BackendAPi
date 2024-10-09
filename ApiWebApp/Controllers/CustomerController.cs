@@ -85,7 +85,7 @@ namespace ApiWebApp.Controllers
 
         // Add a new customer
         [HttpPost]
-        public async Task<IActionResult> AddCustomer([FromBody] AddCustomerDto addCustomerDto)
+        public async Task<IActionResult> AddCustomer([FromBody] CustomerDto addCustomerDto)
         {
             if (!ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace ApiWebApp.Controllers
 
         // Update an existing customer
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] UpdateCustomerDto updateCustomerDto)
+        public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDto CustomerDto)
         {
             if (!ModelState.IsValid)
             {
@@ -113,7 +113,7 @@ namespace ApiWebApp.Controllers
                 return Ok(ModelState);
             }
 
-            updateCustomerDto.UpdateEntity(customer);
+           CustomerDto.UpdateEntity(customer);
 
             await _customerRepository.UpdateCustomerAsync(customer);
             return Ok(ModelState);

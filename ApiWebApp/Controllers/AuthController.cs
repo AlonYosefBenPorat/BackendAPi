@@ -29,7 +29,8 @@ namespace ApiWebApp.DAL.Controllers
         {
             var user = await _userManager.FindByNameAsync(login.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
-            {
+            {   user.LastLogon = DateTime.Now;
+                await _userManager.UpdateAsync(user);
                 var token = await _tokenService.GenerateJwtToken(user);
                 return Ok(new { Token = token });
             }

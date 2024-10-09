@@ -14,10 +14,10 @@ namespace ApiWebApp.Controllers
         private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AddBackupDto>>> GetBackups()
+        public async Task<ActionResult<IEnumerable<BackupDto>>> GetBackups()
         {
             var backups = await _backupRepository.GetAllAsync();
-            var backupDtos = backups.Select(backup => new AddBackupDto
+            var backupDtos = backups.Select(backup => new BackupDto
             {
                 Id = backup.Id,
                 BackupProvider = backup.BackupProvider,
@@ -30,6 +30,7 @@ namespace ApiWebApp.Controllers
                 Capacity = backup.Capacity,
                 LastRestore = backup.LastRestore,
                 CreatedAt = backup.CreatedAt,
+                UpdatedAt = backup.UpdatedAt,
                 CustomerId = backup.CustomerId
             }).ToList();
 
@@ -37,7 +38,7 @@ namespace ApiWebApp.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AddBackupDto>> GetBackup(Guid id)
+        public async Task<ActionResult<BackupDto>> GetBackup(Guid id)
         {
             var backup = await _backupRepository.GetByIdAsync(id);
             if (backup == null)
@@ -45,7 +46,7 @@ namespace ApiWebApp.Controllers
                 return NotFound();
             }
 
-            var backupDto = new AddBackupDto
+            var backupDto = new BackupDto
             {
                 Id = backup.Id,
                 BackupProvider = backup.BackupProvider,
@@ -58,6 +59,7 @@ namespace ApiWebApp.Controllers
                 Capacity = backup.Capacity,
                 LastRestore = backup.LastRestore,
                 CreatedAt = backup.CreatedAt,
+                UpdatedAt = backup.UpdatedAt,
                 CustomerId = backup.CustomerId
             };
 
@@ -65,7 +67,7 @@ namespace ApiWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddBackup(AddBackupDto backupDto)
+        public async Task<ActionResult> AddBackup(BackupDto backupDto)
         {
             // Check if the CustomerId exists
             var customer = await _customerRepository.GetCustomerByIdAsync(backupDto.CustomerId);
@@ -86,12 +88,13 @@ namespace ApiWebApp.Controllers
                 Capacity = backupDto.Capacity,
                 LastRestore = backupDto.LastRestore,
                 CreatedAt = backupDto.CreatedAt,
+                UpdatedAt = null,
                 CustomerId = backupDto.CustomerId // Ensure this is set
             };
 
             await _backupRepository.AddAsync(backup);
             var  createdBackup = await _backupRepository.GetByIdAsync(backup.Id);
-            var backupResponseDto = new AddBackupDto
+            var backupResponseDto = new BackupDto
             {
                 Id = createdBackup.Id,
                 BackupProvider = createdBackup.BackupProvider,
@@ -104,13 +107,14 @@ namespace ApiWebApp.Controllers
                 Capacity = createdBackup.Capacity,
                 LastRestore = createdBackup.LastRestore,
                 CreatedAt = createdBackup.CreatedAt,
+                UpdatedAt = createdBackup.UpdatedAt,
                 CustomerId = createdBackup.CustomerId
             };
             return CreatedAtAction(nameof(GetBackup), new { id = backupResponseDto.Id }, backupResponseDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBackup(Guid id, AddBackupDto backupDto)
+        public async Task<IActionResult> UpdateBackup(Guid id, BackupDto backupDto)
         {
             if (!ModelState.IsValid)
             {
@@ -135,6 +139,7 @@ namespace ApiWebApp.Controllers
             backup.Capacity = backupDto.Capacity;
             backup.LastRestore = backupDto.LastRestore;
             backup.CreatedAt = backupDto.CreatedAt;
+            backup.UpdatedAt = DateTime.UtcNow;
             backup.CustomerId = backupDto.CustomerId; 
 
             await _backupRepository.UpdateAsync(backup);

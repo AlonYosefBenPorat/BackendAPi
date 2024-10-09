@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiWebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    [Migration("20241006165232_AddFirewalls")]
-    partial class AddFirewalls
+    [Migration("20241009165226_LAstLogonAdd")]
+    partial class LAstLogonAdd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,6 +60,9 @@ namespace ApiWebApp.Migrations
                     b.Property<string>("JobTitle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastLogon")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LastName")
                         .IsRequired()

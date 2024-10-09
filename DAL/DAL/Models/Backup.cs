@@ -23,7 +23,7 @@ namespace ApiWebApp.DAL.Model
         public int Capacity { get; set; }
         public DateTime LastRestore { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         // Navigation property
         [Required]

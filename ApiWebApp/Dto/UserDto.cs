@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto
 {
-    public class RegiterUserDto
+    public class UserDto
     {
         [Required, MinLength(2), MaxLength(25)]
         public required string FirstName { get; set; }
@@ -31,6 +31,7 @@ namespace ApiWebApp.Dto
         public required string JobTitle { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
 
         
     
@@ -39,7 +40,7 @@ namespace ApiWebApp.Dto
         public string? ProfileSrc { get; set; }
 
 
-        public RegiterUserDto()
+        public UserDto()
         {
             IsEnabled = true;
         }

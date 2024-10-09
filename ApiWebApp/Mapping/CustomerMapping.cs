@@ -5,7 +5,7 @@ namespace ApiWebApp.Mapping
 {
     public static class CustomerMapping
     {
-        public static Customer ToEntity(this AddCustomerDto customerDto)
+        public static Customer ToEntity(this CustomerDto customerDto)
         {
             return new Customer
             {
@@ -19,6 +19,7 @@ namespace ApiWebApp.Mapping
                 Domain = customerDto.Domain,
                 BnNumber = customerDto.BnNumber,
                 CreatedAt = DateTime.UtcNow,
+                UpdatedAt = null,
                 IsActive = customerDto.IsActive,
                 Logo = new Logo
                 {
@@ -28,7 +29,7 @@ namespace ApiWebApp.Mapping
             };
         }
 
-        public static void UpdateEntity(this UpdateCustomerDto customerDto, Customer customer)
+        public static void UpdateEntity(this CustomerDto customerDto, Customer customer)
         {
             customer.Name = customerDto.Name;
             customer.Country = customerDto.Country;
@@ -39,7 +40,7 @@ namespace ApiWebApp.Mapping
             customer.Domain = customerDto.Domain;
             customer.BnNumber = customerDto.BnNumber;
             customer.IsActive = customerDto.IsActive;
-            customer.UpdatedAt = customerDto.UpdatedAt;
+            customer.UpdatedAt = DateTime.UtcNow;
             customer.Logo.Alt = customerDto.Logo.Alt;
             customer.Logo.Src = customerDto.Logo.Src;
         }

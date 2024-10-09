@@ -19,9 +19,11 @@ namespace ApiWebApp.DAL.Model
         public bool IsEnabled { get; set; } 
         public ProfileImage? ProfileImage { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; } 
+        public DateTime? UpdatedAt { get; set; }
+        // Add LastLogon property
+        public DateTime? LastLogon { get; set; }
 
-       
-        
+
+
     }
 }

@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Model
 {
-    public class AddNetworkDeviceDto
+    public class NetworkDeviceDto
     {
         
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } 
+        public Guid CustomerId { get; set; }
         public string? IpAddress { get; set; }
        
         public string? SerialNumber { get; set; }
@@ -16,11 +17,11 @@ namespace ApiWebApp.Model
         public string? Type { get; set; }
         public string? Vendor { get; set; }
         public string? Description { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public DateTime WarrantyExpiration { get; set; }
-        public Guid CustomerId { get; set; }
-        public Customer Customer { get; set; }
+       
+      
 
     }
 }

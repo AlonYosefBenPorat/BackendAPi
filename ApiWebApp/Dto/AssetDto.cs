@@ -2,7 +2,7 @@
 
 namespace ApiWebApp.Dto
 {
-    public class AddAssetDto
+    public class AssetDto
     {
         public Guid Id { get; set; }
         public string Type { get; set; }

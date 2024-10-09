@@ -4,7 +4,7 @@ using System;
 
 namespace ApiWebApp.DTOs
 {
-    public class AddServerDto
+    public class ServerDto
     {
         public Guid Id { get; set; }
         public string? IpAddress { get; set; }
