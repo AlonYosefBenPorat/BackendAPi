@@ -125,6 +125,10 @@ namespace ApiWebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(Guid id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var customer = await _customerRepository.GetCustomerByIdAsync(id);
             if (customer == null)
             {
@@ -132,7 +136,7 @@ namespace ApiWebApp.Controllers
             }
 
             await _customerRepository.DeleteCustomerAsync(id);
-            return Ok();
+            return Ok(ModelState);
         }
     }
 }

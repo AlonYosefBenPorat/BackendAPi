@@ -28,7 +28,7 @@ namespace ApiWebApp.Controllers
                 MacAddress = firewall.MacAddress,
                 License = firewall.License,
                 CreatedAt = firewall.CreatedAt,
-                UpdatedAt = firewall.UpdatedAt,
+             
                 IsActive = firewall.IsActive,
                 CustomerId = firewall.CustomerId
             }).ToList();
@@ -54,7 +54,7 @@ namespace ApiWebApp.Controllers
                 MacAddress = firewall.MacAddress,
                 License = firewall.License,
                 CreatedAt = firewall.CreatedAt,
-                UpdatedAt = firewall.UpdatedAt,
+               
                 IsActive = firewall.IsActive,
                 CustomerId = firewall.CustomerId
             };
@@ -104,7 +104,7 @@ namespace ApiWebApp.Controllers
                 MacAddress = createdFirewall.MacAddress,
                 License = createdFirewall.License,
                 CreatedAt = createdFirewall.CreatedAt,
-                UpdatedAt = createdFirewall.UpdatedAt,
+               
                 IsActive = createdFirewall.IsActive,
                 CustomerId = createdFirewall.CustomerId
             };
@@ -115,29 +115,40 @@ namespace ApiWebApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFirewall(Guid id, FirewallDto firewallDto)
         {
+            if (id != firewallDto.Id)
+            {
+                return BadRequest("ID mismatch");
+            }
+
             var firewall = await _firewallRepository.GetByIdAsync(id);
             if (firewall == null)
             {
                 return NotFound();
             }
 
-            firewall.Version = firewall.Version;
-            firewall.Model = firewall.Model;
-            firewall.SerialNumber = firewall.SerialNumber;
-            firewall.IpAddress = firewall.IpAddress;
-            firewall.MacAddress = firewall.MacAddress;
-            firewall.License = firewall.License;
-            firewall.UpdatedAt = firewall.UpdatedAt;
-            firewall.IsActive = firewall.IsActive;
-            firewall.CustomerId = firewall.CustomerId;
+            // Update firewall properties
+            firewall.Version = firewallDto.Version;
+            firewall.Model = firewallDto.Model;
+            firewall.SerialNumber = firewallDto.SerialNumber;
+            firewall.IpAddress = firewallDto.IpAddress;
+            firewall.MacAddress = firewallDto.MacAddress;
+            firewall.License = firewallDto.License;
+            firewall.UpdatedAt = DateTime.UtcNow; // Update UpdatedAt to current UTC time
+            firewall.IsActive = firewallDto.IsActive;
+            firewall.CustomerId = firewallDto.CustomerId;
 
+            // Call repository update method
+            await _firewallRepository.UpdateAsync(firewall);
 
             return Ok(firewall);
-          
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFirewall(Guid id)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var firewall = await _firewallRepository.GetByIdAsync(id);
             if (firewall == null)
             {
@@ -146,7 +157,7 @@ namespace ApiWebApp.Controllers
 
             await _firewallRepository.DeleteAsync(id);
 
-            return NoContent();
+            return Ok(ModelState);
         }
     }
 }

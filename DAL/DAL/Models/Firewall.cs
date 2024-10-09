@@ -30,7 +30,7 @@ namespace DAL.Models
         public Firewall()
         {
             Id = Guid.NewGuid();
-            CreatedAt = DateTime.UtcNow;
+           
         }
    
         

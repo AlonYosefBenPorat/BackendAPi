@@ -112,6 +112,13 @@ namespace ApiWebApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBackup(Guid id, AddBackupDto backupDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
+        
+
             var backup = await _backupRepository.GetByIdAsync(id);
             if (backup == null)
             {
@@ -131,7 +138,7 @@ namespace ApiWebApp.Controllers
             backup.CustomerId = backupDto.CustomerId; 
 
             await _backupRepository.UpdateAsync(backup);
-            return NoContent();
+            return Ok( backup);
         }
 
         [HttpDelete("{id}")]
