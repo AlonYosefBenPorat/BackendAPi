@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.DAL.Model;
+using ApiWebApp.Mapping;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -25,25 +26,7 @@ public class UsersController : ControllerBase
         foreach (var user in users)
         {
             var roles = await _userRepository.GetUserRolesAsync(user);
-            userList.Add(new
-            {
-                user.Id,
-                user.Email,
-                user.PhoneNumber,
-                user.FirstName,
-                user.LastName,
-                user.DateOfBirth,
-                user.JobTitle,
-                user.IsEnabled,
-                Roles = roles,
-                user.CreatedAt,
-                user.UpdatedAt,
-                ProfileImage = new
-                {
-                    Alt = user.ProfileImage?.Alt ?? string.Empty,
-                    Src = user.ProfileImage?.Src ?? string.Empty
-                }
-            });
+            userList.Add(UsersMap.ToDto(user, roles));
         }
 
         return Ok(userList);
@@ -58,25 +41,7 @@ public class UsersController : ControllerBase
         if (user != null)
         {
             var roles = await _userRepository.GetUserRolesAsync(user);
-            return Ok(new
-            {
-                user.Id,
-                user.Email,
-                user.PhoneNumber,
-                user.FirstName,
-                user.LastName,
-                user.DateOfBirth,
-                user.JobTitle,
-                user.IsEnabled,
-                user.CreatedAt,
-                user.UpdatedAt,
-                Roles = roles,
-                ProfileImage = new
-                {
-                    Alt = user.ProfileImage?.Alt ?? string.Empty,
-                    Src = user.ProfileImage?.Src ?? string.Empty
-                }
-            });
+            return Ok(UsersMap.ToDto(user, roles));
         }
         return NotFound();
     }
@@ -92,24 +57,7 @@ public class UsersController : ControllerBase
                 return BadRequest(ModelState);
             }
 
-            var user = new AppUsers
-            {
-                FirstName = userDto.FirstName,
-                LastName = userDto.LastName,
-                UserName = userDto.Email,
-                Email = userDto.Email,
-                PhoneNumber = userDto.PhoneNumber,
-                DateOfBirth = userDto.DateOfBirth,
-                JobTitle = userDto.JobTitle ?? string.Empty,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = null,
-                ProfileImage = new ProfileImage
-                {
-                    Alt = userDto.ProfileAlt ?? string.Empty,
-                    Src = userDto.ProfileSrc ?? string.Empty
-                }
-            };
-
+            var user = UsersMap.ToModel(userDto);
             var result = await _userRepository.CreateUserAsync(user, userDto.Password);
             if (result.Succeeded)
             {
@@ -128,25 +76,7 @@ public class UsersController : ControllerBase
                     return BadRequest(ModelState);
                 }
 
-                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
-                {
-                    user.Id,
-                    user.Email,
-                    user.PhoneNumber,
-                    user.FirstName,
-                    user.LastName,
-                    user.DateOfBirth,
-                    user.JobTitle,
-                    user.UserName,
-                    user.IsEnabled,
-                    user.CreatedAt,
-                    user.UpdatedAt,
-                    ProfileImage = new
-                    {
-                        Alt = user.ProfileImage?.Alt ?? string.Empty,
-                        Src = user.ProfileImage?.Src ?? string.Empty
-                    }
-                });
+                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, UsersMap.ToDto(user, new List<string> { userDto.Role }));
             }
 
             foreach (var error in result.Errors)
@@ -231,25 +161,7 @@ public class UsersController : ControllerBase
             var updatedUser = await _userRepository.GetUserByIdAsync(id);
             var roles = await _userRepository.GetUserRolesAsync(updatedUser);
 
-            return Ok(new
-            {
-                updatedUser.Id,
-                updatedUser.Email,
-                updatedUser.PhoneNumber,
-                updatedUser.FirstName,
-                updatedUser.LastName,
-                updatedUser.DateOfBirth,
-                updatedUser.JobTitle,
-                updatedUser.IsEnabled,
-                updatedUser.CreatedAt,
-                updatedUser.UpdatedAt,
-                Roles = roles,
-                ProfileImage = new
-                {
-                    Alt = updatedUser.ProfileImage?.Alt ?? string.Empty,
-                    Src = updatedUser.ProfileImage?.Src ?? string.Empty
-                }
-            });
+            return Ok(UsersMap.ToDto(updatedUser, roles));
         }
 
         foreach (var error in result.Errors)
@@ -259,7 +171,6 @@ public class UsersController : ControllerBase
 
         return BadRequest(ModelState);
     }
-
 
     [HttpDelete("{id}")]
     //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
