@@ -20,7 +20,7 @@ namespace ApiWebApp.DAL.Model
         public ProfileImage? ProfileImage { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        // Add LastLogon property
+  
         public DateTime? LastLogon { get; set; }
 
 

@@ -19,7 +19,7 @@ namespace ApiWebApp.DAL.Model
         public DateTime WarrantyExpiration { get; set; }
         public string Description { get; set; }
     
-        // Navigation property
+
         public Customer Customer { get; set; }
         public NetworkDevice()
         {

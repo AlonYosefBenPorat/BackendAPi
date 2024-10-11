@@ -23,7 +23,6 @@ public class Server
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    // Navigation property
     public Customer Customer { get; set; }
     public Server()
     {

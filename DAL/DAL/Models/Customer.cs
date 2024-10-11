@@ -25,7 +25,7 @@ namespace ApiWebApp.DAL.Model
        
         
 
-        // Navigation properties
+    
         public ICollection<Server> Servers { get; set; } = new List<Server>();
         public ICollection<NetworkDevice> NetworkDevices { get; set; } = new List<NetworkDevice>();
         public ICollection<Firewall>Firewalls { get; set; } = new List<Firewall>();

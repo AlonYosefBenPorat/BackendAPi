@@ -69,7 +69,7 @@ namespace ApiWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddBackup(BackupDto backupDto)
         {
-            // Check if the CustomerId exists
+          
             var customer = await _customerRepository.GetCustomerByIdAsync(backupDto.CustomerId);
             if (customer == null)
             {
@@ -89,7 +89,7 @@ namespace ApiWebApp.Controllers
                 LastRestore = backupDto.LastRestore,
                 CreatedAt = backupDto.CreatedAt,
                 UpdatedAt = null,
-                CustomerId = backupDto.CustomerId // Ensure this is set
+                CustomerId = backupDto.CustomerId 
             };
 
             await _backupRepository.AddAsync(backup);

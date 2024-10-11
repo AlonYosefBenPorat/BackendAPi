@@ -25,7 +25,7 @@ namespace ApiWebApp.DAL.Model
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        // Navigation property
+
         [Required]
         public  Customer Customer { get; set; }
 

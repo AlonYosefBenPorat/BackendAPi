@@ -1,14 +1,7 @@
 ﻿using ApiWebApp.Dto;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using DAL.Repositories;
 using ApiWebApp.DAL.Model;
-
-// build wiht genric repository
-// using DAL.Repositories;
-//put method add updateAt 
-//add maping  
 
 [Route("api/[controller]")]
 [ApiController]
@@ -45,7 +38,7 @@ public class UsersController : ControllerBase
                 Roles = roles,
                 user.CreatedAt,
                 user.UpdatedAt,
-                ProfileImage = new ProfileImage
+                ProfileImage = new
                 {
                     Alt = user.ProfileImage?.Alt ?? string.Empty,
                     Src = user.ProfileImage?.Src ?? string.Empty
@@ -78,13 +71,11 @@ public class UsersController : ControllerBase
                 user.CreatedAt,
                 user.UpdatedAt,
                 Roles = roles,
-                
-                ProfileImage = new ProfileImage
+                ProfileImage = new
                 {
                     Alt = user.ProfileImage?.Alt ?? string.Empty,
                     Src = user.ProfileImage?.Src ?? string.Empty
                 }
-
             });
         }
         return NotFound();
@@ -92,7 +83,7 @@ public class UsersController : ControllerBase
 
     [HttpPost]
     //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
-    public async Task<IActionResult> Register([FromBody] UserDto registerUserDto)
+    public async Task<IActionResult> Register([FromBody] UserDto userDto)
     {
         try
         {
@@ -103,31 +94,31 @@ public class UsersController : ControllerBase
 
             var user = new AppUsers
             {
-                FirstName = registerUserDto.FirstName,
-                LastName = registerUserDto.LastName,
-                UserName = registerUserDto.Email,
-                Email = registerUserDto.Email,
-                PhoneNumber = registerUserDto.PhoneNumber,
-                DateOfBirth = registerUserDto.DateOfBirth,
-                JobTitle = registerUserDto.JobTitle ?? string.Empty,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                UserName = userDto.Email,
+                Email = userDto.Email,
+                PhoneNumber = userDto.PhoneNumber,
+                DateOfBirth = userDto.DateOfBirth,
+                JobTitle = userDto.JobTitle ?? string.Empty,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = null,
                 ProfileImage = new ProfileImage
                 {
-                    Alt = registerUserDto.ProfileAlt ?? string.Empty,
-                    Src = registerUserDto.ProfileSrc ?? string.Empty
+                    Alt = userDto.ProfileAlt ?? string.Empty,
+                    Src = userDto.ProfileSrc ?? string.Empty
                 }
             };
 
-            var result = await _userRepository.CreateUserAsync(user, registerUserDto.Password);
+            var result = await _userRepository.CreateUserAsync(user, userDto.Password);
             if (result.Succeeded)
             {
-                if (!await _userRepository.RoleExistsAsync(registerUserDto.Role))
+                if (!await _userRepository.RoleExistsAsync(userDto.Role))
                 {
-                    return BadRequest($"Role '{registerUserDto.Role}' does not exist.");
+                    return BadRequest($"Role '{userDto.Role}' does not exist.");
                 }
 
-                var roleResult = await _userRepository.AddUserToRoleAsync(user, registerUserDto.Role);
+                var roleResult = await _userRepository.AddUserToRoleAsync(user, userDto.Role);
                 if (!roleResult.Succeeded)
                 {
                     foreach (var error in roleResult.Errors)
@@ -150,12 +141,11 @@ public class UsersController : ControllerBase
                     user.IsEnabled,
                     user.CreatedAt,
                     user.UpdatedAt,
-                    ProfileImage = new ProfileImage
+                    ProfileImage = new
                     {
                         Alt = user.ProfileImage?.Alt ?? string.Empty,
                         Src = user.ProfileImage?.Src ?? string.Empty
                     }
-
                 });
             }
 
@@ -188,20 +178,21 @@ public class UsersController : ControllerBase
             return NotFound(ModelState);
         }
 
-        if (updateUserDto.FirstName != null)
-        {
-            user.FirstName = updateUserDto.FirstName;
-        }
-
-        if (updateUserDto.LastName != null)
-        {
-            user.LastName = updateUserDto.LastName;
-        }
-
-        user.PhoneNumber = updateUserDto.PhoneNumber;
-        user.JobTitle = updateUserDto.JobTitle ?? string.Empty;
+        // Update user properties if they are provided in the DTO
+        user.FirstName = updateUserDto.FirstName ?? user.FirstName;
+        user.LastName = updateUserDto.LastName ?? user.LastName;
+        user.PhoneNumber = updateUserDto.PhoneNumber ?? user.PhoneNumber;
+        user.JobTitle = updateUserDto.JobTitle ?? user.JobTitle;
         user.IsEnabled = updateUserDto.IsEnabled;
         user.UpdatedAt = DateTime.UtcNow;
+
+        // Update ProfileImage properties if they are provided in the DTO
+        if (user.ProfileImage == null)
+        {
+            user.ProfileImage = new ProfileImage();
+        }
+        user.ProfileImage.Alt = updateUserDto.ProfileAlt ?? user.ProfileImage.Alt;
+        user.ProfileImage.Src = updateUserDto.ProfileSrc ?? user.ProfileImage.Src;
 
         if (!string.IsNullOrEmpty(updateUserDto.Role))
         {
@@ -236,7 +227,29 @@ public class UsersController : ControllerBase
         var result = await _userRepository.UpdateUserAsync(user);
         if (result.Succeeded)
         {
-            return Ok($"Id: {id} Updated ");
+            // Fetch the updated user from the database
+            var updatedUser = await _userRepository.GetUserByIdAsync(id);
+            var roles = await _userRepository.GetUserRolesAsync(updatedUser);
+
+            return Ok(new
+            {
+                updatedUser.Id,
+                updatedUser.Email,
+                updatedUser.PhoneNumber,
+                updatedUser.FirstName,
+                updatedUser.LastName,
+                updatedUser.DateOfBirth,
+                updatedUser.JobTitle,
+                updatedUser.IsEnabled,
+                updatedUser.CreatedAt,
+                updatedUser.UpdatedAt,
+                Roles = roles,
+                ProfileImage = new
+                {
+                    Alt = updatedUser.ProfileImage?.Alt ?? string.Empty,
+                    Src = updatedUser.ProfileImage?.Src ?? string.Empty
+                }
+            });
         }
 
         foreach (var error in result.Errors)
@@ -246,6 +259,7 @@ public class UsersController : ControllerBase
 
         return BadRequest(ModelState);
     }
+
 
     [HttpDelete("{id}")]
     //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]

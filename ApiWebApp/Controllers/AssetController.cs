@@ -2,10 +2,6 @@
 using ApiWebApp.Dto;
 using ApiWebApp.DAL.Model;
 using DAL.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ApiWebApp.Repositories;
 
 namespace ApiWebApp.Controllers
