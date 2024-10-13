@@ -2,22 +2,16 @@
 using ApiWebApp.Dto;
 using ApiWebApp.DAL.Model;
 using DAL.Data;
-using DAL.Repositories;
+
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BackupController : ControllerBase
+    public class BackupController(IRepository<Backup> backupRepository, IRepository<Customer> customerRepository) : ControllerBase
     {
-        private readonly IRepository<Backup> _backupRepository;
-        private readonly IRepository<Customer> _customerRepository;
-
-        public BackupController(IRepository<Backup> backupRepository, IRepository<Customer> customerRepository)
-        {
-            _backupRepository = backupRepository ?? throw new ArgumentNullException(nameof(backupRepository));
-            _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
-        }
+        private readonly IRepository<Backup> _backupRepository = backupRepository ?? throw new ArgumentNullException(nameof(backupRepository));
+        private readonly IRepository<Customer> _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BackupDto>>> GetBackups()

@@ -3,7 +3,7 @@ using ApiWebApp.Dto;
 
 namespace ApiWebApp.Mapping
 {
-    public static class CustomerMapping
+    public static class CustomerMap
     {
         public static Customer ToEntity(this CustomerDto customerDto)
         {

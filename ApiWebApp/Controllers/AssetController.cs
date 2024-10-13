@@ -2,45 +2,24 @@
 using ApiWebApp.Dto;
 using ApiWebApp.DAL.Model;
 using DAL.Data;
-using DAL.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ApiWebApp.Mapping;
+
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetController : ControllerBase
+    public class AssetController(IRepository<Asset> assetRepository, IRepository<Customer> customerRepository) : ControllerBase
     {
-        private readonly IRepository<Asset> _assetRepository;
-        private readonly IRepository<Customer> _customerRepository;
-
-        public AssetController(IRepository<Asset> assetRepository, IRepository<Customer> customerRepository)
-        {
-            _assetRepository = assetRepository ?? throw new ArgumentNullException(nameof(assetRepository));
-            _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
-        }
+        private readonly IRepository<Asset> _assetRepository = assetRepository ?? throw new ArgumentNullException(nameof(assetRepository));
+        private readonly IRepository<Customer> _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AssetDto>>> GetAssets()
         {
             var assets = await _assetRepository.GetAllAsync();
-            var assetDtos = assets.Select(asset => new AssetDto
-            {
-                Id = asset.Id,
-                Type = asset.Type,
-                IpAddress = asset.IpAddress,
-                Url = asset.Url,
-                License = asset.License,
-                CreatedAt = asset.CreatedAt,
-                SupportExpiration = asset.SupportExpiration,
-                Notes = asset.Notes,
-                UpdatedAt = asset.UpdatedAt,
-                CustomerId = asset.CustomerId,
-            });
-
+            var assetDtos = assets.Select(asset => asset.ToDto()).ToList(); // Use the ToDto method from AssetMap
+           
             return Ok(assetDtos);
         }
 
@@ -53,19 +32,8 @@ namespace ApiWebApp.Controllers
                 return NotFound();
             }
 
-            var assetDto = new AssetDto
-            {
-                Id = asset.Id,
-                Type = asset.Type,
-                IpAddress = asset.IpAddress,
-                Url = asset.Url,
-                License = asset.License,
-                CreatedAt = asset.CreatedAt,
-                SupportExpiration = asset.SupportExpiration,
-                Notes = asset.Notes,
-                UpdatedAt = asset.UpdatedAt,
-                CustomerId = asset.CustomerId,
-            };
+            var assetDto = asset.ToDto(); // Use the ToDto method from AssetMap
+           
 
             return Ok(assetDto);
         }
@@ -84,36 +52,13 @@ namespace ApiWebApp.Controllers
                 return BadRequest("Invalid customer ID");
             }
 
-            var asset = new Asset
-            {
-                Type = assetDto.Type,
-                IpAddress = assetDto.IpAddress,
-                Url = assetDto.Url,
-                License = assetDto.License,
-                CreatedAt = assetDto.CreatedAt,
-                UpdatedAt = null,
-                SupportExpiration = assetDto.SupportExpiration,
-                Notes = assetDto.Notes,
-                CustomerId = assetDto.CustomerId,
-            };
+            var asset = assetDto.ToEntity(); // Use the ToEntity method from AssetMap
 
             await _assetRepository.AddAsync(asset);
 
             var createdAsset = await _assetRepository.GetByIdAsync(asset.Id);
 
-            var assetResponseDto = new AssetDto
-            {
-                Id = createdAsset.Id,
-                Type = createdAsset.Type,
-                IpAddress = createdAsset.IpAddress,
-                Url = createdAsset.Url,
-                License = createdAsset.License,
-                CreatedAt = createdAsset.CreatedAt,
-                UpdatedAt = createdAsset.UpdatedAt,
-                SupportExpiration = createdAsset.SupportExpiration,
-                Notes = createdAsset.Notes,
-                CustomerId = createdAsset.CustomerId,
-            };
+            var assetResponseDto = createdAsset.ToDto(); 
 
             return CreatedAtAction(nameof(GetAsset), new { id = createdAsset.Id }, assetResponseDto);
         }
@@ -126,17 +71,9 @@ namespace ApiWebApp.Controllers
             {
                 return NotFound();
             }
-
-            asset.Type = assetDto.Type;
-            asset.IpAddress = assetDto.IpAddress;
-            asset.Url = assetDto.Url;
-            asset.License = assetDto.License;
-            asset.SupportExpiration = assetDto.SupportExpiration;
-            asset.Notes = assetDto.Notes;
-            asset.UpdatedAt = DateTime.UtcNow;
+            assetDto.UpdateEntity(asset); // Use the UpdateEntity method from AssetMap
             await _assetRepository.UpdateAsync(asset);
-            assetDto.Id = asset.Id;
-            assetDto.CustomerId = asset.CustomerId;
+            var updatedAssetDto = asset.ToDto();
 
             return Ok(assetDto);
         }

@@ -38,6 +38,7 @@ public class CustomerController(IRepository<Customer> customerRepository, ILogge
             return BadRequest(ModelState);
         }
 
+
         // Step 2: Use the mapping method to convert the DTO to an entity
         var customer = customerDto.ToEntity();
 
