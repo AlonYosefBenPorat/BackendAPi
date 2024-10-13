@@ -39,7 +39,7 @@ namespace ApiWebApp.Dto
         public int BnNumber { get; set; }
 
         public bool IsActive { get; set; }
-        public Logo Logo { get; set; }
+        public Image Logo { get; set; }
     
 
    

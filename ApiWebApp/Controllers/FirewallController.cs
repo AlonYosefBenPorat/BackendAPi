@@ -1,21 +1,31 @@
-﻿using ApiWebApp.Dto;
-using ApiWebApp.Repositories;
+﻿using ApiWebApp.DAL.Model;
+using ApiWebApp.Dto;
 using DAL.Data;
 using DAL.Models;
+using DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FirewallController(IRepository<Firewall> firewallRepository, ICustomerRepository customerRepository) : ControllerBase
+    public class FirewallController : ControllerBase
     {
-        private readonly IRepository<Firewall> _firewallRepository = firewallRepository ?? throw new ArgumentNullException(nameof(firewallRepository));
-        private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        private readonly IRepository<Firewall> _firewallRepository;
+        private readonly IRepository<Customer> _customerRepository;
+
+        public FirewallController(IRepository<Firewall> firewallRepository, IRepository<Customer> customerRepository)
+        {
+            _firewallRepository = firewallRepository ?? throw new ArgumentNullException(nameof(firewallRepository));
+            _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Firewall>>> GetFirewalls()
+        public async Task<ActionResult<IEnumerable<FirewallDto>>> GetFirewalls()
         {
             var firewalls = await _firewallRepository.GetAllAsync();
             var firewallDtos = firewalls.Select(firewall => new FirewallDto
@@ -28,11 +38,10 @@ namespace ApiWebApp.Controllers
                 MacAddress = firewall.MacAddress,
                 License = firewall.License,
                 CreatedAt = firewall.CreatedAt,
-             
                 IsActive = firewall.IsActive,
                 CustomerId = firewall.CustomerId
             }).ToList();
-            
+
             return Ok(firewallDtos);
         }
 
@@ -54,7 +63,6 @@ namespace ApiWebApp.Controllers
                 MacAddress = firewall.MacAddress,
                 License = firewall.License,
                 CreatedAt = firewall.CreatedAt,
-               
                 IsActive = firewall.IsActive,
                 CustomerId = firewall.CustomerId
             };
@@ -70,7 +78,7 @@ namespace ApiWebApp.Controllers
                 return BadRequest(ModelState);
             }
             // Validate CustomerId
-            var customer = await _customerRepository.GetCustomerByIdAsync(firewallDto.CustomerId);
+            var customer = await _customerRepository.GetByIdAsync(firewallDto.CustomerId);
             if (customer == null)
             {
                 return BadRequest("Invalid CustomerId");
@@ -78,7 +86,6 @@ namespace ApiWebApp.Controllers
 
             var firewall = new Firewall
             {
-               
                 Version = firewallDto.Version,
                 Model = firewallDto.Model,
                 SerialNumber = firewallDto.SerialNumber,
@@ -88,7 +95,7 @@ namespace ApiWebApp.Controllers
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = firewallDto.UpdatedAt,
                 IsActive = firewallDto.IsActive,
-                CustomerId = firewallDto.CustomerId // Ensure this is set
+                CustomerId = firewallDto.CustomerId
             };
 
             await _firewallRepository.AddAsync(firewall);
@@ -104,7 +111,6 @@ namespace ApiWebApp.Controllers
                 MacAddress = createdFirewall.MacAddress,
                 License = createdFirewall.License,
                 CreatedAt = createdFirewall.CreatedAt,
-               
                 IsActive = createdFirewall.IsActive,
                 CustomerId = createdFirewall.CustomerId
             };
@@ -142,10 +148,11 @@ namespace ApiWebApp.Controllers
 
             return Ok(firewall);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFirewall(Guid id)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

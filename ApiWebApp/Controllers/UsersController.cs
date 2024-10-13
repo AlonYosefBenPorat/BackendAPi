@@ -119,7 +119,7 @@ public class UsersController : ControllerBase
         // Update ProfileImage properties if they are provided in the DTO
         if (user.ProfileImage == null)
         {
-            user.ProfileImage = new ProfileImage();
+            user.ProfileImage = new Image();
         }
         user.ProfileImage.Alt = updateUserDto.ProfileAlt ?? user.ProfileImage.Alt;
         user.ProfileImage.Src = updateUserDto.ProfileSrc ?? user.ProfileImage.Src;

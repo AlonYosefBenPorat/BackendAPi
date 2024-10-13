@@ -2,16 +2,26 @@
 using ApiWebApp.Dto;
 using ApiWebApp.DAL.Model;
 using DAL.Data;
-using ApiWebApp.Repositories;
+using DAL.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetController(IRepository<Asset> assetRepository, ICustomerRepository customerRepository) : ControllerBase
+    public class AssetController : ControllerBase
     {
-        private readonly IRepository<Asset> _assetRepository = assetRepository ?? throw new ArgumentNullException(nameof(assetRepository));
-        private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        private readonly IRepository<Asset> _assetRepository;
+        private readonly IRepository<Customer> _customerRepository;
+
+        public AssetController(IRepository<Asset> assetRepository, IRepository<Customer> customerRepository)
+        {
+            _assetRepository = assetRepository ?? throw new ArgumentNullException(nameof(assetRepository));
+            _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AssetDto>>> GetAssets()
@@ -68,7 +78,7 @@ namespace ApiWebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var customer = await _customerRepository.GetCustomerByIdAsync(assetDto.CustomerId);
+            var customer = await _customerRepository.GetByIdAsync(assetDto.CustomerId);
             if (customer == null)
             {
                 return BadRequest("Invalid customer ID");

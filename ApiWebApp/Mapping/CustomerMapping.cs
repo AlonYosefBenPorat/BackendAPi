@@ -21,7 +21,7 @@ namespace ApiWebApp.Mapping
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = null,
                 IsActive = customerDto.IsActive,
-                Logo = new Logo
+                Logo = new Image
                 {
                     Alt = customerDto.Logo.Alt,
                     Src = customerDto.Logo.Src

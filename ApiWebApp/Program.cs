@@ -6,7 +6,7 @@ using System.Text;
 using ApiWebApp.Auth;
 using ApiWebApp.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using ApiWebApp.Repositories;
+
 using WebApp.DAL.Model;
 using DAL.Repositories;
 using ApiWebApp.DAL.Model;
@@ -80,7 +80,7 @@ namespace ApiWebApp
 
             // Register the repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddScoped<IRepository<Customer>, Repository<Customer>>();
             builder.Services.AddScoped<IRepository<Server>, Repository<Server>>();
             builder.Services.AddScoped<IRepository<Backup>, Repository<Backup>>();
             builder.Services.AddScoped<IRepository<NetworkDevice>, Repository<NetworkDevice>>();

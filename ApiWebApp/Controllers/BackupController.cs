@@ -2,16 +2,22 @@
 using ApiWebApp.Dto;
 using ApiWebApp.DAL.Model;
 using DAL.Data;
-using ApiWebApp.Repositories;
+using DAL.Repositories;
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BackupController(IRepository<Backup> backupRepository, ICustomerRepository customerRepository) : ControllerBase
+    public class BackupController : ControllerBase
     {
-        private readonly IRepository<Backup> _backupRepository = backupRepository ?? throw new ArgumentNullException(nameof(backupRepository));
-        private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        private readonly IRepository<Backup> _backupRepository;
+        private readonly IRepository<Customer> _customerRepository;
+
+        public BackupController(IRepository<Backup> backupRepository, IRepository<Customer> customerRepository)
+        {
+            _backupRepository = backupRepository ?? throw new ArgumentNullException(nameof(backupRepository));
+            _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BackupDto>>> GetBackups()
@@ -69,8 +75,7 @@ namespace ApiWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddBackup(BackupDto backupDto)
         {
-          
-            var customer = await _customerRepository.GetCustomerByIdAsync(backupDto.CustomerId);
+            var customer = await _customerRepository.GetByIdAsync(backupDto.CustomerId);
             if (customer == null)
             {
                 return BadRequest("Invalid CustomerId");
@@ -89,11 +94,11 @@ namespace ApiWebApp.Controllers
                 LastRestore = backupDto.LastRestore,
                 CreatedAt = backupDto.CreatedAt,
                 UpdatedAt = null,
-                CustomerId = backupDto.CustomerId 
+                CustomerId = backupDto.CustomerId
             };
 
             await _backupRepository.AddAsync(backup);
-            var  createdBackup = await _backupRepository.GetByIdAsync(backup.Id);
+            var createdBackup = await _backupRepository.GetByIdAsync(backup.Id);
             var backupResponseDto = new BackupDto
             {
                 Id = createdBackup.Id,
@@ -120,8 +125,6 @@ namespace ApiWebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
-        
 
             var backup = await _backupRepository.GetByIdAsync(id);
             if (backup == null)
@@ -140,10 +143,10 @@ namespace ApiWebApp.Controllers
             backup.LastRestore = backupDto.LastRestore;
             backup.CreatedAt = backupDto.CreatedAt;
             backup.UpdatedAt = DateTime.UtcNow;
-            backup.CustomerId = backupDto.CustomerId; 
+            backup.CustomerId = backupDto.CustomerId;
 
             await _backupRepository.UpdateAsync(backup);
-            return Ok( backup);
+            return Ok(backup);
         }
 
         [HttpDelete("{id}")]

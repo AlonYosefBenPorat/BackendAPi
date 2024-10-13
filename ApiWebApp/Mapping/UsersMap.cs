@@ -42,7 +42,7 @@ namespace ApiWebApp.Mapping
                 IsEnabled = userDto.IsEnabled,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = null,
-                ProfileImage = new ProfileImage
+                ProfileImage = new Image
                 {
                     Alt = userDto.ProfileAlt ?? string.Empty,
                     Src = userDto.ProfileSrc ?? string.Empty

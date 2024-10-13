@@ -1,22 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.Dto;
 using ApiWebApp.Model;
-using ApiWebApp.Repositories;
+using DAL.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiWebApp.DTOs;
 using DAL.Data;
+using ApiWebApp.DAL.Model;
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServerController(IRepository<Server> serverRepository, ICustomerRepository customerRepository) : ControllerBase
+    public class ServerController : ControllerBase
     {
-        private readonly IRepository<Server> _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
-        private readonly ICustomerRepository _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        private readonly IRepository<Server> _serverRepository;
+        private readonly IRepository<Customer> _customerRepository;
+
+        public ServerController(IRepository<Server> serverRepository, IRepository<Customer> customerRepository)
+        {
+            _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
+            _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
@@ -25,23 +32,23 @@ namespace ApiWebApp.Controllers
             var serverDtos = servers.Select(server => new ServerDto
             {
                 Id = server.Id,
-                IpAddress = server.IpAddress,
-                Hostname = server.Hostname,
-                SerialNumber = server.SerialNumber,
-                Model = server.Model,
-                Brand = server.Brand,
-                Type = server.Type,
-                Vendor = server.Vendor,
-                Ram = server.Ram,
-                Storage = server.Storage,
-                OperatingSystem = server.OperatingSystem,
-                Roles = server.Roles,
-                Description = server.Description,
+                IpAddress = server.IpAddress ?? string.Empty,
+                Hostname = server.Hostname ?? string.Empty,
+                SerialNumber = server.SerialNumber ?? string.Empty,
+                Model = server.Model ?? string.Empty,
+                Brand = server.Brand ?? string.Empty,
+                Type = server.Type ?? string.Empty,
+                Vendor = server.Vendor ?? string.Empty,
+                Ram = server.Ram ?? string.Empty,
+                Storage = server.Storage ?? string.Empty,
+                OperatingSystem = server.OperatingSystem ?? string.Empty,
+                Roles = server.Roles ?? string.Empty,
+                Description = server.Description ?? string.Empty,
                 CreatedAt = server.CreatedAt,
                 UpdatedAt = server.UpdatedAt,
                 WarrantyExpiration = server.WarrantyExpiration,
                 CustomerId = server.CustomerId,
-            });
+            }).ToList();
 
             return Ok(serverDtos);
         }
@@ -58,18 +65,18 @@ namespace ApiWebApp.Controllers
             var serverDto = new ServerDto
             {
                 Id = server.Id,
-                IpAddress = server.IpAddress,
-                Hostname = server.Hostname,
-                SerialNumber = server.SerialNumber,
-                Model = server.Model,
-                Brand = server.Brand,
-                Type = server.Type,
-                Vendor = server.Vendor,
-                Ram = server.Ram,
-                Storage = server.Storage,
-                OperatingSystem = server.OperatingSystem,
-                Roles = server.Roles,
-                Description = server.Description,
+                IpAddress = server.IpAddress ?? string.Empty,
+                Hostname = server.Hostname ?? string.Empty,
+                SerialNumber = server.SerialNumber ?? string.Empty,
+                Model = server.Model ?? string.Empty,
+                Brand = server.Brand ?? string.Empty,
+                Type = server.Type ?? string.Empty,
+                Vendor = server.Vendor ?? string.Empty,
+                Ram = server.Ram ?? string.Empty,
+                Storage = server.Storage ?? string.Empty,
+                OperatingSystem = server.OperatingSystem ?? string.Empty,
+                Roles = server.Roles ?? string.Empty,
+                Description = server.Description ?? string.Empty,
                 CreatedAt = server.CreatedAt,
                 UpdatedAt = server.UpdatedAt,
                 WarrantyExpiration = server.WarrantyExpiration,
@@ -87,7 +94,7 @@ namespace ApiWebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var customer = await _customerRepository.GetCustomerByIdAsync(serverDto.CustomerId);
+            var customer = await _customerRepository.GetByIdAsync(serverDto.CustomerId);
             if (customer == null)
             {
                 return BadRequest("Invalid customer ID");
@@ -95,18 +102,18 @@ namespace ApiWebApp.Controllers
 
             var server = new Server
             {
-                IpAddress = serverDto.IpAddress,
-                Hostname = serverDto.Hostname,
-                SerialNumber = serverDto.SerialNumber,
-                Model = serverDto.Model,
-                Brand = serverDto.Brand,
-                Type = serverDto.Type,
-                Vendor = serverDto.Vendor,
-                Ram = serverDto.Ram,
-                Storage = serverDto.Storage,
-                OperatingSystem = serverDto.OperatingSystem,
-                Roles = serverDto.Roles,
-                Description = serverDto.Description,
+                IpAddress = serverDto.IpAddress ?? string.Empty,
+                Hostname = serverDto.Hostname ?? string.Empty,
+                SerialNumber = serverDto.SerialNumber ?? string.Empty,
+                Model = serverDto.Model ?? string.Empty,
+                Brand = serverDto.Brand ?? string.Empty,
+                Type = serverDto.Type ?? string.Empty,
+                Vendor = serverDto.Vendor ?? string.Empty,
+                Ram = serverDto.Ram ?? string.Empty,
+                Storage = serverDto.Storage ?? string.Empty,
+                OperatingSystem = serverDto.OperatingSystem ?? string.Empty,
+                Roles = serverDto.Roles ?? string.Empty,
+                Description = serverDto.Description ?? string.Empty,
                 CreatedAt = serverDto.CreatedAt,
                 UpdatedAt = null,
                 WarrantyExpiration = serverDto.WarrantyExpiration,
@@ -120,18 +127,18 @@ namespace ApiWebApp.Controllers
             var serverResponseDto = new ServerDto
             {
                 Id = createdServer.Id,
-                IpAddress = createdServer.IpAddress,
-                Hostname = createdServer.Hostname,
-                SerialNumber = createdServer.SerialNumber,
-                Model = createdServer.Model,
-                Brand = createdServer.Brand,
-                Type = createdServer.Type,
-                Vendor = createdServer.Vendor,
-                Ram = createdServer.Ram,
-                Storage = createdServer.Storage,
-                OperatingSystem = createdServer.OperatingSystem,
-                Roles = createdServer.Roles,
-                Description = createdServer.Description,
+                IpAddress = createdServer.IpAddress ?? string.Empty,
+                Hostname = createdServer.Hostname ?? string.Empty,
+                SerialNumber = createdServer.SerialNumber ?? string.Empty,
+                Model = createdServer.Model ?? string.Empty,
+                Brand = createdServer.Brand ?? string.Empty,
+                Type = createdServer.Type ?? string.Empty,
+                Vendor = createdServer.Vendor ?? string.Empty,
+                Ram = createdServer.Ram ?? string.Empty,
+                Storage = createdServer.Storage ?? string.Empty,
+                OperatingSystem = createdServer.OperatingSystem ?? string.Empty,
+                Roles = createdServer.Roles ?? string.Empty,
+                Description = createdServer.Description ?? string.Empty,
                 CreatedAt = createdServer.CreatedAt,
                 UpdatedAt = createdServer.UpdatedAt,
                 WarrantyExpiration = createdServer.WarrantyExpiration,
@@ -150,22 +157,21 @@ namespace ApiWebApp.Controllers
                 return NotFound();
             }
 
-            server.IpAddress = serverDto.IpAddress;
-            server.Hostname = serverDto.Hostname;
-            server.SerialNumber = serverDto.SerialNumber;
-            server.Model = serverDto.Model;
-            server.Brand = serverDto.Brand;
-            server.Type = serverDto.Type;
-            server.Vendor = serverDto.Vendor;
-            server.Ram = serverDto.Ram;
-            server.Storage = serverDto.Storage;
-            server.OperatingSystem = serverDto.OperatingSystem;
-            server.Roles = serverDto.Roles;
-            server.Description = serverDto.Description;
+            server.IpAddress = serverDto.IpAddress ?? string.Empty;
+            server.Hostname = serverDto.Hostname ?? string.Empty;
+            server.SerialNumber = serverDto.SerialNumber ?? string.Empty;
+            server.Model = serverDto.Model ?? string.Empty;
+            server.Brand = serverDto.Brand ?? string.Empty;
+            server.Type = serverDto.Type ?? string.Empty;
+            server.Vendor = serverDto.Vendor ?? string.Empty;
+            server.Ram = serverDto.Ram ?? string.Empty;
+            server.Storage = serverDto.Storage ?? string.Empty;
+            server.OperatingSystem = serverDto.OperatingSystem ?? string.Empty;
+            server.Roles = serverDto.Roles ?? string.Empty;
+            server.Description = serverDto.Description ?? string.Empty;
             server.UpdatedAt = DateTime.UtcNow;
             server.WarrantyExpiration = serverDto.WarrantyExpiration;
             await _serverRepository.UpdateAsync(server);
-            
 
             return Ok(serverDto);
         }
