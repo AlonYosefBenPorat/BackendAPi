@@ -7,12 +7,15 @@ namespace ApiWebApp.DTOs
     public class ServerDto
     {
         public Guid Id { get; set; }
-        public string? IpAddress { get; set; }
         public string? Hostname { get; set; }
-        public string? SerialNumber { get; set; }
-        public string? Model { get; set; }
+        public string? IpAddress { get; set; }
+
+        public string? Model { get; set; } 
         public string? Brand { get; set; }
         public string? Type { get; set; }
+        public string? SerialNumber { get; set; }
+        
+       
         public string? Vendor { get; set; }
         public string? Ram { get; set; }
         public string? Storage { get; set; }

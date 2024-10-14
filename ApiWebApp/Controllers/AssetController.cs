@@ -18,8 +18,7 @@ namespace ApiWebApp.Controllers
         public async Task<ActionResult<IEnumerable<AssetDto>>> GetAssets()
         {
             var assets = await _assetRepository.GetAllAsync();
-            var assetDtos = assets.Select(asset => asset.ToDto()).ToList(); // Use the ToDto method from AssetMap
-           
+            var assetDtos = assets.Select(asset => asset.ToDto()).ToList();  
             return Ok(assetDtos);
         }
 
@@ -27,12 +26,12 @@ namespace ApiWebApp.Controllers
         public async Task<ActionResult<AssetDto>> GetAsset(Guid id)
         {
             var asset = await _assetRepository.GetByIdAsync(id);
-            if (asset == null)
+            if (asset is null)
             {
                 return NotFound();
             }
 
-            var assetDto = asset.ToDto(); // Use the ToDto method from AssetMap
+            var assetDto = asset.ToDto(); 
            
 
             return Ok(assetDto);
@@ -47,48 +46,46 @@ namespace ApiWebApp.Controllers
             }
 
             var customer = await _customerRepository.GetByIdAsync(assetDto.CustomerId);
-            if (customer == null)
+            if (customer is null)
             {
                 return BadRequest("Invalid customer ID");
             }
 
-            var asset = assetDto.ToEntity(); // Use the ToEntity method from AssetMap
-
+            var asset = assetDto.ToEntity(); 
             await _assetRepository.AddAsync(asset);
-
             var createdAsset = await _assetRepository.GetByIdAsync(asset.Id);
-
             var assetResponseDto = createdAsset.ToDto(); 
-
-            return CreatedAtAction(nameof(GetAsset), new { id = createdAsset.Id }, assetResponseDto);
+            return CreatedAtAction(nameof(GetAsset), new { id = assetResponseDto.Id }, assetResponseDto);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsset(Guid id, AssetDto assetDto)
-        {
+        {if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var asset = await _assetRepository.GetByIdAsync(id);
-            if (asset == null)
+            if (asset is null)
             {
                 return NotFound();
             }
-            assetDto.UpdateEntity(asset); // Use the UpdateEntity method from AssetMap
+            assetDto.UpdateEntity(asset);
             await _assetRepository.UpdateAsync(asset);
             var updatedAssetDto = asset.ToDto();
-
-            return Ok(assetDto);
+            return Ok(updatedAssetDto);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsset(Guid id)
         {
             var asset = await _assetRepository.GetByIdAsync(id);
-            if (asset == null)
+            if (asset is null)
             {
                 return NotFound();
             }
-
             await _assetRepository.DeleteAsync(id);
-            return Ok($"{id} deleted successfully");
+            return NoContent();
         }
     }
 }

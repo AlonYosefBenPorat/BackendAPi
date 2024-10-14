@@ -2,6 +2,7 @@
 using ApiWebApp.Dto;
 using ApiWebApp.DAL.Model;
 using DAL.Data;
+using ApiWebApp.Mapping;
 
 
 namespace ApiWebApp.Controllers
@@ -17,22 +18,7 @@ namespace ApiWebApp.Controllers
         public async Task<ActionResult<IEnumerable<BackupDto>>> GetBackups()
         {
             var backups = await _backupRepository.GetAllAsync();
-            var backupDtos = backups.Select(backup => new BackupDto
-            {
-                Id = backup.Id,
-                BackupProvider = backup.BackupProvider,
-                BackupData = backup.BackupData,
-                Rpo = backup.Rpo,
-                Rto = backup.Rto,
-                BackupStorge = backup.BackupStorge,
-                BackupEncrypted = backup.BackupEncrypted,
-                BackupRetntion = backup.BackupRetntion,
-                Capacity = backup.Capacity,
-                LastRestore = backup.LastRestore,
-                CreatedAt = backup.CreatedAt,
-                UpdatedAt = backup.UpdatedAt,
-                CustomerId = backup.CustomerId
-            }).ToList();
+            var backupDtos = backups.Select(backup =>  backup.ToDto()).ToList();
 
             return Ok(backupDtos);
         }
@@ -41,27 +27,12 @@ namespace ApiWebApp.Controllers
         public async Task<ActionResult<BackupDto>> GetBackup(Guid id)
         {
             var backup = await _backupRepository.GetByIdAsync(id);
-            if (backup == null)
+            if (backup is null)
             {
                 return NotFound();
             }
 
-            var backupDto = new BackupDto
-            {
-                Id = backup.Id,
-                BackupProvider = backup.BackupProvider,
-                BackupData = backup.BackupData,
-                Rpo = backup.Rpo,
-                Rto = backup.Rto,
-                BackupStorge = backup.BackupStorge,
-                BackupEncrypted = backup.BackupEncrypted,
-                BackupRetntion = backup.BackupRetntion,
-                Capacity = backup.Capacity,
-                LastRestore = backup.LastRestore,
-                CreatedAt = backup.CreatedAt,
-                UpdatedAt = backup.UpdatedAt,
-                CustomerId = backup.CustomerId
-            };
+           var backupDto = backup.ToDto();
 
             return Ok(backupDto);
         }
@@ -69,46 +40,22 @@ namespace ApiWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddBackup(BackupDto backupDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var customer = await _customerRepository.GetByIdAsync(backupDto.CustomerId);
-            if (customer == null)
+            if (customer is null)
             {
                 return BadRequest("Invalid CustomerId");
             }
 
-            var backup = new Backup
-            {
-                BackupProvider = backupDto.BackupProvider,
-                BackupData = backupDto.BackupData,
-                Rpo = backupDto.Rpo,
-                Rto = backupDto.Rto,
-                BackupStorge = backupDto.BackupStorge,
-                BackupEncrypted = backupDto.BackupEncrypted,
-                BackupRetntion = backupDto.BackupRetntion,
-                Capacity = backupDto.Capacity,
-                LastRestore = backupDto.LastRestore,
-                CreatedAt = backupDto.CreatedAt,
-                UpdatedAt = null,
-                CustomerId = backupDto.CustomerId
-            };
-
+            var backup = backupDto.ToEntity();
             await _backupRepository.AddAsync(backup);
             var createdBackup = await _backupRepository.GetByIdAsync(backup.Id);
-            var backupResponseDto = new BackupDto
-            {
-                Id = createdBackup.Id,
-                BackupProvider = createdBackup.BackupProvider,
-                BackupData = createdBackup.BackupData,
-                Rpo = createdBackup.Rpo,
-                Rto = createdBackup.Rto,
-                BackupStorge = createdBackup.BackupStorge,
-                BackupEncrypted = createdBackup.BackupEncrypted,
-                BackupRetntion = createdBackup.BackupRetntion,
-                Capacity = createdBackup.Capacity,
-                LastRestore = createdBackup.LastRestore,
-                CreatedAt = createdBackup.CreatedAt,
-                UpdatedAt = createdBackup.UpdatedAt,
-                CustomerId = createdBackup.CustomerId
-            };
+            var backupResponseDto = createdBackup.ToDto();
+            // return  no t lik in #BackupController if we  returne netwrikDeviceResponseDto it will be better or creaedNetworkDevice
+
             return CreatedAtAction(nameof(GetBackup), new { id = backupResponseDto.Id }, backupResponseDto);
         }
 
@@ -121,26 +68,15 @@ namespace ApiWebApp.Controllers
             }
 
             var backup = await _backupRepository.GetByIdAsync(id);
-            if (backup == null)
+            if (backup is null)
             {
                 return NotFound();
             }
 
-            backup.BackupProvider = backupDto.BackupProvider;
-            backup.BackupData = backupDto.BackupData;
-            backup.Rpo = backupDto.Rpo;
-            backup.Rto = backupDto.Rto;
-            backup.BackupStorge = backupDto.BackupStorge;
-            backup.BackupEncrypted = backupDto.BackupEncrypted;
-            backup.BackupRetntion = backupDto.BackupRetntion;
-            backup.Capacity = backupDto.Capacity;
-            backup.LastRestore = backupDto.LastRestore;
-            backup.CreatedAt = backupDto.CreatedAt;
-            backup.UpdatedAt = DateTime.UtcNow;
-            backup.CustomerId = backupDto.CustomerId;
-
+            backupDto.UpdateEntity(backup);
             await _backupRepository.UpdateAsync(backup);
-            return Ok(backup);
+            var updatedBackup = backup.ToDto();
+            return Ok(updatedBackup);
         }
 
         [HttpDelete("{id}")]

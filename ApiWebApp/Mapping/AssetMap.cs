@@ -46,6 +46,7 @@ namespace ApiWebApp.Mapping
                 CreatedAt = asset.CreatedAt,
                 SupportExpiration = asset.SupportExpiration,
                 Notes = asset.Notes,
+                UpdatedAt = asset.UpdatedAt,
                 CustomerId = asset.CustomerId
             };
         }

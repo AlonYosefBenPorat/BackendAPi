@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiWebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    [Migration("20241009175102_First")]
-    partial class First
+    [Migration("20241014194810_DbcONTEXT")]
+    partial class DbcONTEXT
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -303,7 +303,7 @@ namespace ApiWebApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Vendor")
@@ -576,7 +576,7 @@ namespace ApiWebApp.Migrations
 
             modelBuilder.Entity("ApiWebApp.DAL.Model.AppUsers", b =>
                 {
-                    b.OwnsOne("ApiWebApp.DAL.Model.ProfileImage", "ProfileImage", b1 =>
+                    b.OwnsOne("ApiWebApp.DAL.Model.Image", "ProfileImage", b1 =>
                         {
                             b1.Property<string>("AppUsersId")
                                 .HasColumnType("nvarchar(450)");
@@ -624,7 +624,7 @@ namespace ApiWebApp.Migrations
 
             modelBuilder.Entity("ApiWebApp.DAL.Model.Customer", b =>
                 {
-                    b.OwnsOne("ApiWebApp.DAL.Model.Logo", "Logo", b1 =>
+                    b.OwnsOne("ApiWebApp.DAL.Model.Image", "Logo", b1 =>
                         {
                             b1.Property<Guid>("CustomerId")
                                 .HasColumnType("uniqueidentifier");

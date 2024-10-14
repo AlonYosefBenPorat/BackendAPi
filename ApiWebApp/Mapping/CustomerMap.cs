@@ -44,5 +44,29 @@ namespace ApiWebApp.Mapping
             customer.Logo.Alt = customerDto.Logo.Alt;
             customer.Logo.Src = customerDto.Logo.Src;
         }
+        //Cheak id need this method
+        //public static CustomerDto ToDto(this Customer customer)
+        //{
+        //    return new CustomerDto
+        //    {
+        //        Id = customer.Id,
+        //        Name = customer.Name,
+        //        Country = customer.Country,
+        //        City = customer.City,
+        //        Address = customer.Address,
+        //        Phone = customer.Phone,
+        //        ContactPerson = customer.ContactPerson,
+        //        Domain = customer.Domain,
+        //        BnNumber = customer.BnNumber,
+        //        CreatedAt = customer.CreatedAt,
+        //        UpdatedAt = customer.UpdatedAt,
+        //        IsActive = customer.IsActive,
+        //        Logo = new ImageDto
+        //        {
+        //            Alt = customer.Logo.Alt,
+        //            Src = customer.Logo.Src
+        //        }
+        //    };
+        }
     }
-}
+

@@ -185,7 +185,7 @@ public class UsersController : ControllerBase
         var result = await _userRepository.DeleteUserAsync(user);
         if (result.Succeeded)
         {
-            return Ok($"User Id: {id} Deleted Successfully");
+            return NoContent();
         }
 
         foreach (var error in result.Errors)

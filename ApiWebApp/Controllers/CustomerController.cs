@@ -75,6 +75,6 @@ public class CustomerController(IRepository<Customer> customerRepository, ILogge
     public async Task<IActionResult> DeleteCustomer(Guid id)
     {
         await _customerRepository.DeleteAsync(id);
-        return Ok($"{id} Deleted");
+        return NoContent();
     }
 }
