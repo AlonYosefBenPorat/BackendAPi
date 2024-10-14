@@ -2,7 +2,6 @@
 using ApiWebApp.Dto;
 using ApiWebApp.Mapping;
 using DAL.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 public class CustomerController(IRepository<Customer> customerRepository, ILogger<CustomerController> logger) : ControllerBase
 {
     private readonly IRepository<Customer> _customerRepository = customerRepository;
-    private readonly ILogger<CustomerController> _logger = logger;
+    //private readonly ILogger<CustomerController> _logger = logger;
 
     [HttpGet]
     public async Task<IActionResult> GetCustomers()
@@ -23,7 +22,7 @@ public class CustomerController(IRepository<Customer> customerRepository, ILogge
     public async Task<IActionResult> GetCustomer(Guid id)
     {
         var customer = await _customerRepository.GetByIdAsync(id);
-        if (customer == null)
+        if (customer is null)
         {
             return NotFound();
         }
@@ -32,17 +31,13 @@ public class CustomerController(IRepository<Customer> customerRepository, ILogge
     [HttpPost]
     public async Task<IActionResult> CreateCustomer([FromBody] CustomerDto customerDto)
     {
-        // Step 1: Validate the model state
+        
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-
-        // Step 2: Use the mapping method to convert the DTO to an entity
         var customer = customerDto.ToEntity();
-
-        // Step 3: Add the customer to the database
         await _customerRepository.AddAsync(customer);
         return Ok(customer);
     }
@@ -58,7 +53,7 @@ public class CustomerController(IRepository<Customer> customerRepository, ILogge
 
         // Step 2: Retrieve the existing customer
         var existingCustomer = await _customerRepository.GetByIdAsync(id);
-        if (existingCustomer == null)
+        if (existingCustomer is null)
         {
             return NotFound();
         }

@@ -6,14 +6,9 @@ using ApiWebApp.Mapping;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController : ControllerBase
+public class UsersController(IUserRepository userRepository) : ControllerBase
 {
-    private readonly IUserRepository _userRepository;
-
-    public UsersController(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
+    private readonly IUserRepository _userRepository = userRepository;
 
     [EnableCors("AllowAll")]
     [HttpGet]
@@ -38,7 +33,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetUser(string id)
     {
         var user = await _userRepository.GetUserByIdAsync(id);
-        if (user != null)
+        if (user is not null)
         {
             var roles = await _userRepository.GetUserRolesAsync(user);
             return Ok(UsersMap.ToDto(user, roles));
@@ -102,27 +97,14 @@ public class UsersController : ControllerBase
         }
 
         var user = await _userRepository.GetUserByIdAsync(id);
-        if (user == null)
+        if (user is null)
         {
             ModelState.AddModelError("UserNotFound", "User with the specified ID was not found.");
             return NotFound(ModelState);
         }
 
-        // Update user properties if they are provided in the DTO
-        user.FirstName = updateUserDto.FirstName ?? user.FirstName;
-        user.LastName = updateUserDto.LastName ?? user.LastName;
-        user.PhoneNumber = updateUserDto.PhoneNumber ?? user.PhoneNumber;
-        user.JobTitle = updateUserDto.JobTitle ?? user.JobTitle;
-        user.IsEnabled = updateUserDto.IsEnabled;
-        user.UpdatedAt = DateTime.UtcNow;
-
-        // Update ProfileImage properties if they are provided in the DTO
-        if (user.ProfileImage == null)
-        {
-            user.ProfileImage = new Image();
-        }
-        user.ProfileImage.Alt = updateUserDto.ProfileAlt ?? user.ProfileImage.Alt;
-        user.ProfileImage.Src = updateUserDto.ProfileSrc ?? user.ProfileImage.Src;
+        // Use UsersMap to update user properties
+        UsersMap.UpdateModel(user, updateUserDto);
 
         if (!string.IsNullOrEmpty(updateUserDto.Role))
         {
@@ -171,6 +153,7 @@ public class UsersController : ControllerBase
 
         return BadRequest(ModelState);
     }
+
 
     [HttpDelete("{id}")]
     //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]

@@ -11,7 +11,7 @@
 
 
 //3. Backup:
-// * add maping to reduce the code 
+
 //* add requierd fields to Models 
 //* handle null in Model
 
@@ -22,18 +22,18 @@
 
 
 //5. Server
-// * add maping to reduce the code 
+
 //* add requierd fields to Models 
 //* handle null in Model
 
 
 //6.NetworkDevice
-// * add maping to reduce the code 
+
 //* add requierd fields to Models 
 //* handle null in Model
 
 //7.Firewall
-// * add maping to reduce the code 
+
 //* add requierd fields to Models 
 //* handle null in Model
 
