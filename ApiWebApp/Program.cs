@@ -12,6 +12,10 @@ using DAL.Repositories;
 using ApiWebApp.DAL.Model;
 using DAL.Data;
 using DAL.Models;
+using NETCore.MailKit.Infrastructure.Internal;
+using NETCore.MailKit.Extensions;
+using ApiWebApp.Services;
+using ApiWebApp.Services.Interfaces;
 
 namespace ApiWebApp
 {
@@ -98,6 +102,10 @@ namespace ApiWebApp
                                .AllowAnyMethod();
                     });
             });
+
+            // Add services to the container.
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             var app = builder.Build();
 
