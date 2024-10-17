@@ -57,7 +57,7 @@ public class CustomerController(IRepository<Customer> customerRepository, ILogge
         }
 
         customer.IsActive = updateCustomerStatusDto.IsActive;
-
+        customer.UpdatedAt = updateCustomerStatusDto.UpdatedAt;
         await _customerRepository.UpdateAsync(customer);
         return Ok(new { customer.IsActive });
     }

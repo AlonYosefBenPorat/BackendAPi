@@ -205,6 +205,7 @@ public class UsersController(IUserRepository userRepository) : ControllerBase
         }
 
         user.IsEnabled = updateUserStatusDto.IsEnabled;
+        user.UpdatedAt = updateUserStatusDto.UpdatedAt;
 
         var result = await _userRepository.UpdateUserAsync(user);
         if (result.Succeeded)
@@ -237,6 +238,7 @@ public class UsersController(IUserRepository userRepository) : ControllerBase
         }
 
         user.JobTitle = updateUserJobDto.JobTitle;
+        user.UpdatedAt = updateUserJobDto.UpdatedAt;
 
         var result = await _userRepository.UpdateUserAsync(user);
         if (result.Succeeded)
