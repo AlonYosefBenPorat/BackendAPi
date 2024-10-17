@@ -3,39 +3,37 @@
 //add controloer to get asset by CustomerID
 
 //2. User:
-// edit user Stuts to enable/ disabl handle on update
-// add user paswword Reset  and update as sprated controoler  
-//add request in postman and save  it as collection
+
 //spertaed user paswword form seed to Json  
 
 
 
 //3. Backup:
-
-//* add requierd fields to Models 
-//* handle null in Model
+//*Ahutrzie  the backup to be done by user role and token 
+//* add requierd fields to Models  and DTO
+//* handle null in Model and DTO
 
 //4. Asset:
- 
+
 //* add requierd fields to Models 
-//* handle null in Model
+//* handle null in Model and DTO
 
 
 //5. Server
 
 //* add requierd fields to Models 
-//* handle null in Model
+//* handle null in Model and DTO
 
 
 //6.NetworkDevice
 
 //* add requierd fields to Models 
-//* handle null in Model
+//* handle null in Model and DTO
 
 //7.Firewall
 
 //* add requierd fields to Models 
-//* handle null in Model
+//* handle null in Model and DTO
 
 
 

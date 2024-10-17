@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.DAL.Model;
 using ApiWebApp.Mapping;
+using Microsoft.AspNetCore.Identity;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -153,6 +154,104 @@ public class UsersController(IUserRepository userRepository) : ControllerBase
 
         return BadRequest(ModelState);
     }
+
+    [HttpPatch("{id}/reset-password")]
+    //[Authorize(AuthenticationSchemes
+  
+    public async Task<IActionResult> ResetPassword(string id, [FromBody] ResetPasswordDto resetPasswordDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var user = await _userRepository.GetUserByIdAsync(id);
+        if (user is null)
+        {
+           
+            return NotFound(ModelState);
+        }
+
+        var passwordHasher = new PasswordHasher<AppUsers>();
+        user.PasswordHash = passwordHasher.HashPassword(user, resetPasswordDto.Password);
+
+        var result = await _userRepository.UpdateUserAsync(user);
+        if (result.Succeeded)
+        {
+            return Ok();
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("UpdateError", error.Description);
+        }
+
+        return BadRequest(ModelState);
+    }
+
+    [HttpPatch("{id}/update-status")]
+    public async Task<IActionResult> UpdateUserStatus(string  id, [FromBody] UpdateUserStatusDto updateUserStatusDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var user = await _userRepository.GetUserByIdAsync(id);
+        if (user is null)
+        {
+            ModelState.AddModelError("UserNotFound", "User with the specified ID was not found.");
+            return NotFound(ModelState);
+        }
+
+        user.IsEnabled = updateUserStatusDto.IsEnabled;
+
+        var result = await _userRepository.UpdateUserAsync(user);
+        if (result.Succeeded)
+        {
+            // Return the updated status
+            return Ok(new {  user.IsEnabled });
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("UpdateError", error.Description);
+        }
+
+        return BadRequest(ModelState);
+    }
+
+    [HttpPatch("{id}/update-JobTitle")]
+    public async Task<IActionResult> UpdateProfile(string id,[FromBody] UserJobTitleDto updateUserJobDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var user = await _userRepository.GetUserByIdAsync(id);
+        if (user is null)
+        {
+            ModelState.AddModelError("UserNotFound", "User with the specified ID was not found.");
+            return NotFound(ModelState);
+        }
+
+        user.JobTitle = updateUserJobDto.JobTitle;
+
+        var result = await _userRepository.UpdateUserAsync(user);
+        if (result.Succeeded)
+        {
+            return Ok(new {user.JobTitle});
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("UpdateError", error.Description);
+        }
+
+        return BadRequest(ModelState);
+    }
+
 
 
     [HttpDelete("{id}")]

@@ -42,6 +42,26 @@ public class CustomerController(IRepository<Customer> customerRepository, ILogge
         return Ok(customer);
     }
 
+    [HttpPatch("{id}/update-status")]
+    public async Task<IActionResult> UpdateCustomerStatus(Guid id, [FromBody] UpdateCustomerStatusDto updateCustomerStatusDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var customer = await _customerRepository.GetByIdAsync(id);
+        if (customer is null)
+        {
+            return NotFound();
+        }
+
+        customer.IsActive = updateCustomerStatusDto.IsActive;
+
+        await _customerRepository.UpdateAsync(customer);
+        return Ok(new { customer.IsActive });
+    }
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDto customerDto)
     {
