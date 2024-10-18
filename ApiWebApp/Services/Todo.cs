@@ -5,6 +5,10 @@
 //2. User:
 
 //spertaed user paswword form seed to Json  
+//logs Login to DB Table  using  SQL Database Logging  user Loign.
+//reset Password  to be done by user role and token = send to react app by Email
+//Make Aoutamtic service to ruj in task time like  amount of user || Login 24 HOuers  number of Customer Add .
+//logic to handle user assigh to Customer? how can we do that? by role, group, new field in cusomer List Of UsersID  or by token?
 
 
 

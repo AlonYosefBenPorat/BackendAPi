@@ -19,6 +19,7 @@ public static class UsersMap
             user.IsEnabled,
             user.CreatedAt,
             user.UpdatedAt,
+            user.LastPasswordUpdated,
             Roles = roles,
             ProfileImage = new
             {
@@ -42,6 +43,7 @@ public static class UsersMap
             IsEnabled = userDto.IsEnabled,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = null,
+            LastPasswordUpdated= null,
             ProfileImage = new Image
             {
                 Alt = userDto.ProfileAlt ?? string.Empty,

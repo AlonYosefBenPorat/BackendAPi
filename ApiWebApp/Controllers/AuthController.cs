@@ -6,15 +6,17 @@ using ApiWebApp.Auth;
 using ApiWebApp.DAL.Model;
 using ApiWebApp.Dto;
 using DAL.Models;
+using ApiWebApp.Services.Interfaces; // Add this line
 
 namespace ApiWebApp.DAL.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController(UserManager<AppUsers> userManager, TokenService tokenService) : ControllerBase
+    public class AuthController(UserManager<AppUsers> userManager, TokenService tokenService, IEmailService emailService) : ControllerBase
     {
         private readonly UserManager<AppUsers> _userManager = userManager;
         private readonly TokenService _tokenService = tokenService;
+        private readonly IEmailService _emailService = emailService; // Add this line
 
         // Login action
         [EnableCors("AllowAll")]
@@ -29,7 +31,7 @@ namespace ApiWebApp.DAL.Controllers
             var user = await _userManager.FindByNameAsync(login.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
             {
-                user.LastLogon = DateTime.Now;
+                user.LastLogon = DateTime.UtcNow;
                 await _userManager.UpdateAsync(user);
                 var token = await _tokenService.GenerateJwtToken(user);
                 return Ok(new { Token = token });
@@ -56,15 +58,19 @@ namespace ApiWebApp.DAL.Controllers
             }
 
             var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user == null)
+            if (user is null)
             {
                 return BadRequest("User not found.");
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            // Here you would typically send the token to the user's email
-            // For simplicity, we'll return it in the response
-            return Ok(new { Token = token });
+            var resetLink = $"https://localhost:7193/ResetPassword?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(request.Email)}";
+
+
+            var message = $"Please reset your password by clicking here: {resetLink}";
+            await _emailService.SendEmailAsync(request.Email, "Password Reset Request was made to youe Email", message);
+
+            return Ok("Password reset link has been sent to your email.");
         }
 
         // Reset password
@@ -77,7 +83,7 @@ namespace ApiWebApp.DAL.Controllers
             }
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (user is null)
             {
                 return BadRequest("User not found.");
             }
@@ -90,6 +96,12 @@ namespace ApiWebApp.DAL.Controllers
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (result.Succeeded)
             {
+                user.LastPasswordUpdated = DateTime.UtcNow;
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    return BadRequest("Failed to update user.");
+                }
                 return Ok("Password has been reset successfully.");
             }
 
@@ -98,3 +110,4 @@ namespace ApiWebApp.DAL.Controllers
         }
     }
 }
+

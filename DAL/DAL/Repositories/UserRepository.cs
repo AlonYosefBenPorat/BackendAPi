@@ -4,16 +4,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DAL.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(UserManager<AppUsers> userManager, RoleManager<IdentityRole> roleManager) : IUserRepository
 {
-    private readonly UserManager<AppUsers> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-
-    public UserRepository(UserManager<AppUsers> userManager, RoleManager<IdentityRole> roleManager)
-    {
-        _userManager = userManager;
-        _roleManager = roleManager;
-    }
+    private readonly UserManager<AppUsers> _userManager = userManager;
+    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
     public async Task<IEnumerable<AppUsers>> GetAllUsersAsync()
     {

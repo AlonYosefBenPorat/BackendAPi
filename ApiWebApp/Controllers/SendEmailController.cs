@@ -27,11 +27,4 @@ namespace ApiWebApp.Controllers
             return Ok("Email sent successfully.");
         }
     }
-
-    public class EmailRequest
-    {
-        public string ToEmail { get; set; }
-        public string Subject { get; set; }
-        public string Message { get; set; }
-    }
 }

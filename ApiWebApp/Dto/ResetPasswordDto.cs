@@ -3,6 +3,7 @@
     public class ResetPasswordDto
     {
         public string Password { get; set; }
-        //public DateTime UpdatedAt = DateTime.UtcNow;
+        public DateTime LastPasswordUpdated { get; set; }= DateTime.UtcNow;
+      
     }
 }

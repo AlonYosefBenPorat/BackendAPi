@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace ApiWebApp.Services
 {
-    public class EmailService : IEmailService
+    public class EmailService(IOptions<MailSettings> mailSettings) : IEmailService
     {
-        private readonly MailSettings _mailSettings;
-
-        public EmailService(IOptions<MailSettings> mailSettings)
-        {
-            _mailSettings = mailSettings.Value;
-        }
+        private readonly MailSettings _mailSettings = mailSettings.Value;
 
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
