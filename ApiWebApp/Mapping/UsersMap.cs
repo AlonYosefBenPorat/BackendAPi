@@ -60,13 +60,11 @@ public static class UsersMap
         user.IsEnabled = userDto.IsEnabled;
         user.UpdatedAt = DateTime.UtcNow;
 
-        if (user.ProfileImage is null)
-        {
-            user.ProfileImage = new Image();
-        }
-        user.ProfileImage.Alt ??= userDto.ProfileAlt;
-        user.ProfileImage.Src ??= userDto.ProfileSrc;
+        user.ProfileImage ??= new Image();
+        user.ProfileImage.Alt = userDto.ProfileAlt ?? user.ProfileImage.Alt ?? string.Empty;
+        user.ProfileImage.Src = userDto.ProfileSrc ?? user.ProfileImage.Src ?? string.Empty;
     }
+
 
 
 }

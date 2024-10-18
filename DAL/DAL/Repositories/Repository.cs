@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DAL.Data;
+using DAL.Utilities; // Add this using directive
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace DAL.Data
+namespace DAL.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -18,27 +20,6 @@ namespace DAL.Data
             _dbSet = _context.Set<T>();
         }
 
-        public async Task AddAsync(T entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            var entity = await _dbSet.FindAsync(id);
-            if (entity == null)
-            {
-                throw new KeyNotFoundException($"{id} of {typeof(T).Name} item not found.");
-            }
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
@@ -47,37 +28,59 @@ namespace DAL.Data
         public async Task<T> GetByIdAsync(Guid id)
         {
             var entity = await _dbSet.FindAsync(id);
-            if (entity == null)
+            if (entity is null)
             {
-                throw new KeyNotFoundException($"{id} of {typeof(T).Name} item not found.");
+                throw new InvalidOperationException($"Entity with id {id} not found.");
             }
             return entity;
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task AddAsync(T entity)
         {
+            _ = entity ?? throw new ArgumentNullException(nameof(entity));
+            await _dbSet.AddAsync(entity); // No need for null-forgiving operator
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var entity = await _dbSet.FindAsync(id);
             if (entity == null)
             {
-                throw new ArgumentNullException(nameof(entity));
+                throw new InvalidOperationException($"Entity with id {id} not found.");
             }
-            _dbSet.Update(entity);
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(T entity)
+        {
+            _ = entity ?? throw new ArgumentNullException(nameof(entity));
+            _dbSet.Update(entity); // No need for null-forgiving operator
             await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.Where(predicate).ToListAsync();
+            _ = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            return await _dbSet.Where(predicate).ToListAsync(); // No need for null-forgiving operator
         }
 
-        public async Task<T> FindOneAsync(Expression<Func<T, bool>> predicate)
+        public async Task<T?> FindOneAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.FirstOrDefaultAsync(predicate);
+            _ = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            return await _dbSet.FirstOrDefaultAsync(predicate); // No need for null-forgiving operator
         }
 
         public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
         {
-            var entities = _dbSet.Where(predicate);
-            _dbSet.RemoveRange(entities);
+            _ = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            var entity = await _dbSet.FirstOrDefaultAsync(predicate); // No need for null-forgiving operator
+            if (entity is null)
+            {
+                throw new InvalidOperationException("Entity not found.");
+            }
+            _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

@@ -6,7 +6,8 @@ using ApiWebApp.Auth;
 using ApiWebApp.DAL.Model;
 using ApiWebApp.Dto;
 using DAL.Models;
-using ApiWebApp.Services.Interfaces; // Add this line
+using ApiWebApp.Services.Interfaces;
+using ApiWebApp.Services; 
 
 namespace ApiWebApp.DAL.Controllers
 {

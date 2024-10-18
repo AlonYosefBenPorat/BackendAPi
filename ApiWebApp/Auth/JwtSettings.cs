@@ -1,9 +1,8 @@
-﻿namespace ApiWebApp.Auth
+﻿namespace ApiWebApp.Auth;
+
+public class JwtSettings
 {
-    public class JwtSettings
-    {
-        public string Audience { get; set; }
-        public string Issuer { get; set; }
-        public string SecretKey { get; set; }
-    }
+    public string Audience { get; set; } = string.Empty;
+    public string Issuer { get; set; } = string.Empty;
+    public string SecretKey { get; set; } = string.Empty;
 }

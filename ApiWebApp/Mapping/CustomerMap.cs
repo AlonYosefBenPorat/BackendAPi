@@ -1,5 +1,6 @@
 ﻿using ApiWebApp.DAL.Model;
 using ApiWebApp.Dto;
+using DAL.Models;
 
 namespace ApiWebApp.Mapping
 {
@@ -7,6 +8,11 @@ namespace ApiWebApp.Mapping
     {
         public static Customer ToEntity(this CustomerDto customerDto)
         {
+            if (customerDto == null)
+            {
+                throw new ArgumentNullException(nameof(customerDto));
+            }
+
             return new Customer
             {
                 Id = Guid.NewGuid(),
@@ -19,18 +25,22 @@ namespace ApiWebApp.Mapping
                 Domain = customerDto.Domain,
                 BnNumber = customerDto.BnNumber,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = null,
-                IsActive = customerDto.IsActive,
-                Logo = new Image
-                {
-                    Alt = customerDto.Logo.Alt,
-                    Src = customerDto.Logo.Src
-                }
+                IsActive = customerDto.IsActive
             };
         }
 
         public static void UpdateEntity(this CustomerDto customerDto, Customer customer)
         {
+            if (customerDto is null)
+            {
+                throw new ArgumentNullException(nameof(customerDto));
+            }
+
+            if (customer is null)
+            {
+                throw new ArgumentNullException(nameof(customer));
+            }
+
             customer.Name = customerDto.Name;
             customer.Country = customerDto.Country;
             customer.City = customerDto.City;
@@ -41,32 +51,30 @@ namespace ApiWebApp.Mapping
             customer.BnNumber = customerDto.BnNumber;
             customer.IsActive = customerDto.IsActive;
             customer.UpdatedAt = DateTime.UtcNow;
-            customer.Logo.Alt = customerDto.Logo.Alt;
-            customer.Logo.Src = customerDto.Logo.Src;
         }
-        //Cheak id need this method
-        //public static CustomerDto ToDto(this Customer customer)
-        //{
-        //    return new CustomerDto
-        //    {
-        //        Id = customer.Id,
-        //        Name = customer.Name,
-        //        Country = customer.Country,
-        //        City = customer.City,
-        //        Address = customer.Address,
-        //        Phone = customer.Phone,
-        //        ContactPerson = customer.ContactPerson,
-        //        Domain = customer.Domain,
-        //        BnNumber = customer.BnNumber,
-        //        CreatedAt = customer.CreatedAt,
-        //        UpdatedAt = customer.UpdatedAt,
-        //        IsActive = customer.IsActive,
-        //        Logo = new ImageDto
-        //        {
-        //            Alt = customer.Logo.Alt,
-        //            Src = customer.Logo.Src
-        //        }
-        //    };
+
+        public static CustomerDto ToDto(this Customer customer)
+        {
+            if (customer == null)
+            {
+                throw new ArgumentNullException(nameof(customer));
+            }
+
+            return new CustomerDto
+            {
+                Id = customer.Id,
+                Name = customer.Name,
+                Country = customer.Country,
+                City = customer.City,
+                Address = customer.Address,
+                Phone = customer.Phone,
+                ContactPerson = customer.ContactPerson,
+                Domain = customer.Domain,
+                BnNumber = customer.BnNumber,
+                CreatedAt = customer.CreatedAt,
+                IsActive = customer.IsActive,
+                UpdatedAt = customer.UpdatedAt
+            };
         }
     }
-
+}

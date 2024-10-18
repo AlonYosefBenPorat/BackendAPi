@@ -1,18 +1,25 @@
 ﻿using ApiWebApp.DAL.Model;
 using ApiWebApp.Model;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.DTOs
 {
     public class ServerDto
     {
         public Guid Id { get; set; }
-        public string? Hostname { get; set; }
-        public string? IpAddress { get; set; }
+        public Guid CustomerId { get; set; }
 
+        [Required, MinLength(1), MaxLength(50) ]
+        public required string Hostname { get; set; }
+        
+        [Required]
+        public required string IpAddress { get; set; }
         public string? Model { get; set; } 
         public string? Brand { get; set; }
-        public string? Type { get; set; }
+
+        [Required]
+        public required string Type { get; set; }
         public string? SerialNumber { get; set; }
         
        
@@ -25,7 +32,7 @@ namespace ApiWebApp.DTOs
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? WarrantyExpiration { get; set; }
-        public Guid CustomerId { get; set; }
+        
        
     }
 }

@@ -4,92 +4,89 @@ using ApiWebApp.Mapping;
 using DAL.Data;
 using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")]
-[ApiController]
-public class CustomerController(IRepository<Customer> customerRepository, ILogger<CustomerController> logger) : ControllerBase
+namespace ApiWebApp.Controllers
 {
-    private readonly IRepository<Customer> _customerRepository = customerRepository;
-    //private readonly ILogger<CustomerController> _logger = logger;
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CustomerController(IRepository<Customer> customerRepository) : ControllerBase()
+    {
+        private readonly IRepository<Customer> _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
 
-    [HttpGet]
-    public async Task<IActionResult> GetCustomers()
-    {
-        var customers = await _customerRepository.GetAllAsync();
-        return Ok(customers);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetCustomer(Guid id)
-    {
-        var customer = await _customerRepository.GetByIdAsync(id);
-        if (customer is null)
+        [HttpGet]
+        public async Task<IActionResult> GetCustomers()
         {
-            return NotFound();
-        }
-        return Ok(customer);
-    }
-    [HttpPost]
-    public async Task<IActionResult> CreateCustomer([FromBody] CustomerDto customerDto)
-    {
-        
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
+            var customers = await _customerRepository.GetAllAsync();
+            return Ok(customers);
         }
 
-        var customer = customerDto.ToEntity();
-        await _customerRepository.AddAsync(customer);
-        return Ok(customer);
-    }
-
-    [HttpPatch("{id}/update-status")]
-    public async Task<IActionResult> UpdateCustomerStatus(Guid id, [FromBody] UpdateCustomerStatusDto updateCustomerStatusDto)
-    {
-        if (!ModelState.IsValid)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCustomer(Guid id)
         {
-            return BadRequest(ModelState);
+            var customer = await _customerRepository.GetByIdAsync(id);
+            if (customer is null)
+            {
+                return NotFound();
+            }
+            return Ok(customer);
         }
 
-        var customer = await _customerRepository.GetByIdAsync(id);
-        if (customer is null)
+        [HttpPost]
+        public async Task<IActionResult> CreateCustomer([FromBody] CustomerDto customerDto)
         {
-            return NotFound();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var customer = customerDto.ToEntity();
+            await _customerRepository.AddAsync(customer);
+            return Ok(customer);
         }
 
-        customer.IsActive = updateCustomerStatusDto.IsActive;
-        customer.UpdatedAt = updateCustomerStatusDto.UpdatedAt;
-        await _customerRepository.UpdateAsync(customer);
-        return Ok(new { customer.IsActive });
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDto customerDto)
-    {
-        // Step 1: Validate the model state
-        if (!ModelState.IsValid)
+        [HttpPatch("{id}/update-status")]
+        public async Task<IActionResult> UpdateCustomerStatus(Guid id, [FromBody] UpdateCustomerStatusDto updateCustomerStatusDto)
         {
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var customer = await _customerRepository.GetByIdAsync(id);
+            if (customer is null)
+            {
+                return NotFound();
+            }
+
+            customer.IsActive = updateCustomerStatusDto.IsActive;
+            customer.UpdatedAt = updateCustomerStatusDto.UpdatedAt;
+            await _customerRepository.UpdateAsync(customer);
+            return Ok(new { customer.IsActive });
         }
 
-        // Step 2: Retrieve the existing customer
-        var existingCustomer = await _customerRepository.GetByIdAsync(id);
-        if (existingCustomer is null)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDto customerDto)
         {
-            return NotFound();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingCustomer = await _customerRepository.GetByIdAsync(id);
+            if (existingCustomer is null)
+            {
+                return NotFound();
+            }
+
+            customerDto.UpdateEntity(existingCustomer);
+            await _customerRepository.UpdateAsync(existingCustomer);
+            return Ok(existingCustomer);
         }
 
-        // Step 3: Use the mapping method to update the existing customer
-        customerDto.UpdateEntity(existingCustomer);
-
-        // Step 4: Update the customer
-        await _customerRepository.UpdateAsync(existingCustomer);
-        return Ok(existingCustomer);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCustomer(Guid id)
-    {
-        await _customerRepository.DeleteAsync(id);
-        return NoContent();
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCustomer(Guid id)
+        {
+            await _customerRepository.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }

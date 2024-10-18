@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using ApiWebApp.Model;
 using ApiWebApp.Auth;
 using ApiWebApp.DAL.Model;
 
-public class TokenService
+namespace ApiWebApp.Services;
+public class TokenService(UserManager<AppUsers> userManager, JwtSettings jwtSettings)
 {
-    private readonly UserManager<AppUsers> _userManager;
-    private readonly JwtSettings _jwtSettings;
-
-    public TokenService(UserManager<AppUsers> userManager, JwtSettings jwtSettings)
-    {
-        _userManager = userManager;
-        _jwtSettings = jwtSettings;
-    }
+    private readonly UserManager<AppUsers> _userManager = userManager;
+    private readonly JwtSettings _jwtSettings = jwtSettings;
 
     public async Task<string> GenerateJwtToken(AppUsers user)
     {
@@ -35,7 +25,7 @@ public class TokenService
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Name, user.UserName?? string.Empty),
             new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         }

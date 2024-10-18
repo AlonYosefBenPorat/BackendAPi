@@ -10,22 +10,24 @@ public static class FirewallMap
         return new Firewall
         {
             Id = Guid.NewGuid(),
-           
+           Brand = firewallDto.Brand,
             Version = firewallDto.Version,
             Model = firewallDto.Model,
             SerialNumber = firewallDto.SerialNumber,
             IpAddress = firewallDto.IpAddress,
             MacAddress = firewallDto.MacAddress,
             License = firewallDto.License,
+            
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = null,
-            IsActive = firewallDto.IsActive, 
+            IsActive = firewallDto.IsActive,
+            Notes = firewallDto.Notes,
             CustomerId = firewallDto.CustomerId,
         };
     }
     public static void UpdateEntity(this FirewallDto firewallDto, Firewall firewall)
     {
-        
+        firewall.Brand = firewallDto.Brand;
         firewall.Version = firewallDto.Version;
         firewall.Model = firewallDto.Model;
         firewall.SerialNumber = firewallDto.SerialNumber;
@@ -34,6 +36,7 @@ public static class FirewallMap
         firewall.License = firewallDto.License;
         firewall.UpdatedAt = DateTime.UtcNow;
         firewall.IsActive = firewallDto.IsActive;
+        firewall.Notes = firewallDto.Notes;
         firewall.CustomerId = firewallDto.CustomerId;
     }
     public static FirewallDto ToDto(this Firewall firewall)
@@ -41,7 +44,7 @@ public static class FirewallMap
         return new FirewallDto
         {
             Id = firewall.Id,
-            
+            Brand = firewall.Brand,
             Version = firewall.Version,
             Model = firewall.Model,
             SerialNumber = firewall.SerialNumber,
@@ -50,6 +53,7 @@ public static class FirewallMap
             License = firewall.License,
             CreatedAt = firewall.CreatedAt,
             IsActive = firewall.IsActive,
+            Notes = firewall.Notes,
             UpdatedAt = firewall.UpdatedAt,
             CustomerId = firewall.CustomerId,
         };

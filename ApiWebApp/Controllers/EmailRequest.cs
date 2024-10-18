@@ -1,9 +1,8 @@
-﻿namespace ApiWebApp.Controllers
+﻿namespace ApiWebApp.Controllers;
+
+public class EmailRequest
 {
-    public class EmailRequest
-    {
-        public string ToEmail { get; set; }
-        public string Subject { get; set; }
-        public string Message { get; set; }
-    }
+    public string ToEmail { get; set; } = string.Empty;
+    public string Subject { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
 }

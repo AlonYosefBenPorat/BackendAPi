@@ -66,7 +66,8 @@ public static class ServerMap
             Description = server.Description,
             WarrantyExpiration = server.WarrantyExpiration,
             CreatedAt = server.CreatedAt,
-            UpdatedAt = server.UpdatedAt
+            UpdatedAt = server.UpdatedAt,
+            CustomerId = server.CustomerId
         };
     }
 
