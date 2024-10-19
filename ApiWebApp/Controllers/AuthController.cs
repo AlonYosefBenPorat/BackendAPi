@@ -13,11 +13,12 @@ namespace ApiWebApp.DAL.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController(UserManager<AppUsers> userManager, TokenService tokenService, IEmailService emailService) : ControllerBase
+    public class AuthController(UserManager<AppUsers> userManager, TokenService tokenService, IEmailService emailService, WebAppContext context) : ControllerBase
     {
         private readonly UserManager<AppUsers> _userManager = userManager;
         private readonly TokenService _tokenService = tokenService;
-        private readonly IEmailService _emailService = emailService; // Add this line
+        private readonly IEmailService _emailService = emailService; 
+        private readonly WebAppContext _context = context ;
 
         // Login action
         [EnableCors("AllowAll")]
@@ -30,14 +31,29 @@ namespace ApiWebApp.DAL.Controllers
             }
 
             var user = await _userManager.FindByNameAsync(login.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
-            {
-                user.LastLogon = DateTime.UtcNow;
-                await _userManager.UpdateAsync(user);
-                var token = await _tokenService.GenerateJwtToken(user);
-                return Ok(new { Token = token });
-            }
+            var IsSuccessful =user != null && await _userManager.CheckPasswordAsync(user, login.Password);
+            var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
 
+            //Save Login Attempt
+            var loginAttempt = new LoginAttempt
+                {
+                    UserName = login.Username,
+                    AttemptedAt = DateTime.UtcNow,
+                    IsSucceeded = IsSuccessful,
+                    RemoteIpAddress = remoteIpAddress
+                };
+            _context.LoginAttempts.Add(loginAttempt);
+            await _context.SaveChangesAsync();
+            if (IsSuccessful)
+            {
+                if (user is not null)
+                {
+                    user.LastLogon = DateTime.UtcNow;
+                    await _userManager.UpdateAsync(user);
+                    var token = await _tokenService.GenerateJwtToken(user);
+                    return Ok(new { Token = token });
+                }
+            }
             return Unauthorized();
         }
 

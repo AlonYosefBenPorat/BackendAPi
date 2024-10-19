@@ -19,6 +19,7 @@ public class WebAppContext : IdentityDbContext<AppUsers>
     public DbSet<Firewall> Firewalls { get; set; }
     public DbSet<Backup> Backups { get; set; }
     public DbSet<Asset> Assets { get; set; }
+    public DbSet<LoginAttempt> LoginAttempts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
