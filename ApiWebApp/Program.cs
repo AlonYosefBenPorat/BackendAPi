@@ -91,6 +91,9 @@ namespace ApiWebApp
             builder.Services.AddScoped<IRepository<Firewall>, Repository<Firewall>>();
             builder.Services.AddScoped<IRepository<Asset>, Repository<Asset>>();
 
+            //Register LogCleaner
+            builder.Services.AddScoped<LogCleanupService>();
+
             // Add CORS services
             builder.Services.AddCors(options =>
             {

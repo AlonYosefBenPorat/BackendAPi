@@ -13,7 +13,7 @@ namespace DAL.Data
         Task DeleteAsync(Guid id);
         Task UpdateAsync(T entity);
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);
-        Task<T?> FindOneAsync(Expression<Func<T, bool>> predicate); // Updated to T?
+        Task<T?> FindOneAsync(Expression<Func<T, bool>> predicate); 
         Task DeleteAsync(Expression<Func<T, bool>> predicate);
     }
 }

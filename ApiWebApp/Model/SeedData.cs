@@ -1,4 +1,5 @@
 ﻿using ApiWebApp.DAL.Model;
+using DAL.Data;
 using Microsoft.AspNetCore.Identity;
 
 namespace ApiWebApp.Model;

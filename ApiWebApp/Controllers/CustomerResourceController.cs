@@ -1,64 +1,46 @@
-﻿//using ApiWebApp.Repositories;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-//using System;
-//using System.Linq;
-//using System.Threading.Tasks;
+﻿
+using Microsoft.AspNetCore.Mvc;
 
-//namespace ApiWebApp.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class CustomerResourceController : ControllerBase
-//    {
-//        private readonly ICustomerRepository _customerRepository;
+using ApiWebApp.Dto;
+using ApiWebApp.Mapping;
+using ApiWebApp.DAL.Model;
+using DAL.Data;
+using DAL.Models;
 
-//        public CustomerResourceController(ICustomerRepository customerRepository)
-//        {
-//            _customerRepository = customerRepository;
-//        }
+namespace ApiWebApp.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CustomerResourceController(
+        IRepository<Server> serverRepository,
+        IRepository<NetworkDevice> networkDeviceRepository,
+        IRepository<Firewall> firewallRepository,
+        IRepository<Asset> assetRepository,
+        IRepository<Backup> backupRepository) : ControllerBase
+    {
+        private readonly IRepository<Server> _serverRepository = serverRepository;
+        private readonly IRepository<NetworkDevice> _networkDeviceRepository = networkDeviceRepository;
+        private readonly IRepository<Firewall> _firewallRepository = firewallRepository;
+        private readonly IRepository<Asset> _assetRepository = assetRepository;
+        private readonly IRepository<Backup> _backupRepository = backupRepository;
 
+        [HttpGet("by-customer/{customerId}")]
+        public async Task<IActionResult> GetItemsByCustomerId(Guid customerId)
+        {
+            var servers = await _serverRepository.FindAllAsync(s => s.CustomerId == customerId);
+            var networkDevices = await _networkDeviceRepository.FindAllAsync(nd => nd.CustomerId == customerId);
+            var firewalls = await _firewallRepository.FindAllAsync(f => f.CustomerId == customerId);
+            var assets = await _assetRepository.FindAllAsync(a => a.CustomerId == customerId);
+            var backups = await _backupRepository.FindAllAsync(b => b.CustomerId == customerId);
 
-//        // Get customer with assets by CustomerID
-//        [HttpGet("{id}/assets")]
-//        public async Task<IActionResult> GetCustomerWithAssets(Guid id)
-//        {
-//            var customer = await _customerRepository.GetCustomerWithAssetsAsync(id);
-//            if (customer == null)
-//            {
-//                return NotFound(new { Message = $"Customer with ID:{id} not found." });
-//            }
+            var items = new List<ItemDto>();
+            items.AddRange(servers.Select(ItemMapping.ToDto));
+            items.AddRange(networkDevices.Select(ItemMapping.ToDto));
+            items.AddRange(firewalls.Select(ItemMapping.ToDto));
+            items.AddRange(assets.Select(ItemMapping.ToDto));
+            items.AddRange(backups.Select(ItemMapping.ToDto));
 
-//            var result = new
-//            {
-//                customer.
-//                customer.Id,
-//                customer.Name,
-//                customer.Country,
-//                customer.City,
-//                customer.Address,
-//                customer.Phone,
-//                customer.ContactPerson,
-//                customer.Domain,
-//                customer.BnNumber,
-//                customer.CreatedAt,
-//                customer.UpdatedAt,
-//                customer.IsActive,
-//                customer.Logo,
-//                Assets = customer.Assets.Select(a => new
-//                {
-//                    a.Id,
-//                    a.Type,
-//                    a.IpAddress,
-//                    a.Url,
-//                    a.License,
-//                    a.SupportExpiration,
-//                    a.Notes,
-//                    a.UpdatedAt
-//                })
-//            };
-
-//            return Ok(result);
-//        }
-//    }
-//}
+            return Ok(items);
+        }
+    }
+}

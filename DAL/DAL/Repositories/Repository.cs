@@ -38,14 +38,14 @@ namespace DAL.Repositories
         public async Task AddAsync(T entity)
         {
             _ = entity ?? throw new ArgumentNullException(nameof(entity));
-            await _dbSet.AddAsync(entity); // No need for null-forgiving operator
+            await _dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
             var entity = await _dbSet.FindAsync(id);
-            if (entity == null)
+            if (entity is null)
             {
                 throw new InvalidOperationException($"Entity with id {id} not found.");
             }
@@ -56,26 +56,26 @@ namespace DAL.Repositories
         public async Task UpdateAsync(T entity)
         {
             _ = entity ?? throw new ArgumentNullException(nameof(entity));
-            _dbSet.Update(entity); // No need for null-forgiving operator
+            _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate)
         {
             _ = predicate ?? throw new ArgumentNullException(nameof(predicate));
-            return await _dbSet.Where(predicate).ToListAsync(); // No need for null-forgiving operator
+            return await _dbSet.Where(predicate).ToListAsync();
         }
 
         public async Task<T?> FindOneAsync(Expression<Func<T, bool>> predicate)
         {
             _ = predicate ?? throw new ArgumentNullException(nameof(predicate));
-            return await _dbSet.FirstOrDefaultAsync(predicate); // No need for null-forgiving operator
+            return await _dbSet.FirstOrDefaultAsync(predicate);
         }
 
         public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
         {
             _ = predicate ?? throw new ArgumentNullException(nameof(predicate));
-            var entity = await _dbSet.FirstOrDefaultAsync(predicate); // No need for null-forgiving operator
+            var entity = await _dbSet.FirstOrDefaultAsync(predicate);
             if (entity is null)
             {
                 throw new InvalidOperationException("Entity not found.");
