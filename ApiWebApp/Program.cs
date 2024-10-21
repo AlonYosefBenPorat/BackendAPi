@@ -110,6 +110,9 @@ namespace ApiWebApp
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddScoped<IEmailService, EmailService>();
 
+            //Register the background service LogEmailBackgroundService
+            builder.Services.AddHostedService<LogEmailBackgroundService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

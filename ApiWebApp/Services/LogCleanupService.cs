@@ -8,10 +8,13 @@ namespace ApiWebApp.Services
 
         public async Task CleanupLogsAsync()
         {
-            var cutoffDate = DateTime.UtcNow.AddDays(-31);
-            var oldLogs = _context.LoginAttempts.Where(log => log.AttemptedAt < cutoffDate);
-            _context.LoginAttempts.RemoveRange(oldLogs);
-            await _context.SaveChangesAsync();
+            await Task.Run(async () =>
+            {
+                var cutoffDate = DateTime.UtcNow.AddDays(-31);
+                var oldLogs = _context.LoginAttempts.Where(log => log.AttemptedAt < cutoffDate);
+                _context.LoginAttempts.RemoveRange(oldLogs);
+                await _context.SaveChangesAsync();
+            });
         }
     }
 }

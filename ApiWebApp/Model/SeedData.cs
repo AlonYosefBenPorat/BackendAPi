@@ -1,5 +1,6 @@
 ﻿using ApiWebApp.DAL.Model;
 using DAL.Data;
+using DAL.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace ApiWebApp.Model;
@@ -148,6 +149,33 @@ public static class SeedData
         else
         {
             logger.LogInformation("Assets already exist.");
+        }
+
+        // Seed Firewall
+        if (customer != null && !context.Firewalls.Any(f => f.CustomerId == customer.Id))
+        {
+            var firewall = new Firewall
+            {
+                CustomerId = customer.Id,
+                Brand = "Cisco",
+                Model = "ASA 5506-X",
+                Version = "9.8",
+                SerialNumber = "FCH12345678",
+                IpAddress = "192.168.1.3",
+                MacAddress = "00:1A:2B:3C:4D:5E",
+                License = DateTime.UtcNow.AddYears(1),
+                IsActive = true,
+                Notes = "Primary firewall for Acme Corporation",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            context.Firewalls.Add(firewall);
+            await context.SaveChangesAsync();
+            logger.LogInformation("Firewall for Acme Corporation created successfully.");
+        }
+        else
+        {
+            logger.LogInformation("Firewalls already exist.");
         }
 
         // Seed NetworkDevice
