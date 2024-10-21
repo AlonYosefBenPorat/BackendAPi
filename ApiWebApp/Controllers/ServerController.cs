@@ -56,11 +56,17 @@ namespace ApiWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> AddServer(ServerDto serverDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return BadRequest("Invalid user ID");
             }
 
             var customer = await _customerRepository.GetByIdAsync(serverDto.CustomerId);

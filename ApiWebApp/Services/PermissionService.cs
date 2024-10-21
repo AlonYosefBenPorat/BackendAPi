@@ -34,10 +34,23 @@ namespace ApiWebApp.Services
             return true;
         }
 
-        public Task<bool> CanWriteAsync(Guid userId, Guid customerId)
+        public async Task<bool> CanWriteAsync(Guid userId, Guid customerId)
         {
-            throw new NotImplementedException();
+            // Similar to CanReadAsync, but check for write permissions
+            _logger.LogInformation($"Checking write permissions for user {userId} on customer {customerId}");
+
+            var permission = await _userPermissionRepository.FindOneAsync(up => up.UserId == userId && up.CustomerId == customerId && up.CanWrite);
+
+            if (permission is null)
+            {
+                _logger.LogWarning($"No write permissions found for user {userId} on customer {customerId}");
+                return false;
+            }
+
+            _logger.LogInformation($"Write permissions granted for user {userId} on customer {customerId}");
+            return true;
         }
+
     }
 }
 
