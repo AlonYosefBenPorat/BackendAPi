@@ -1,7 +1,6 @@
-﻿using DAL.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApiWebApp.DAL.Model
+namespace DAL.Models
 {
     public class Customer
     {
@@ -17,7 +16,7 @@ namespace ApiWebApp.DAL.Model
         public string Country { get; set; } = string.Empty;
 
         [Required, MinLength(2), MaxLength(25)]
-        public string City { get; set; } = string.Empty; 
+        public string City { get; set; } = string.Empty;
 
         [Required, MinLength(2), MaxLength(100)]
         public required string Address { get; set; }
@@ -51,7 +50,7 @@ namespace ApiWebApp.DAL.Model
             Id = Guid.NewGuid();
             CreatedAt = DateTime.UtcNow;
             IsActive = true;
-        
+
         }
     }
 }

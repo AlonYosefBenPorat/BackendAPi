@@ -1,9 +1,9 @@
 ﻿using ApiWebApp.Dto;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using ApiWebApp.DAL.Model;
 using ApiWebApp.Mapping;
 using Microsoft.AspNetCore.Identity;
+using DAL.Models;
 
 namespace ApiWebApp.Controllers
 {

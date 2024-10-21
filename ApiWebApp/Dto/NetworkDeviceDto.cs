@@ -1,4 +1,4 @@
-﻿using ApiWebApp.DAL.Model;
+﻿
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Model

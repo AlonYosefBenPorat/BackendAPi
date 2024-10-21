@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApiWebApp.DAL.Model
+namespace DAL.Models
 {
     public class Asset
     {
@@ -11,22 +11,22 @@ namespace ApiWebApp.DAL.Model
         [Required]
         public required string Type { get; set; }
         public string? IpAddress { get; set; }
-       
-        public string? Url{ get; set; } 
+
+        public string? Url { get; set; }
         public DateTime? SupportExpiration { get; set; }
         public string? Notes { get; set; }
-      
-       public string? License { get; set; }
+
+        public string? License { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        
-       
-       
-      
+
+
+
+
         // Navigation property
         public Customer? Customer { get; set; }
 
-            public Asset()
+        public Asset()
         {
             Id = Guid.NewGuid();
 

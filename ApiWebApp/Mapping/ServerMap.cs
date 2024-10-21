@@ -1,5 +1,5 @@
-﻿using ApiWebApp.DAL.Model;
-using ApiWebApp.DTOs;
+﻿using ApiWebApp.DTOs;
+using DAL.Models;
 using Microsoft.Identity.Client;
 
 namespace ApiWebApp.Mapping;

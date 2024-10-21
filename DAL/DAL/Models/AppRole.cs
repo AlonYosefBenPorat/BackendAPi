@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace WebApp.DAL.Model
+namespace DAL.Models
 {
-    public class AppRole:IdentityRole
+    public class AppRole : IdentityRole
     {
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ApiWebApp.Auth;
+﻿namespace DAL.Models;
 
 public class JwtSettings
 {

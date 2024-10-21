@@ -1,4 +1,4 @@
-﻿using ApiWebApp.DAL.Model;
+﻿using DAL.Models;
 using Microsoft.AspNetCore.Identity;
 
 public interface IUserRepository

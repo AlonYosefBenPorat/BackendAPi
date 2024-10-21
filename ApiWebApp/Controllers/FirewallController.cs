@@ -1,9 +1,7 @@
-﻿using ApiWebApp.DAL.Model;
-using ApiWebApp.Dto;
+﻿using ApiWebApp.Dto;
 using ApiWebApp.Mapping;
 using DAL.Data;
 using DAL.Models;
-
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -27,7 +25,8 @@ namespace ApiWebApp.Controllers
 
         [HttpGet("{id}")]
         public async Task<ActionResult<FirewallDto>> GetFirewall(Guid id)
-        { if (!ModelState.IsValid)
+        {
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -36,7 +35,7 @@ namespace ApiWebApp.Controllers
             {
                 return NotFound();
             }
-           var firewallDto = firewall.ToDto();
+            var firewallDto = firewall.ToDto();
             return Ok(firewallDto);
         }
 
@@ -47,7 +46,7 @@ namespace ApiWebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-          
+
             var customer = await _customerRepository.GetByIdAsync(firewallDto.CustomerId);
             if (customer is null)
             {
@@ -82,7 +81,7 @@ namespace ApiWebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFirewall(Guid id)
         {
-            
+
             var firewall = await _firewallRepository.GetByIdAsync(id);
             if (firewall is null)
             {

@@ -1,16 +1,18 @@
-﻿using ApiWebApp.DAL.Model;
-using ApiWebApp.Dto;
+﻿using ApiWebApp.Dto;
 using ApiWebApp.Mapping;
 using DAL.Data;
+using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController(IRepository<Customer> customerRepository) : ControllerBase()
+    public class CustomerController(IRepository<Customer> customerRepository) : ControllerBase
     {
         private readonly IRepository<Customer> _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        //private readonly IPermissionService _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
 
         [HttpGet]
         public async Task<IActionResult> GetCustomers()
@@ -22,6 +24,7 @@ namespace ApiWebApp.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomer(Guid id)
         {
+
             var customer = await _customerRepository.GetByIdAsync(id);
             if (customer is null)
             {
@@ -33,6 +36,7 @@ namespace ApiWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCustomer([FromBody] CustomerDto customerDto)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -46,6 +50,7 @@ namespace ApiWebApp.Controllers
         [HttpPatch("{id}/update-status")]
         public async Task<IActionResult> UpdateCustomerStatus(Guid id, [FromBody] UpdateCustomerStatusDto updateCustomerStatusDto)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -66,6 +71,7 @@ namespace ApiWebApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDto customerDto)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -85,6 +91,7 @@ namespace ApiWebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(Guid id)
         {
+
             await _customerRepository.DeleteAsync(id);
             return NoContent();
         }

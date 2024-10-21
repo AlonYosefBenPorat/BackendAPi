@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.Dto;
-using ApiWebApp.DAL.Model;
 using DAL.Data;
 using ApiWebApp.Mapping;
+using DAL.Models;
 
 
 namespace ApiWebApp.Controllers
@@ -18,7 +18,7 @@ namespace ApiWebApp.Controllers
         public async Task<ActionResult<IEnumerable<BackupDto>>> GetBackups()
         {
             var backups = await _backupRepository.GetAllAsync();
-            var backupDtos = backups.Select(backup =>  backup.ToDto()).ToList();
+            var backupDtos = backups.Select(backup => backup.ToDto()).ToList();
 
             return Ok(backupDtos);
         }
@@ -32,7 +32,7 @@ namespace ApiWebApp.Controllers
                 return NotFound();
             }
 
-           var backupDto = backup.ToDto();
+            var backupDto = backup.ToDto();
 
             return Ok(backupDto);
         }

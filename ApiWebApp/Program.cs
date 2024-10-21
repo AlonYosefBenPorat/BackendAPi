@@ -3,17 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using ApiWebApp.Auth;
 using ApiWebApp.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
-using WebApp.DAL.Model;
 using DAL.Repositories;
-using ApiWebApp.DAL.Model;
 using DAL.Data;
 using DAL.Models;
-using NETCore.MailKit.Infrastructure.Internal;
-using NETCore.MailKit.Extensions;
 using ApiWebApp.Services;
 using ApiWebApp.Services.Interfaces;
 
@@ -26,7 +20,7 @@ namespace ApiWebApp
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<WebAppContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("WebAppContext") ?? throw new InvalidOperationException("Connection string 'WebAppContext' not found."),
-                b => b.MigrationsAssembly("ApiWebApp"))); // Specify the migrations assembly
+                b => b.MigrationsAssembly("ApiWebApp")));
 
             // Add services to the container.
             builder.Services.AddControllers();
@@ -90,9 +84,13 @@ namespace ApiWebApp
             builder.Services.AddScoped<IRepository<NetworkDevice>, Repository<NetworkDevice>>();
             builder.Services.AddScoped<IRepository<Firewall>, Repository<Firewall>>();
             builder.Services.AddScoped<IRepository<Asset>, Repository<Asset>>();
+            builder.Services.AddScoped<IRepository<UserPermission>, Repository<UserPermission>>(); // Add this line
 
-            //Register LogCleaner
+            // Register LogCleaner
             builder.Services.AddScoped<LogCleanupService>();
+
+            // Register PermissionService
+            builder.Services.AddScoped<IPermissionService, PermissionService>();
 
             // Add CORS services
             builder.Services.AddCors(options =>
@@ -109,9 +107,6 @@ namespace ApiWebApp
             // Add services to the container.
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddScoped<IEmailService, EmailService>();
-
-            //Register the background service LogEmailBackgroundService
-            builder.Services.AddHostedService<LogEmailBackgroundService>();
 
             var app = builder.Build();
 

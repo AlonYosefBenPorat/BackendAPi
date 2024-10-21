@@ -1,17 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.DTOs;
 using DAL.Data;
-using ApiWebApp.DAL.Model;
 using ApiWebApp.Mapping;
+using System.Security.Claims;
+using ApiWebApp.Services.Interfaces;
+using Microsoft.Extensions.Logging;
+using ApiWebApp.Services;
+using Microsoft.AspNetCore.Authorization;
+using DAL.Models;
 
 namespace ApiWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServerController(IRepository<Server> serverRepository, IRepository<Customer> customerRepository) : ControllerBase
+    public class ServerController : ControllerBase
     {
-        private readonly IRepository<Server> _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
-        private readonly IRepository<Customer> _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        private readonly IRepository<Server> _serverRepository;
+        private readonly IRepository<Customer> _customerRepository;
+        private readonly IPermissionService _permissionService;
+        private readonly ILogger<ServerController> _logger;
+
+        public ServerController(IRepository<Server> serverRepository, IRepository<Customer> customerRepository,
+             IPermissionService permissionService, ILogger<ServerController> logger)
+        {
+            _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
+            _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+            _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
@@ -24,6 +40,11 @@ namespace ApiWebApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ServerDto>> GetServer(Guid id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var server = await _serverRepository.GetByIdAsync(id);
             if (server is null)
             {
@@ -52,7 +73,7 @@ namespace ApiWebApp.Controllers
             await _serverRepository.AddAsync(server);
             var createdServer = await _serverRepository.GetByIdAsync(server.Id);
             var serverResponseDto = createdServer.ToDto();
-           
+
             return CreatedAtAction(nameof(GetServer), new { id = serverResponseDto.Id }, serverResponseDto);
         }
 

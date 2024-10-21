@@ -1,4 +1,4 @@
-﻿namespace ApiWebApp.Auth
+﻿namespace ApiWebApp.Model.AuthModel
 {
     public class Login
     {

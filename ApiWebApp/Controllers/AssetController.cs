@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.Dto;
-using ApiWebApp.DAL.Model;
 using DAL.Data;
 using ApiWebApp.Mapping;
+using DAL.Models;
 
 
 namespace ApiWebApp.Controllers
@@ -18,7 +18,7 @@ namespace ApiWebApp.Controllers
         public async Task<ActionResult<IEnumerable<AssetDto>>> GetAssets()
         {
             var assets = await _assetRepository.GetAllAsync();
-            var assetDtos = assets.Select(asset => asset.ToDto()).ToList();  
+            var assetDtos = assets.Select(asset => asset.ToDto()).ToList();
             return Ok(assetDtos);
         }
 
@@ -31,8 +31,8 @@ namespace ApiWebApp.Controllers
                 return NotFound();
             }
 
-            var assetDto = asset.ToDto(); 
-           
+            var assetDto = asset.ToDto();
+
 
             return Ok(assetDto);
         }
@@ -51,16 +51,17 @@ namespace ApiWebApp.Controllers
                 return BadRequest("Invalid customer ID");
             }
 
-            var asset = assetDto.ToEntity(); 
+            var asset = assetDto.ToEntity();
             await _assetRepository.AddAsync(asset);
             var createdAsset = await _assetRepository.GetByIdAsync(asset.Id);
-            var assetResponseDto = createdAsset.ToDto(); 
+            var assetResponseDto = createdAsset.ToDto();
             return CreatedAtAction(nameof(GetAsset), new { id = assetResponseDto.Id }, assetResponseDto);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsset(Guid id, AssetDto assetDto)
-        {if (!ModelState.IsValid)
+        {
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

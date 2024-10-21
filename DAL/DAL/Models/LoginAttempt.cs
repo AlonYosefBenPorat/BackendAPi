@@ -9,11 +9,11 @@ namespace DAL.Models
     public class LoginAttempt
     {
         public Guid Id { get; set; }
-         public string? UserName { get; set; }  
+        public string? UserName { get; set; }
         public DateTime AttemptedAt { get; set; }
         public bool IsSucceeded { get; set; }
         public string? RemoteIpAddress { get; set; }
-        
+
 
     }
 }

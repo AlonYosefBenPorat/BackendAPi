@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using ApiWebApp.Auth;
-using ApiWebApp.DAL.Model;
+
+using DAL.Models;
 
 namespace ApiWebApp.Services;
 public class TokenService(UserManager<AppUsers> userManager, JwtSettings jwtSettings)

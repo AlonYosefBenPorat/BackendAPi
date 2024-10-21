@@ -22,7 +22,7 @@ namespace ApiWebApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ApiWebApp.DAL.Model.AppUsers", b =>
+            modelBuilder.Entity("DAL.Models.AppUsers", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -120,7 +120,7 @@ namespace ApiWebApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ApiWebApp.DAL.Model.Asset", b =>
+            modelBuilder.Entity("DAL.Models.Asset", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -161,7 +161,7 @@ namespace ApiWebApp.Migrations
                     b.ToTable("Assets", (string)null);
                 });
 
-            modelBuilder.Entity("ApiWebApp.DAL.Model.Backup", b =>
+            modelBuilder.Entity("DAL.Models.Backup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -215,7 +215,7 @@ namespace ApiWebApp.Migrations
                     b.ToTable("Backups", (string)null);
                 });
 
-            modelBuilder.Entity("ApiWebApp.DAL.Model.Customer", b =>
+            modelBuilder.Entity("DAL.Models.Customer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -269,56 +269,6 @@ namespace ApiWebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
-                });
-
-            modelBuilder.Entity("ApiWebApp.DAL.Model.NetworkDevice", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Brand")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IpAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Model")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SerialNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Vendor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("WarrantyExpiration")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("NetworkDevices", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Models.Firewall", b =>
@@ -394,6 +344,145 @@ namespace ApiWebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LoginAttempts");
+                });
+
+            modelBuilder.Entity("DAL.Models.NetworkDevice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Brand")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Vendor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("WarrantyExpiration")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("NetworkDevices", (string)null);
+                });
+
+            modelBuilder.Entity("DAL.Models.Server", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Brand")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Hostname")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OperatingSystem")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ram")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Storage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Vendor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("WarrantyExpiration")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Servers", (string)null);
+                });
+
+            modelBuilder.Entity("DAL.Models.UserPermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CanRead")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanWrite")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserPermissions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -529,75 +618,9 @@ namespace ApiWebApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Server", b =>
+            modelBuilder.Entity("DAL.Models.AppUsers", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Brand")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Hostname")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("IpAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Model")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OperatingSystem")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Ram")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Roles")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SerialNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Storage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Vendor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("WarrantyExpiration")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("Servers", (string)null);
-                });
-
-            modelBuilder.Entity("ApiWebApp.DAL.Model.AppUsers", b =>
-                {
-                    b.OwnsOne("ApiWebApp.DAL.Model.Image", "ProfileImage", b1 =>
+                    b.OwnsOne("DAL.Models.Image", "ProfileImage", b1 =>
                         {
                             b1.Property<string>("AppUsersId")
                                 .HasColumnType("nvarchar(450)");
@@ -621,9 +644,9 @@ namespace ApiWebApp.Migrations
                     b.Navigation("ProfileImage");
                 });
 
-            modelBuilder.Entity("ApiWebApp.DAL.Model.Asset", b =>
+            modelBuilder.Entity("DAL.Models.Asset", b =>
                 {
-                    b.HasOne("ApiWebApp.DAL.Model.Customer", "Customer")
+                    b.HasOne("DAL.Models.Customer", "Customer")
                         .WithMany("Assets")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -632,9 +655,9 @@ namespace ApiWebApp.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("ApiWebApp.DAL.Model.Backup", b =>
+            modelBuilder.Entity("DAL.Models.Backup", b =>
                 {
-                    b.HasOne("ApiWebApp.DAL.Model.Customer", "Customer")
+                    b.HasOne("DAL.Models.Customer", "Customer")
                         .WithMany("Backups")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -643,9 +666,9 @@ namespace ApiWebApp.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("ApiWebApp.DAL.Model.Customer", b =>
+            modelBuilder.Entity("DAL.Models.Customer", b =>
                 {
-                    b.OwnsOne("ApiWebApp.DAL.Model.Image", "Logo", b1 =>
+                    b.OwnsOne("DAL.Models.Image", "Logo", b1 =>
                         {
                             b1.Property<Guid>("CustomerId")
                                 .HasColumnType("uniqueidentifier");
@@ -669,9 +692,20 @@ namespace ApiWebApp.Migrations
                     b.Navigation("Logo");
                 });
 
-            modelBuilder.Entity("ApiWebApp.DAL.Model.NetworkDevice", b =>
+            modelBuilder.Entity("DAL.Models.Firewall", b =>
                 {
-                    b.HasOne("ApiWebApp.DAL.Model.Customer", "Customer")
+                    b.HasOne("DAL.Models.Customer", "Customer")
+                        .WithMany("Firewalls")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("DAL.Models.NetworkDevice", b =>
+                {
+                    b.HasOne("DAL.Models.Customer", "Customer")
                         .WithMany("NetworkDevices")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -680,10 +714,10 @@ namespace ApiWebApp.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("DAL.Models.Firewall", b =>
+            modelBuilder.Entity("DAL.Models.Server", b =>
                 {
-                    b.HasOne("ApiWebApp.DAL.Model.Customer", "Customer")
-                        .WithMany("Firewalls")
+                    b.HasOne("DAL.Models.Customer", "Customer")
+                        .WithMany("Servers")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -702,7 +736,7 @@ namespace ApiWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ApiWebApp.DAL.Model.AppUsers", null)
+                    b.HasOne("DAL.Models.AppUsers", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -711,7 +745,7 @@ namespace ApiWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ApiWebApp.DAL.Model.AppUsers", null)
+                    b.HasOne("DAL.Models.AppUsers", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -726,7 +760,7 @@ namespace ApiWebApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApiWebApp.DAL.Model.AppUsers", null)
+                    b.HasOne("DAL.Models.AppUsers", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -735,25 +769,14 @@ namespace ApiWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ApiWebApp.DAL.Model.AppUsers", null)
+                    b.HasOne("DAL.Models.AppUsers", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Server", b =>
-                {
-                    b.HasOne("ApiWebApp.DAL.Model.Customer", "Customer")
-                        .WithMany("Servers")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("ApiWebApp.DAL.Model.Customer", b =>
+            modelBuilder.Entity("DAL.Models.Customer", b =>
                 {
                     b.Navigation("Assets");
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApiWebApp.DAL.Model
+namespace DAL.Models
 {
     public class Backup
     {
@@ -13,13 +13,13 @@ namespace ApiWebApp.DAL.Model
 
         [Required, MinLength(2), MaxLength(100)]
         public required string BackupData { get; set; }
-        
+
         public string? Rpo { get; set; }
-       public string? Rto { get; set; }
+        public string? Rto { get; set; }
 
         [Required]
         public required string BackupStorge { get; set; }
-       
+
         public required bool BackupEncrypted { get; set; }
         public string? BackupRetntion { get; set; }
         public int Capacity { get; set; }
@@ -29,7 +29,7 @@ namespace ApiWebApp.DAL.Model
 
 
         [Required]
-        public  Customer? Customer { get; set; }
+        public Customer? Customer { get; set; }
 
         public Backup()
         {

@@ -1,7 +1,7 @@
-﻿using ApiWebApp.DAL.Model;
-using ApiWebApp.Mapping;
+﻿using ApiWebApp.Mapping;
 using ApiWebApp.Model;
 using DAL.Data;
+using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -62,7 +62,7 @@ public class NetworkDeviceController(IRepository<NetworkDevice> networkDeviceRep
     public async Task<IActionResult> PutNetworkDevice(Guid id, NetworkDeviceDto networkDeviceDto)
     {
         if (!ModelState.IsValid)
-            {
+        {
             return BadRequest(ModelState);
         }
         if (id != networkDeviceDto.Id)
@@ -78,7 +78,7 @@ public class NetworkDeviceController(IRepository<NetworkDevice> networkDeviceRep
         networkDeviceDto.UpdateEntity(networkDevice);
         await _networkDeviceRepository.UpdateAsync(networkDevice);
         var updatedNetworkDevice = networkDevice.ToDto();
-        return Ok(updatedNetworkDevice);               
+        return Ok(updatedNetworkDevice);
     }
 
     [HttpDelete("{id}")]
@@ -89,7 +89,7 @@ public class NetworkDeviceController(IRepository<NetworkDevice> networkDeviceRep
         {
             return NotFound();
         }
-        await _networkDeviceRepository.DeleteAsync(id); 
+        await _networkDeviceRepository.DeleteAsync(id);
         return NoContent();
     }
 }

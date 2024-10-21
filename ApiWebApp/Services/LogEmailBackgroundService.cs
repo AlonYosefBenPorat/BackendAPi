@@ -30,7 +30,7 @@ namespace ApiWebApp.Services
                 logText.AppendLine($"{log.AttemptedAt}: {log.UserName} - {log.IsSucceeded} - {log.RemoteIpAddress}");
             }
 
-            await emailService.SendEmailAsync("admin@example.com", "Weekly Logs", logText.ToString());
+            await emailService.SendEmailAsync("alon.benporat@gmail.com", "Weekly Logs", logText.ToString());
         }
     }
 }
