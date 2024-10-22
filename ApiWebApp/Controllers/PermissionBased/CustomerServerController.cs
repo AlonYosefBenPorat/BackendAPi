@@ -1,108 +1,102 @@
-﻿using ApiWebApp.Dto;
-using ApiWebApp.DTOs;
+﻿using ApiWebApp.DTOs;
 using ApiWebApp.Mapping;
 using ApiWebApp.Services;
 using ApiWebApp.Utilities;
 using DAL.Data;
 using DAL.Models;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
-namespace ApiWebApp.Controllers.PermissionBased;
-
-[Route("api/[controller]")]
-[ApiController]
-[Authorize(AuthenticationSchemes = "Bearer")]
-public class CustomerBackupsController(IRepository<Backup> backupRepository, IPermissionService permissionService) : ControllerBase
+namespace ApiWebApp.Controllers.PermissionBased
 {
-    private readonly IRepository<Backup> _backupRepository = backupRepository ?? throw new ArgumentNullException(nameof(backupRepository));
-    private readonly IPermissionService _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
-
-    [HttpGet("{customerId}/Backup")]
-
-    public async Task<IActionResult> GetBackupsByCustomerId(Guid customerId)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CustomerServerController(IRepository<Server> serverRepository, IPermissionService permissionService) : ControllerBase
     {
-        var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanReadAsync);
-        if (validationResult != null)
-        {
-            return validationResult;
-        }
-        var backup = await _backupRepository.FindAllAsync(s => s.CustomerId == customerId);
-        var items = backup.Select(BackupMap.ToDto).ToList();
-        return Ok(items);
-    }
+        private readonly IRepository<Server> _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
+        private readonly IPermissionService _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
 
-    [HttpPost("{customerId}/Backup")]
+        [HttpGet("{customerId}/Server")]
 
-    public async Task<ActionResult> AddBackup(Guid customerId, [FromBody] BackupDto backupDto)
-    {
-        if (!ModelState.IsValid)
+        public async Task<IActionResult> GetServersByCustomerId(Guid customerId)
         {
-            return BadRequest(ModelState);
+            var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanReadAsync);
+            if (validationResult != null)
+            {
+                return validationResult;
+            }
+            var server = await _serverRepository.FindAllAsync(s => s.CustomerId == customerId);
+            var items = server.Select(ServerMap.ToDto).ToList();
+            return Ok(items);
         }
 
-        var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanWriteAsync);
-        if (validationResult != null)
+        [HttpPost("{customerId}/Server")]
+
+        public async Task<ActionResult> AddServer(Guid customerId, [FromBody] ServerDto serverDto)
         {
-            return (ActionResult)validationResult;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanWriteAsync);
+            if (validationResult != null)
+            {
+                return (ActionResult)validationResult;
+            }
+
+            serverDto.CustomerId = customerId;
+            var server = serverDto.ToEntity();
+            await _serverRepository.AddAsync(server);
+            var createdServer = await _serverRepository.GetByIdAsync(server.Id);
+            var serverResponseDto = createdServer.ToDto();
+            return CreatedAtAction(nameof(GetServersByCustomerId), new { customerId = serverDto.CustomerId }, serverResponseDto);
         }
 
-        backupDto.CustomerId = customerId;
-        var server = backupDto.ToEntity();
-        await _backupRepository.AddAsync(server);
-        var createdServer = await _backupRepository.GetByIdAsync(server.Id);
-        var backupResponseDto = createdServer.ToDto();
-        return CreatedAtAction(nameof(GetBackupsByCustomerId), new { customerId = backupDto.CustomerId }, backupResponseDto);
-    }
+        [HttpPut("{customerId}/Server/{id}")]
+        public async Task<IActionResult> UpdateServer(Guid customerId, Guid id, [FromBody] ServerDto serverDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanWriteAsync);
+            if (validationResult != null)
+            {
+                return validationResult;
+            }
 
-    [HttpPut("{customerId}/Backup/{id}")]
-    public async Task<IActionResult> UpdateBackup(Guid customerId, Guid id, [FromBody] BackupDto backupDto)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanWriteAsync);
-        if (validationResult != null)
-        {
-            return validationResult;
-        }
-        var backup = await _backupRepository.GetByIdAsync(id);
-        if (backup is null)
-        {
-            return NotFound();
-        }
-
-        backupDto.CustomerId = customerId;
-        backupDto.UpdateEntity(backup);
-        await _backupRepository.UpdateAsync(backup);
-        var updatedbackupDto = backup.ToDto();
-        return Ok(updatedbackupDto);
-    }
-
-    [HttpDelete("{customerId}/Backup/{id}")]
-    public async Task<IActionResult> DeleteServer(Guid customerId, string id)
-    {
-        var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanDeleteAsync);
-        if (validationResult != null)
-        {
-            return validationResult;
+            var server = await _serverRepository.GetByIdAsync(id);
+            if (server is null)
+            {
+                return NotFound();
+            }
+            serverDto.CustomerId = customerId;
+            serverDto.UpdateEntity(server);
+            await _serverRepository.UpdateAsync(server);
+            var updatedServerDto = server.ToDto();
+            return Ok(updatedServerDto);
         }
 
-        if (!Guid.TryParse(id, out var backupId))
+        [HttpDelete("{customerId}/Server/{id}")]
+        public async Task<IActionResult> DeleteServer(Guid customerId, string id)
         {
-            return BadRequest("Invalid Backup ID");
+            var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanDeleteAsync);
+            if (validationResult != null)
+            {
+                return validationResult;
+            }
+            if (!Guid.TryParse(id, out var serverId))
+            {
+                return BadRequest("Invalid server ID");
+            }
+            var server = await _serverRepository.GetByIdAsync(serverId);
+            if (server is null)
+            {
+                return NotFound();
+            }
+            await _serverRepository.DeleteAsync(server.Id);
+            return NoContent();
         }
-
-        var backup = await _backupRepository.GetByIdAsync(backupId);
-        if (backup is null)
-        {
-            return NotFound();
-        }
-
-        await _backupRepository.DeleteAsync(backup.Id);
-        return NoContent();
     }
 }
-
