@@ -36,7 +36,7 @@ public class TokenService(UserManager<AppUsers> userManager, JwtSettings jwtSett
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(24),
+            Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             Audience = _jwtSettings.Audience,
             Issuer = _jwtSettings.Issuer

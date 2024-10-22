@@ -54,7 +54,8 @@ namespace ApiWebApp
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
@@ -67,6 +68,12 @@ namespace ApiWebApp
                 options.Password.RequireLowercase = false;
                 options.Password.RequireDigit = false;
                 options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); // Lockout duration
+                options.Lockout.MaxFailedAccessAttempts = 5; // Maximum failed attempts
+                options.Lockout.AllowedForNewUsers = true; // Allow lockout for new users
+            
             })
             .AddEntityFrameworkStores<WebAppContext>()
             .AddDefaultTokenProviders();

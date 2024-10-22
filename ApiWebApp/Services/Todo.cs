@@ -1,9 +1,9 @@
 ﻿
 //CustomerControoler By Resources - Cheak if Nedd include ItemMapping
 //Authrize On Reqest - rearnag all admin write the fronted design and we can Decide whic role can access which Controller
-//prevent Post User Permission to same Customer -  User already exist in the customer update the permission instead of adding new one
-//limit token Validity to 1 day
-// limit  the number of login attemps to 5 and block user to 10 Min after 5 attemps
+
+//Chaeak LockOUt Controller - 1. User: release  By Admin Add [Authorize(AuthenticationSchemes = "
+
 // Rate limiting middleware in ASP.NET Core
 // https://www.red-gate.com/simple-talk/dotnet/net-development/rate-limiting-middleware-in-asp-net-core/
 
