@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.Services.Interfaces;
 using System.Threading.Tasks;
+using ApiWebApp.Model.AuthModel;
 
-namespace ApiWebApp.Controllers
+namespace ApiWebApp.Controllers.utilities
 {
     [ApiController]
     [Route("api/[controller]")]

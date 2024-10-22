@@ -2,13 +2,15 @@
 using ApiWebApp.Mapping;
 using DAL.Data;
 using DAL.Models.ItemsModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace ApiWebApp.Controllers
+namespace ApiWebApp.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
     public class CustomerController(IRepository<Customer> customerRepository) : ControllerBase
     {
         private readonly IRepository<Customer> _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));

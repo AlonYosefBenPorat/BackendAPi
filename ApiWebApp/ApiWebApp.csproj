@@ -26,9 +26,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Controllers\Admin\" />
-	  <Folder Include="Controllers\Dashboard\" />
-	  <Folder Include="Controllers\utilities\" />
 	  <Folder Include="Migrations\" />
 	</ItemGroup>
 

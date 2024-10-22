@@ -1,11 +1,13 @@
 ﻿using DAL.Data;
 using DAL.Models.UsersModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApiWebApp.Controllers;
+namespace ApiWebApp.Controllers.Admin;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
 public class CustomerPermissionController(WebAppContext context) : ControllerBase
 {
     private readonly WebAppContext _context = context;

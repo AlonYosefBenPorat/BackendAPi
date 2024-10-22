@@ -2,21 +2,16 @@
 using ApiWebApp.Dto;
 using ApiWebApp.Mapping;
 using DAL.Data;
-using ApiWebApp.Services.Interfaces;
 using System.Security.Claims;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ApiWebApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using DAL.Models.ItemsModel;
 
-namespace ApiWebApp.Controllers
+namespace ApiWebApp.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
     public class CustomerResourceController(
         IRepository<Server> serverRepository,
         IRepository<NetworkDevice> networkDeviceRepository,

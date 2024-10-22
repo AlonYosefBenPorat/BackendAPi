@@ -1,4 +1,4 @@
-﻿namespace ApiWebApp.Controllers;
+﻿namespace ApiWebApp.Model.AuthModel;
 
 public class EmailRequest
 {

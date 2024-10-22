@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.Mapping;
 using Microsoft.AspNetCore.Identity;
 using DAL.Models.UsersModel;
+using Microsoft.AspNetCore.Authorization;
 
-namespace ApiWebApp.Controllers
+namespace ApiWebApp.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
     public class UsersController(IUserRepository userRepository) : ControllerBase
     {
         private readonly IUserRepository _userRepository = userRepository;
@@ -45,7 +47,7 @@ namespace ApiWebApp.Controllers
         }
 
         [HttpPost]
-        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+        
         public async Task<IActionResult> Register([FromBody] UserDto userDto)
         {
             try
