@@ -48,13 +48,16 @@ namespace ApiWebApp.Controllers.Auth
             var IsSuccessful = user != null && await _userManager.CheckPasswordAsync(user, login.Password);
             var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
 
+
             // Save Login Attempt
             var loginAttempt = new LoginAttempt
             {
                 UserName = login.Username,
                 AttemptedAt = DateTime.UtcNow,
                 IsSucceeded = IsSuccessful,
-                RemoteIpAddress = remoteIpAddress
+                RemoteIpAddress = remoteIpAddress,
+                
+
             };
             _context.LoginAttempts.Add(loginAttempt);
             await _context.SaveChangesAsync();

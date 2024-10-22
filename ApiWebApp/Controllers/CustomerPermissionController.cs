@@ -6,14 +6,9 @@ namespace ApiWebApp.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CustomerPermissionController : ControllerBase
+public class CustomerPermissionController(WebAppContext context) : ControllerBase
 {
-    private readonly WebAppContext _context;
-
-    public CustomerPermissionController(WebAppContext context)
-    {
-        _context = context;
-    }
+    private readonly WebAppContext _context = context;
 
     [HttpPost]
     public async Task<IActionResult> SetPermission(UserPermission permission)
@@ -27,13 +22,14 @@ public class CustomerPermissionController : ControllerBase
     public async Task<IActionResult> UpdatePermission(int id, UserPermission permission)
     {
         var existingPermission = await _context.UserPermissions.FindAsync(id);
-        if (existingPermission == null)
+        if (existingPermission is null)
         {
             return NotFound();
         }
 
         existingPermission.CanRead = permission.CanRead;
         existingPermission.CanWrite = permission.CanWrite;
+        existingPermission.CanDelete = permission.CanDelete;
         await _context.SaveChangesAsync();
         return Ok();
     }

@@ -51,6 +51,23 @@ namespace ApiWebApp.Services
             return true;
         }
 
+        public async Task<bool> CanDeleteAsync(Guid userId, Guid customerId)
+        {
+            
+            _logger.LogInformation($"Checking write permissions for user {userId} on customer {customerId}");
+
+            var permission = await _userPermissionRepository.FindOneAsync(up => up.UserId == userId && up.CustomerId == customerId && up.CanDelete);
+
+            if (permission is null)
+            {
+                _logger.LogWarning($"No write permissions found for user {userId} on customer {customerId}");
+                return false;
+            }
+
+            _logger.LogInformation($"Write permissions granted for user {userId} on customer {customerId}");
+            return true;
+        }
+
     }
 }
 

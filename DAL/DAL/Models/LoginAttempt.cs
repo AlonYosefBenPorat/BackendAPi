@@ -13,6 +13,7 @@ namespace DAL.Models
         public DateTime AttemptedAt { get; set; }
         public bool IsSucceeded { get; set; }
         public string? RemoteIpAddress { get; set; }
+      
 
 
     }
