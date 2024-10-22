@@ -3,7 +3,8 @@ using ApiWebApp.Mapping;
 using ApiWebApp.Services;
 using ApiWebApp.Utilities;
 using DAL.Data;
-using DAL.Models;
+using DAL.Models.ItemsModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace ApiWebApp.Controllers.PermissionBased
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class CustomerServerController(IRepository<Server> serverRepository, IPermissionService permissionService) : ControllerBase
     {
         private readonly IRepository<Server> _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));

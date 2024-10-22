@@ -3,7 +3,7 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
-using DAL.Models;
+using DAL.Models.utilitiesModel;
 
 namespace ApiWebApp.Services
 {

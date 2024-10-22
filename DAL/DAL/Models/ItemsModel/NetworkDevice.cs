@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-namespace DAL.Models
+namespace DAL.Models.ItemsModel
 {
     public class NetworkDevice
     {

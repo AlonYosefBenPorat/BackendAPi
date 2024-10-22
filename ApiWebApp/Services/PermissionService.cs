@@ -1,6 +1,6 @@
 ﻿// PermissionService.cs
 using DAL.Data;
-using DAL.Models;
+using DAL.Models.UsersModel;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;

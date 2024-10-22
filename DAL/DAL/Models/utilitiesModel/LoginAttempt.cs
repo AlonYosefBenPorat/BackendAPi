@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Models
+namespace DAL.Models.utilitiesModel
 {
     public class LoginAttempt
     {
@@ -13,7 +13,7 @@ namespace DAL.Models
         public DateTime AttemptedAt { get; set; }
         public bool IsSucceeded { get; set; }
         public string? RemoteIpAddress { get; set; }
-      
+
 
 
     }

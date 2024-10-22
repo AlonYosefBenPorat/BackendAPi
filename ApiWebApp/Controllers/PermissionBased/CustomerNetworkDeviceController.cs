@@ -3,7 +3,7 @@ using ApiWebApp.Model;
 using ApiWebApp.Services;
 using ApiWebApp.Utilities;
 using DAL.Data;
-using DAL.Models;
+using DAL.Models.ItemsModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,6 @@
 ﻿using ApiWebApp.Dto;
-using DAL.Models;
+using DAL.Models.UsersModel;
+using DAL.Models.utilitiesModel;
 
 namespace ApiWebApp.Mapping;
 

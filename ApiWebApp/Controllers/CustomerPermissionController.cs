@@ -1,5 +1,5 @@
 ﻿using DAL.Data;
-using DAL.Models;
+using DAL.Models.UsersModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiWebApp.Controllers;

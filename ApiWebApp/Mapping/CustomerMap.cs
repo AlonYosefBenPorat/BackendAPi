@@ -1,5 +1,5 @@
 ﻿using ApiWebApp.Dto;
-using DAL.Models;
+using DAL.Models.ItemsModel;
 
 namespace ApiWebApp.Mapping
 {

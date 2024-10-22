@@ -1,7 +1,7 @@
 ﻿using ApiWebApp.Mapping;
 using ApiWebApp.Model;
 using DAL.Data;
-using DAL.Models;
+using DAL.Models.ItemsModel;
 using Microsoft.AspNetCore.Mvc;
 
 

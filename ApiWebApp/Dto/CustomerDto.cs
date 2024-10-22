@@ -1,4 +1,4 @@
-﻿using DAL.Models;
+﻿using DAL.Models.utilitiesModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto

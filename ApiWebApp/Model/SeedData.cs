@@ -1,6 +1,6 @@
 ﻿using DAL.Data;
-using DAL.Models;
-
+using DAL.Models.ItemsModel;
+using DAL.Models.UsersModel;
 using Microsoft.AspNetCore.Identity;
 
 namespace ApiWebApp.Model;

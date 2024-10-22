@@ -7,9 +7,11 @@ using ApiWebApp.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using DAL.Repositories;
 using DAL.Data;
-using DAL.Models;
 using ApiWebApp.Services;
 using ApiWebApp.Services.Interfaces;
+using DAL.Models.ItemsModel;
+using DAL.Models.utilitiesModel;
+using DAL.Models.UsersModel;
 
 namespace ApiWebApp
 {

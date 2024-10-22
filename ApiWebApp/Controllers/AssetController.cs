@@ -2,7 +2,7 @@
 using ApiWebApp.Dto;
 using DAL.Data;
 using ApiWebApp.Mapping;
-using DAL.Models;
+using DAL.Models.ItemsModel;
 
 
 namespace ApiWebApp.Controllers

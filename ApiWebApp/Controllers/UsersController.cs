@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.Mapping;
 using Microsoft.AspNetCore.Identity;
-using DAL.Models;
+using DAL.Models.UsersModel;
 
 namespace ApiWebApp.Controllers
 {

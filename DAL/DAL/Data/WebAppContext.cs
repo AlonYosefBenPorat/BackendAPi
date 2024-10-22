@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using DAL.Models;
+using DAL.Models.ItemsModel;
+using DAL.Models.utilitiesModel;
+using DAL.Models.UsersModel;
 
 namespace DAL.Data
 {

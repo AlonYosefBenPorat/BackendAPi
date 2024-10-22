@@ -1,5 +1,5 @@
 ﻿using ApiWebApp.DTOs;
-using DAL.Models;
+using DAL.Models.ItemsModel;
 using Microsoft.Identity.Client;
 
 namespace ApiWebApp.Mapping;

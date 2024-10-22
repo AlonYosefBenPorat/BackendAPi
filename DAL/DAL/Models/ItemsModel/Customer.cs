@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DAL.Models.utilitiesModel;
 
-namespace DAL.Models
+namespace DAL.Models.ItemsModel
 {
     public class Customer
     {

@@ -18,11 +18,4 @@
 		<PackageReference Include="NETCore.MailKit" Version="2.1.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Models\AuthModel\" />
-	  <Folder Include="Models\ItemsModel\" />
-	  <Folder Include="Models\UsersModel\" />
-	  <Folder Include="Models\utilitiesModel\" />
-	</ItemGroup>
-
 </Project>

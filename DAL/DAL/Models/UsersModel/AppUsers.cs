@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DAL.Models.utilitiesModel;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace DAL.Models
+namespace DAL.Models.UsersModel
 {
     public class AppUsers : IdentityUser
     {

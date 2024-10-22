@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiWebApp.Services;
 using Microsoft.AspNetCore.Authorization;
-using DAL.Models;
+using DAL.Models.ItemsModel;
 
 namespace ApiWebApp.Controllers
 {

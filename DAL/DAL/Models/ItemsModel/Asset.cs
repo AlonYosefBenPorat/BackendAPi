@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DAL.Models
+namespace DAL.Models.ItemsModel
 {
     public class Asset
     {
