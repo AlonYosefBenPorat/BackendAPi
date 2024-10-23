@@ -1,5 +1,7 @@
-﻿using DAL.Models.UsersModel;
+﻿using DAL.Data;
+using DAL.Models.UsersModel;
 using Microsoft.AspNetCore.Identity;
+
 
 public interface IUserRepository
 {

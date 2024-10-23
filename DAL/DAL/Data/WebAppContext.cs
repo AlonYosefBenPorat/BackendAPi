@@ -16,6 +16,7 @@ namespace DAL.Data
         public DbSet<Backup> Backups { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<LoginAttempt> LoginAttempts { get; set; }
+        public DbSet<AppUsersTemp> AppUsersTemps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -67,6 +68,11 @@ namespace DAL.Data
 
             // Configure ProfileImage as an owned type for AppUsers
             modelBuilder.Entity<AppUsers>(entity =>
+            {
+                entity.OwnsOne(c => c.ProfileImage);
+            });
+            // Configure ProfileImage as an owned type for AppUsersTemp
+            modelBuilder.Entity<AppUsersTemp>(entity =>
             {
                 entity.OwnsOne(c => c.ProfileImage);
             });

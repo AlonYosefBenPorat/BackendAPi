@@ -12,6 +12,7 @@ using ApiWebApp.Services.Interfaces;
 using DAL.Models.ItemsModel;
 using DAL.Models.utilitiesModel;
 using DAL.Models.UsersModel;
+using ApiWebApp.Configuration;
 
 namespace ApiWebApp
 {
@@ -113,12 +114,26 @@ namespace ApiWebApp
                     });
             });
 
+            // Register TempUserRepository
+            builder.Services.AddScoped<ITempUserRepository, TempUserRepository>();
+
             // Add services to the container.
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddScoped<IEmailService, EmailService>();
 
             // **Register SignInManager<AppUsers>**
-            builder.Services.AddScoped<SignInManager<AppUsers>>(); // <--- Add this line
+            builder.Services.AddScoped<SignInManager<AppUsers>>(); 
+
+
+           // Register and validate TempUserSettings
+            var tempUserSettingsSection = builder.Configuration.GetSection("TempUserSettings");
+            builder.Services.Configure<TempUserSettings>(tempUserSettingsSection);
+
+            var tempUserSettings = tempUserSettingsSection.Get<TempUserSettings>();
+            if (string.IsNullOrEmpty(tempUserSettings?.TemporaryPassword))
+            {
+                throw new ArgumentException("TemporaryPassword must be provided in appsettings.json");
+            }
 
             var app = builder.Build();
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Models.utilitiesModel;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models.UsersModel
@@ -19,9 +20,15 @@ namespace DAL.Models.UsersModel
       
         public string? JobTitle { get; set; }
 
-        [Required,EmailAddress]
+        [Required, EmailAddress]
         public required string Email { get; set; }
+        public Image? ProfileImage { get; set; } 
+       
+
+        [Phone]
+        public string PhoneNumber { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public bool IsImport { get; set; } = false;
         
     }
 }
