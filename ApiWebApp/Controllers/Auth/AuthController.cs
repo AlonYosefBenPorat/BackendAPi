@@ -18,6 +18,7 @@ namespace ApiWebApp.Controllers.Auth
     public class AuthController : ControllerBase
     {
         private readonly UserManager<AppUsers> _userManager;
+        private readonly SignInManager<AppUsers> _signInManager;
         private readonly TokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly WebAppContext _context;
@@ -25,12 +26,14 @@ namespace ApiWebApp.Controllers.Auth
 
         public AuthController(
             UserManager<AppUsers> userManager,
+            SignInManager<AppUsers> signInManager,
             TokenService tokenService,
             IEmailService emailService,
             WebAppContext context,
             LogCleanupService logCleanupService)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
             _tokenService = tokenService;
             _emailService = emailService;
             _context = context;
@@ -47,20 +50,16 @@ namespace ApiWebApp.Controllers.Auth
                 return BadRequest("Username and password must be provided.");
             }
 
-            var user = await _userManager.FindByNameAsync(login.Username);
-            var IsSuccessful = user != null && await _userManager.CheckPasswordAsync(user, login.Password);
+            var result = await _signInManager.PasswordSignInAsync(login.Username, login.Password, isPersistent: false, lockoutOnFailure: true);
             var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
-
 
             // Save Login Attempt
             var loginAttempt = new LoginAttempt
             {
                 UserName = login.Username,
                 AttemptedAt = DateTime.UtcNow,
-                IsSucceeded = IsSuccessful,
+                IsSucceeded = result.Succeeded,
                 RemoteIpAddress = remoteIpAddress,
-                
-
             };
             _context.LoginAttempts.Add(loginAttempt);
             await _context.SaveChangesAsync();
@@ -68,9 +67,10 @@ namespace ApiWebApp.Controllers.Auth
             // Cleanup old logs
             await _logCleanupService.CleanupLogsAsync();
 
-            if (IsSuccessful)
+            if (result.Succeeded)
             {
-                if (user is not null)
+                var user = await _userManager.FindByNameAsync(login.Username);
+                if (user != null)
                 {
                     user.LastLogon = DateTime.UtcNow;
                     await _userManager.UpdateAsync(user);
@@ -78,7 +78,12 @@ namespace ApiWebApp.Controllers.Auth
                     return Ok(new { Token = token });
                 }
             }
-            return Unauthorized();
+            else if (result.IsLockedOut)
+            {
+                return Unauthorized("Account locked due to too many failed attempts. Try again later or contact Admin.");
+            }
+
+            return Unauthorized("Invalid login attempt.");
         }
 
         // Logout action
@@ -150,4 +155,3 @@ namespace ApiWebApp.Controllers.Auth
         }
     }
 }
-

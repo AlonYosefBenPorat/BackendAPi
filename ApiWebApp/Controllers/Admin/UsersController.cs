@@ -10,14 +10,14 @@ namespace ApiWebApp.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "GlobalAdmin")]
     public class UsersController(IUserRepository userRepository) : ControllerBase
     {
         private readonly IUserRepository _userRepository = userRepository;
 
         [EnableCors("AllowAll")]
         [HttpGet]
-        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin,RedearAdmin,")]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userRepository.GetAllUsersAsync();
@@ -34,7 +34,8 @@ namespace ApiWebApp.Controllers.Admin
 
         [EnableCors("AllowAll")]
         [HttpGet("{id}")]
-        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin,RedearAdmin,")]
+
         public async Task<IActionResult> GetUser(string id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
@@ -47,7 +48,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPost]
-        
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> Register([FromBody] UserDto userDto)
         {
             try
@@ -93,7 +94,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPut("{id}")]
-        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager,Reviewer")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDto updateUserDto)
         {
             if (!ModelState.IsValid)
@@ -108,7 +109,7 @@ namespace ApiWebApp.Controllers.Admin
                 return NotFound(ModelState);
             }
 
-            // Use UsersMap to update user properties
+           
             UsersMap.UpdateModel(user, updateUserDto);
 
             if (!string.IsNullOrEmpty(updateUserDto.Role))
@@ -144,7 +145,7 @@ namespace ApiWebApp.Controllers.Admin
             var result = await _userRepository.UpdateUserAsync(user);
             if (result.Succeeded)
             {
-                // Fetch the updated user from the database
+              
                 var updatedUser = await _userRepository.GetUserByIdAsync(id);
                 var roles = await _userRepository.GetUserRolesAsync(updatedUser);
 
@@ -160,7 +161,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPatch("{id}/reset-password")]
-        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> ResetPassword(string id, [FromBody] ResetPasswordDto resetPasswordDto)
         {
             if (!ModelState.IsValid)
@@ -192,6 +193,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPatch("{id}/update-status")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> UpdateUserStatus(string id, [FromBody] UpdateUserStatusDto updateUserStatusDto)
         {
             if (!ModelState.IsValid)
@@ -225,6 +227,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPatch("{id}/update-JobTitle")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> UpdateProfile(string id, [FromBody] UserJobTitleDto updateUserJobDto)
         {
             if (!ModelState.IsValid)
@@ -257,7 +260,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpDelete("{id}")]
-        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "GlobalAdmin")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);

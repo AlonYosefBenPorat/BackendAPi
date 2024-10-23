@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class Seed : Migration
+    public partial class SeedAllData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -108,7 +108,8 @@ namespace ApiWebApp.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CanRead = table.Column<bool>(type: "bit", nullable: false),
-                    CanWrite = table.Column<bool>(type: "bit", nullable: false)
+                    CanWrite = table.Column<bool>(type: "bit", nullable: false),
+                    CanDelete = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

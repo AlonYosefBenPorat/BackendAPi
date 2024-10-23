@@ -10,7 +10,7 @@ namespace ApiWebApp.Controllers.Analyst;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
+[Authorize(AuthenticationSchemes = "Bearer", Roles = "GlobalAdmin,Viewer,RedearAdmin")]
 public class AssetController(IRepository<Asset> assetRepository, IRepository<Customer> customerRepository) : ControllerBase
 {
     private readonly IRepository<Asset> _assetRepository = assetRepository ?? throw new ArgumentNullException(nameof(assetRepository));

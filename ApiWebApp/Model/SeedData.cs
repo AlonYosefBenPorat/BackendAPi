@@ -13,9 +13,10 @@ public static class SeedData
         var userManager = serviceProvider.GetRequiredService<UserManager<AppUsers>>();
         var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("SeedData");
         var context = serviceProvider.GetRequiredService<WebAppContext>();
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
         // Seed Roles
-        var roleNames = new[] { "Manager", "User", "Reviewer" };
+        var roleNames = new[] { "GlobalAdmin", "RedearAdmin", "ServiceAdmin", "Viewer" };
         foreach (var roleName in roleNames)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
@@ -50,16 +51,23 @@ public static class SeedData
                 LastName = "User",
                 JobTitle = "Administrator"
             };
-
-            var result = await userManager.CreateAsync(rootUser, "RootPassword123!");
-            if (result.Succeeded)
+            var rootUserPassword = configuration["SeedData:RootUserPassword"];
+            if (!string.IsNullOrEmpty(rootUserPassword))
             {
-                logger.LogInformation("Root user {RootUserEmail} created successfully.", rootUserEmail);
-                await userManager.AddToRoleAsync(rootUser, "Manager");
+                var result = await userManager.CreateAsync(rootUser, rootUserPassword);
+                if (result.Succeeded)
+                {
+                    logger.LogInformation("Root user {RootUserEmail} created successfully.", rootUserEmail);
+                    await userManager.AddToRoleAsync(rootUser, "GlobalAdmin");
+                }
+                else
+                {
+                    logger.LogError("Error creating root user {RootUserEmail}: {Errors}", rootUserEmail, string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
             }
             else
             {
-                logger.LogError("Error creating root user {RootUserEmail}: {Errors}", rootUserEmail, string.Join(", ", result.Errors.Select(e => e.Description)));
+                logger.LogError("Root user password is not set in the configuration.");
             }
         }
         else

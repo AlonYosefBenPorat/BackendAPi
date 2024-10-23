@@ -117,6 +117,9 @@ namespace ApiWebApp
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddScoped<IEmailService, EmailService>();
 
+            // **Register SignInManager<AppUsers>**
+            builder.Services.AddScoped<SignInManager<AppUsers>>(); // <--- Add this line
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

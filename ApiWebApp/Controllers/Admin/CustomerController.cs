@@ -10,13 +10,14 @@ namespace ApiWebApp.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+    
     public class CustomerController(IRepository<Customer> customerRepository) : ControllerBase
     {
         private readonly IRepository<Customer> _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
-        //private readonly IPermissionService _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+       
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin,RedearAdmin,Viewer")]
         public async Task<IActionResult> GetCustomers()
         {
             var customers = await _customerRepository.GetAllAsync();
@@ -24,6 +25,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin,RedearAdmin,Viewer")]
         public async Task<IActionResult> GetCustomer(Guid id)
         {
 
@@ -36,6 +38,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> CreateCustomer([FromBody] CustomerDto customerDto)
         {
 
@@ -50,6 +53,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPatch("{id}/update-status")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> UpdateCustomerStatus(Guid id, [FromBody] UpdateCustomerStatusDto updateCustomerStatusDto)
         {
 
@@ -71,6 +75,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDto customerDto)
         {
 
@@ -91,6 +96,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "GlobalAdmin")]
         public async Task<IActionResult> DeleteCustomer(Guid id)
         {
 

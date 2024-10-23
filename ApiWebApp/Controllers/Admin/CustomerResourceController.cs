@@ -11,7 +11,7 @@ namespace ApiWebApp.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+    
     public class CustomerResourceController(
         IRepository<Server> serverRepository,
         IRepository<NetworkDevice> networkDeviceRepository,
@@ -49,7 +49,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpGet("by-customer/{customerId}/server")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin,RedearAdmin,Viewer")]
 
         public async Task<IActionResult> GetServersByCustomerId(Guid customerId)
         {
