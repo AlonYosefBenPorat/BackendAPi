@@ -1,10 +1,13 @@
 ﻿
 //CustomerControoler By Resources - Cheak if Nedd include ItemMapping
 //Cores Form locl hsot React to be done by user role and token
-//SendNewUSerEmail =  Form to send To user AppUSerModel to return as request attened to easy add user 
-//add a blub to files 
-
-
+//SendNewUSerEmail =  Form to send To user AppUSerModel to return as request attened to easy add user - complet in fornt  ! 
+//add a blub to files -//
+//Azure offers a limited free tier for Blob Storage, which includes:
+//•	5 GB of locally redundant storage (LRS) per month.
+//•	20,000 read and 10,000 write operations per month.
+//•	Data transfer of up to 5 GB per month.
+//to open a free account, go to https://azure.microsoft.com/en-us/free/ and follow the instructions.
 
 
 

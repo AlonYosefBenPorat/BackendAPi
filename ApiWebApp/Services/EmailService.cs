@@ -4,6 +4,7 @@ using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using DAL.Models.utilitiesModel;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace ApiWebApp.Services
 {
@@ -26,6 +27,12 @@ namespace ApiWebApp.Services
                 await client.SendAsync(emailMessage);
                 await client.DisconnectAsync(true);
             }
+        }
+        public async Task SendNewUserLinkAsync(string toEmail, string link)
+        {
+            var subject = "Welcome! Start Your Registration";
+            var message = $"Please complete your registration by clicking the following link: {link}";
+            await SendEmailAsync(toEmail, subject, message);
         }
     }
 }

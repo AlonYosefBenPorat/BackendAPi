@@ -1,12 +1,10 @@
 ﻿using ApiWebApp.Configuration;
 using ApiWebApp.Dto;
 using ApiWebApp.Mapping;
-using DAL.Models.UsersModel;
+
 using DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading.Tasks;
 
 namespace ApiWebApp.Controllers.utilities
 {
