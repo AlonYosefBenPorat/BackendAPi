@@ -1,4 +1,4 @@
-﻿namespace ApiWebApp.Dto
+﻿namespace ApiWebApp.Dto.CustomerDto
 {
     public class UpdateCustomerStatusDto
     {

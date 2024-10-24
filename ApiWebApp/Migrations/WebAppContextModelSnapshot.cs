@@ -22,6 +22,51 @@ namespace ApiWebApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DAL.Models.CrmModel.Ticket", b =>
+                {
+                    b.Property<int>("TicketId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ContactPersonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TicketId");
+
+                    b.HasIndex("ContactPersonId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Tickets");
+                });
+
             modelBuilder.Entity("DAL.Models.ItemsModel.Asset", b =>
                 {
                     b.Property<Guid>("Id")
@@ -171,6 +216,41 @@ namespace ApiWebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemsModel.Employee", b =>
+                {
+                    b.Property<Guid>("EmployeeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EmployeeId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("DAL.Models.ItemsModel.Firewall", b =>
@@ -662,6 +742,25 @@ namespace ApiWebApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DAL.Models.CrmModel.Ticket", b =>
+                {
+                    b.HasOne("DAL.Models.ItemsModel.Employee", "ContactPerson")
+                        .WithMany()
+                        .HasForeignKey("ContactPersonId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Models.ItemsModel.Customer", "Customer")
+                        .WithMany("Tickets")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ContactPerson");
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("DAL.Models.ItemsModel.Asset", b =>
                 {
                     b.HasOne("DAL.Models.ItemsModel.Customer", "Customer")
@@ -708,6 +807,17 @@ namespace ApiWebApp.Migrations
                         });
 
                     b.Navigation("Logo");
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemsModel.Employee", b =>
+                {
+                    b.HasOne("DAL.Models.ItemsModel.Customer", "Customer")
+                        .WithMany("Employees")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("DAL.Models.ItemsModel.Firewall", b =>
@@ -852,11 +962,15 @@ namespace ApiWebApp.Migrations
 
                     b.Navigation("Backups");
 
+                    b.Navigation("Employees");
+
                     b.Navigation("Firewalls");
 
                     b.Navigation("NetworkDevices");
 
                     b.Navigation("Servers");
+
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

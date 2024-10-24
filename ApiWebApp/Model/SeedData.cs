@@ -239,5 +239,41 @@ public static class SeedData
         {
             logger.LogInformation("Backups already exist.");
         }
+
+        // Seed Employee
+        if (customer != null && !context.Employees.Any())
+        {
+            var employees = new[]
+            {
+                new Employee
+                {
+                    EmployeeId = Guid.NewGuid(),
+                    FullName = "John Doe",
+                    Email = "john.doe@example.com",
+                    Phone = "123-456-7890",
+                    IsActive = true,
+                    JobTitle = "Software Developer",
+                    CustomerId = customer.Id
+                },
+                new Employee
+                {
+                    EmployeeId = Guid.NewGuid(),
+                    FullName = "Jane Smith",
+                    Email = "jane.smith@example.com",
+                    Phone = "098-765-4321",
+                    IsActive = true,
+                    JobTitle = "Project Manager",
+                    CustomerId = customer.Id
+                }
+            };
+
+            context.Employees.AddRange(employees);
+            await context.SaveChangesAsync();
+            logger.LogInformation("Employees seeded successfully.");
+        }
+        else
+        {
+            logger.LogInformation("Employees already exist.");
+        }
     }
 }

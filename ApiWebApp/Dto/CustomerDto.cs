@@ -1,7 +1,7 @@
 ﻿using DAL.Models.utilitiesModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiWebApp.Dto
+namespace ApiWebApp.Dto.CustomerDto
 {
     public class CustomerDto
 

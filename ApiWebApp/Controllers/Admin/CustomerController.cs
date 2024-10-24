@@ -1,4 +1,5 @@
 ﻿using ApiWebApp.Dto;
+using ApiWebApp.Dto.CustomerDto;
 using ApiWebApp.Mapping;
 using DAL.Data;
 using DAL.Models.ItemsModel;
@@ -54,7 +55,7 @@ namespace ApiWebApp.Controllers.Admin
 
         [HttpPatch("{id}/update-status")]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
-        public async Task<IActionResult> UpdateCustomerStatus(Guid id, [FromBody] UpdateCustomerStatusDto updateCustomerStatusDto)
+        public async Task<IActionResult> UpdateCustomerStatus(Guid id, [FromBody] Dto.CustomerDto.UpdateCustomerStatusDto updateCustomerStatusDto)
         {
 
             if (!ModelState.IsValid)

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using DAL.Models.ItemsModel;
 using DAL.Models.utilitiesModel;
 using DAL.Models.UsersModel;
+using DAL.Models.CrmModel;
 
 namespace DAL.Data
 {
@@ -15,8 +16,11 @@ namespace DAL.Data
         public DbSet<Firewall> Firewalls { get; set; }
         public DbSet<Backup> Backups { get; set; }
         public DbSet<Asset> Assets { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
         public DbSet<LoginAttempt> LoginAttempts { get; set; }
         public DbSet<AppUsersTemp> AppUsersTemps { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +32,7 @@ namespace DAL.Data
             modelBuilder.Entity<Firewall>().ToTable("Firewalls");
             modelBuilder.Entity<Backup>().ToTable("Backups");
             modelBuilder.Entity<Asset>().ToTable("Assets");
+         
 
             // Configure foreign key relationships
             modelBuilder.Entity<Customer>()
@@ -76,6 +81,29 @@ namespace DAL.Data
             {
                 entity.OwnsOne(c => c.ProfileImage);
             });
+
+
+            // Configure relationships for Employee and Ticket
+            modelBuilder.Entity<Customer>()
+                .HasMany(c => c.Employees)
+                .WithOne(e => e.Customer)
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Customer>()
+                .HasMany(c => c.Tickets)
+                .WithOne(t => t.Customer)
+                .HasForeignKey(t => t.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+
+            modelBuilder.Entity<Ticket>()
+               .HasOne(t => t.ContactPerson)
+               .WithMany()
+               .HasForeignKey(t => t.ContactPersonId)
+               .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
+        

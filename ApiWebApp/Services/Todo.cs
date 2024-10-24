@@ -8,8 +8,7 @@
 //•	20,000 read and 10,000 write operations per month.
 //•	Data transfer of up to 5 GB per month.
 //to open a free account, go to https://azure.microsoft.com/en-us/free/ and follow the instructions.
-
-
+// cheak Seed Data to all Models  
 
 
 //8.Bonus

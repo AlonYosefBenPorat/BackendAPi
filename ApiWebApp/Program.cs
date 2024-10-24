@@ -94,7 +94,9 @@ namespace ApiWebApp
             builder.Services.AddScoped<IRepository<NetworkDevice>, Repository<NetworkDevice>>();
             builder.Services.AddScoped<IRepository<Firewall>, Repository<Firewall>>();
             builder.Services.AddScoped<IRepository<Asset>, Repository<Asset>>();
-            builder.Services.AddScoped<IRepository<UserPermission>, Repository<UserPermission>>(); // Add this line
+            builder.Services.AddScoped<IRepository<UserPermission>, Repository<UserPermission>>();
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<IRepository<Employee>, Repository<Employee>>();
 
             // Register LogCleaner
             builder.Services.AddScoped<LogCleanupService>();

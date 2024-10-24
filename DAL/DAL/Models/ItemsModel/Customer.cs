@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DAL.Models.CrmModel;
 using DAL.Models.utilitiesModel;
 
 namespace DAL.Models.ItemsModel
@@ -45,6 +46,8 @@ namespace DAL.Models.ItemsModel
         public ICollection<Firewall> Firewalls { get; set; } = new List<Firewall>();
         public ICollection<Asset> Assets { get; set; } = new List<Asset>();
         public ICollection<Backup> Backups { get; set; } = new List<Backup>();
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 
         public Customer()
         {

@@ -6,11 +6,32 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedAllData : Migration
+    public partial class CrmAndProductSeed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AppUsersTemps",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfileImage_Alt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfileImage_Src = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsImport = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUsersTemps", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -278,6 +299,29 @@ namespace ApiWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
+                    table.ForeignKey(
+                        name: "FK_Employees_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Firewalls",
                 columns: table => new
                 {
@@ -367,6 +411,37 @@ namespace ApiWebApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Tickets",
+                columns: table => new
+                {
+                    TicketId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ClosedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsClosed = table.Column<bool>(type: "bit", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ContactPersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tickets", x => x.TicketId);
+                    table.ForeignKey(
+                        name: "FK_Tickets_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tickets_Employees_ContactPersonId",
+                        column: x => x.ContactPersonId,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeId");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -417,6 +492,11 @@ namespace ApiWebApp.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Employees_CustomerId",
+                table: "Employees",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Firewalls_CustomerId",
                 table: "Firewalls",
                 column: "CustomerId");
@@ -430,11 +510,24 @@ namespace ApiWebApp.Migrations
                 name: "IX_Servers_CustomerId",
                 table: "Servers",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_ContactPersonId",
+                table: "Tickets",
+                column: "ContactPersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_CustomerId",
+                table: "Tickets",
+                column: "CustomerId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AppUsersTemps");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -469,6 +562,9 @@ namespace ApiWebApp.Migrations
                 name: "Servers");
 
             migrationBuilder.DropTable(
+                name: "Tickets");
+
+            migrationBuilder.DropTable(
                 name: "UserPermissions");
 
             migrationBuilder.DropTable(
@@ -476,6 +572,9 @@ namespace ApiWebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Customers");
