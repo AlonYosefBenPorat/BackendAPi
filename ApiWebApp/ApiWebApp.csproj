@@ -27,6 +27,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Dto\TicketDto\" />
+	  <Folder Include="Migrations\" />
 	</ItemGroup>
 
 </Project>

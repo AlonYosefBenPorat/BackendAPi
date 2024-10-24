@@ -10,14 +10,9 @@ namespace ApiWebApp.Controllers.PermissionBased
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class EmployeeController(IRepository<Employee> employeeRepository) : ControllerBase
     {
-        private readonly IRepository<Employee> _employeeRepository;
-
-        public EmployeeController(IRepository<Employee> employeeRepository)
-        {
-            _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
-        }
+        private readonly IRepository<Employee> _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
 
         [HttpGet]
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto
 {
@@ -16,12 +17,14 @@ namespace ApiWebApp.Dto
         public DateTime? UpdatedAt { get; set; }
         public DateTime? ClosedAt { get; set; }
 
-        public bool IsClosed { get; set; }
+        public bool IsActive { get; set; }
 
         [Required]
         public Guid CustomerId { get; set; }
 
+     
+
         [Required]
-        public Guid ContactPersonId { get; set; }
+        public Guid EmployeeId { get; set; }
     }
 }

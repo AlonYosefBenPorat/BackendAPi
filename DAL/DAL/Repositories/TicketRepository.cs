@@ -10,12 +10,17 @@ public class TicketRepository : ITicketRepository
     private readonly WebAppContext _context;
     private readonly DbSet<Ticket> _dbSet;
 
+
     public TicketRepository(WebAppContext context)
     {
         _context = context;
         _dbSet = _context.Set<Ticket>();
     }
 
+    public async Task<IEnumerable<Ticket>> GetActiveTicketsAsync()
+    {
+        return await _context.Tickets.Where(t => t.IsActive).ToListAsync();
+    }
     public async Task<IEnumerable<Ticket>> GetAllAsync()
     {
         return await _dbSet.ToListAsync();

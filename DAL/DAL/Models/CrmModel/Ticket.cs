@@ -1,7 +1,5 @@
-﻿
-
-using DAL.Models.ItemsModel;
-using DAL.Models.UsersModel;
+﻿using DAL.Models.ItemsModel;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models.CrmModel
@@ -17,26 +15,18 @@ namespace DAL.Models.CrmModel
         [Required, MinLength(2), MaxLength(20)]
         public required string Description { get; set; }
 
-        
-        
-     
-
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? ClosedAt { get; set; }
 
-        public bool IsClosed { get; set; }
+        public bool IsActive { get; set; }
 
         [Required]
         public Guid CustomerId { get; set; }
         public Customer? Customer { get; set; }
 
+        [Required]
         public Guid ContactPersonId { get; set; }
         public Employee? ContactPerson { get; set; }
-
-
-
-
-
     }
 }

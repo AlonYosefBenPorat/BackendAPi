@@ -15,7 +15,9 @@
 
 //add sigh in using google or AzureAd see Article how to do it in:? 
 //Add ToDo To Ech User
-//ADD Customer Crm  to the app
+//Crm fields  update at = to by Put . 
+//close case Closed at is put  . 
+
 //reset Password  to be done by user role and token = send to react app by Email
 // configure MFa  to the app by Email with token read article
 // https://www.red-gate.com/simple-talk/dotnet/net-development/asp-net-core-2-1-identity-adding-mfa/

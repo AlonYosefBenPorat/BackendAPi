@@ -98,11 +98,17 @@ namespace DAL.Data
 
 
 
+            // Set the initial value for TicketId to start from 1000
             modelBuilder.Entity<Ticket>()
-               .HasOne(t => t.ContactPerson)
-               .WithMany()
-               .HasForeignKey(t => t.ContactPersonId)
-               .OnDelete(DeleteBehavior.NoAction);
+                .Property(t => t.TicketId)
+                .UseIdentityColumn(1000, 1);
+
+            // Configure the relationship between Ticket and ContactPerson
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.ContactPerson)
+                .WithMany()
+                .HasForeignKey(t => t.ContactPersonId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

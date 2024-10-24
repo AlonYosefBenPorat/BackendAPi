@@ -21,9 +21,9 @@ namespace ApiWebApp.Mapping
                 CreatedAt = ticketDto.CreatedAt,
                 UpdatedAt = ticketDto.UpdatedAt,
                 ClosedAt = ticketDto.ClosedAt,
-                IsClosed = ticketDto.IsClosed,
+                IsActive = ticketDto.IsActive,
                 CustomerId = ticketDto.CustomerId,
-                ContactPersonId = ticketDto.ContactPersonId
+         
             };
         }
 
@@ -42,14 +42,14 @@ namespace ApiWebApp.Mapping
             ticket.Title = ticketDto.Title;
             ticket.Description = ticketDto.Description;
             ticket.UpdatedAt = DateTime.UtcNow;
-            ticket.IsClosed = ticketDto.IsClosed;
+            ticket.IsActive = ticketDto.IsActive;
             ticket.CustomerId = ticketDto.CustomerId;
-            ticket.ContactPersonId = ticketDto.ContactPersonId;
+            ticket.ContactPersonId = ticketDto.EmployeeId;
         }
 
         public static TicketDto ToDto(this Ticket ticket)
         {
-            if (ticket == null)
+            if (ticket is null)
             {
                 throw new ArgumentNullException(nameof(ticket));
             }
@@ -62,9 +62,9 @@ namespace ApiWebApp.Mapping
                 CreatedAt = ticket.CreatedAt,
                 UpdatedAt = ticket.UpdatedAt,
                 ClosedAt = ticket.ClosedAt,
-                IsClosed = ticket.IsClosed,
+                IsActive = ticket.IsActive,
                 CustomerId = ticket.CustomerId,
-                ContactPersonId = ticket.ContactPersonId
+                EmployeeId = ticket.ContactPersonId
             };
         }
     }
