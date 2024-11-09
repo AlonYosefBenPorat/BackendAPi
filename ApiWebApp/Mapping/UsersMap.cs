@@ -1,6 +1,7 @@
 ﻿using ApiWebApp.Dto;
 using DAL.Models.UsersModel;
 using DAL.Models.utilitiesModel;
+using Microsoft.AspNetCore.Identity;
 
 namespace ApiWebApp.Mapping;
 
@@ -64,6 +65,12 @@ public static class UsersMap
         user.ProfileImage ??= new Image();
         user.ProfileImage.Alt = userDto.ProfileAlt ?? user.ProfileImage.Alt ?? string.Empty;
         user.ProfileImage.Src = userDto.ProfileSrc ?? user.ProfileImage.Src ?? string.Empty;
+        if (!string.IsNullOrEmpty(userDto.Password))
+        {
+            var passwordHasher = new PasswordHasher<AppUsers>();
+            user.PasswordHash = passwordHasher.HashPassword(user, userDto.Password);
+            user.LastPasswordUpdated = DateTime.UtcNow;
+        }
     }
 
 

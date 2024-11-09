@@ -65,11 +65,7 @@ namespace DAL.Data
                 .HasForeignKey(b => b.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configure the Logo property as an owned type
-            modelBuilder.Entity<Customer>(entity =>
-            {
-                entity.OwnsOne(c => c.Logo);
-            });
+      
 
             // Configure ProfileImage as an owned type for AppUsers
             modelBuilder.Entity<AppUsers>(entity =>

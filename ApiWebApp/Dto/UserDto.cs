@@ -29,8 +29,8 @@ namespace ApiWebApp.Dto
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;
         
-        [Required, DataType(DataType.Password)]
-        public required string Password { get; set; }
+        [ DataType(DataType.Password)]
+        public string? Password { get; set; }
         
         [Required]
         public required string Role { get; set; }

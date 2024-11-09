@@ -43,12 +43,13 @@ namespace ApiWebApp.Dto.CustomerDto
         public int BnNumber { get; set; }
 
         public bool IsActive { get; set; }
-        public Image? Logo { get; set; }
-    
+        public string? LogoAlt { get; set; }
+        public string? LogoSrc { get; set; }
 
-   
 
-  
+
+
+
 
 
         public CustomerDto()

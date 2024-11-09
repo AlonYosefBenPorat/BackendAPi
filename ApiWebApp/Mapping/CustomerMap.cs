@@ -25,7 +25,10 @@ namespace ApiWebApp.Mapping
                 Domain = customerDto.Domain,
                 BnNumber = customerDto.BnNumber,
                 CreatedAt = DateTime.UtcNow,
-                IsActive = customerDto.IsActive
+                IsActive = customerDto.IsActive,
+                LogoAlt = customerDto.LogoAlt,
+                LogoSrc = customerDto.LogoSrc
+
             };
         }
 
@@ -51,6 +54,8 @@ namespace ApiWebApp.Mapping
             customer.BnNumber = customerDto.BnNumber;
             customer.IsActive = customerDto.IsActive;
             customer.UpdatedAt = DateTime.UtcNow;
+            customer.LogoAlt = customerDto.LogoAlt;
+            customer.LogoSrc = customerDto.LogoSrc;
         }
 
         public static CustomerDto ToDto(this Customer customer)

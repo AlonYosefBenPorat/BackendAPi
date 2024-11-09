@@ -39,7 +39,9 @@ namespace DAL.Models.ItemsModel
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
-        public Image? Logo { get; set; }
+        
+        public string? LogoAlt { get; set; }
+        public string? LogoSrc { get; set; }
 
         public ICollection<Server> Servers { get; set; } = new List<Server>();
         public ICollection<NetworkDevice> NetworkDevices { get; set; } = new List<NetworkDevice>();
