@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiWebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    [Migration("20241024142448_Seed")]
-    partial class Seed
+    [Migration("20241109150526_SeedData")]
+    partial class SeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace ApiWebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"), 1000L);
 
                     b.Property<DateTime?>("ClosedAt")
                         .HasColumnType("datetime2");
@@ -203,6 +203,12 @@ namespace ApiWebApp.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LogoAlt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoSrc")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -586,6 +592,8 @@ namespace ApiWebApp.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("UserPermissions");
                 });
 
@@ -786,32 +794,6 @@ namespace ApiWebApp.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("DAL.Models.ItemsModel.Customer", b =>
-                {
-                    b.OwnsOne("DAL.Models.utilitiesModel.Image", "Logo", b1 =>
-                        {
-                            b1.Property<Guid>("CustomerId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Alt")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Src")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("CustomerId");
-
-                            b1.ToTable("Customers");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CustomerId");
-                        });
-
-                    b.Navigation("Logo");
-                });
-
             modelBuilder.Entity("DAL.Models.ItemsModel.Employee", b =>
                 {
                     b.HasOne("DAL.Models.ItemsModel.Customer", "Customer")
@@ -906,6 +888,15 @@ namespace ApiWebApp.Migrations
                         });
 
                     b.Navigation("ProfileImage");
+                });
+
+            modelBuilder.Entity("DAL.Models.UsersModel.UserPermission", b =>
+                {
+                    b.HasOne("DAL.Models.ItemsModel.Customer", null)
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

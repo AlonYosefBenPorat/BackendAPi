@@ -105,6 +105,13 @@ namespace DAL.Data
                 .WithMany()
                 .HasForeignKey(t => t.ContactPersonId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure the relationship between UserPermission and Customer
+            modelBuilder.Entity<UserPermission>()
+                .HasOne<Customer>()
+                .WithMany()
+                .HasForeignKey(up => up.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

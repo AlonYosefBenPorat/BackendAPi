@@ -32,8 +32,8 @@ namespace ApiWebApp.Controllers.PermissionBased
             return Ok(items);
         }
 
-        [HttpPost("{customerId}/Server")]
 
+        [HttpPost("{customerId}/Server")]
         public async Task<ActionResult> AddServer(Guid customerId, [FromBody] ServerDto serverDto)
         {
             if (!ModelState.IsValid)
@@ -50,10 +50,18 @@ namespace ApiWebApp.Controllers.PermissionBased
             serverDto.CustomerId = customerId;
             var server = serverDto.ToEntity();
             await _serverRepository.AddAsync(server);
+
             var createdServer = await _serverRepository.GetByIdAsync(server.Id);
+            if (createdServer == null)
+            {
+                return NotFound();
+            }
+
             var serverResponseDto = createdServer.ToDto();
             return CreatedAtAction(nameof(GetServersByCustomerId), new { customerId = serverDto.CustomerId }, serverResponseDto);
         }
+
+
 
         [HttpPut("{customerId}/Server/{id}")]
         public async Task<IActionResult> UpdateServer(Guid customerId, Guid id, [FromBody] ServerDto serverDto)

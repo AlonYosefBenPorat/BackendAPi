@@ -589,6 +589,8 @@ namespace ApiWebApp.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("UserPermissions");
                 });
 
@@ -883,6 +885,15 @@ namespace ApiWebApp.Migrations
                         });
 
                     b.Navigation("ProfileImage");
+                });
+
+            modelBuilder.Entity("DAL.Models.UsersModel.UserPermission", b =>
+                {
+                    b.HasOne("DAL.Models.ItemsModel.Customer", null)
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

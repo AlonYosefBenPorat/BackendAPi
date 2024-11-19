@@ -10,33 +10,36 @@ namespace ApiWebApp.Controllers.PermissionBased
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController(IRepository<Employee> employeeRepository) : ControllerBase
+    public class EmployeeController : ControllerBase
     {
-        private readonly IRepository<Employee> _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
+        private readonly IRepository<Employee> _employeeRepository;
 
-        [HttpGet]
-
-        public async Task<IActionResult> GetEmployees()
+        public EmployeeController(IRepository<Employee> employeeRepository)
         {
-            var employees = await _employeeRepository.GetAllAsync();
-            return Ok(employees);
+            _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{customerId}/employees")]
+        public async Task<IActionResult> GetEmployees(Guid customerId)
+        {
+            var employees = await _employeeRepository.GetAllAsync();
+            var filteredEmployees = employees.Where(e => e.CustomerId == customerId);
+            return Ok(filteredEmployees);
+        }
 
-        public async Task<IActionResult> GetEmployee(Guid id)
+        [HttpGet("{customerId}/employee/{id}")]
+        public async Task<IActionResult> GetEmployee(Guid customerId, Guid id)
         {
             var employee = await _employeeRepository.GetByIdAsync(id);
-            if (employee is null)
+            if (employee == null || employee.CustomerId != customerId)
             {
                 return NotFound();
             }
             return Ok(employee);
         }
 
-        [HttpPost]
-
-        public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
+        [HttpPost("{customerId}/employee")]
+        public async Task<IActionResult> CreateEmployee(Guid customerId, [FromBody] EmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -44,13 +47,13 @@ namespace ApiWebApp.Controllers.PermissionBased
             }
 
             var employee = employeeDto.ToEntity();
+            employee.CustomerId = customerId; // Assign the customer ID
             await _employeeRepository.AddAsync(employee);
-            return CreatedAtAction("GetEmployee", new { id = employee.EmployeeId }, employee.ToDto());
+            return CreatedAtAction("GetEmployee", new { customerId = customerId, id = employee.EmployeeId }, employee.ToDto());
         }
 
-        [HttpPatch("{id}/update-status")]
-
-        public async Task<IActionResult> UpdateEmployeeStatus(Guid id, [FromBody] UpdateEmployeeStatusDto updateEmployeeStatusDto)
+        [HttpPatch("{customerId}/employee/{id}/update-status")]
+        public async Task<IActionResult> UpdateEmployeeStatus(Guid customerId, Guid id, [FromBody] UpdateEmployeeStatusDto updateEmployeeStatusDto)
         {
             if (!ModelState.IsValid)
             {
@@ -58,7 +61,7 @@ namespace ApiWebApp.Controllers.PermissionBased
             }
 
             var employee = await _employeeRepository.GetByIdAsync(id);
-            if (employee is null)
+            if (employee == null || employee.CustomerId != customerId)
             {
                 return NotFound();
             }
@@ -68,9 +71,8 @@ namespace ApiWebApp.Controllers.PermissionBased
             return Ok(employee);
         }
 
-        [HttpPatch("{id}")]
-
-        public async Task<IActionResult> UpdateEmployee(Guid id, [FromBody] EmployeeDto employeeDto)
+        [HttpPatch("{customerId}/employee/{id}")]
+        public async Task<IActionResult> UpdateEmployee(Guid customerId, Guid id, [FromBody] EmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -78,7 +80,7 @@ namespace ApiWebApp.Controllers.PermissionBased
             }
 
             var employee = await _employeeRepository.GetByIdAsync(id);
-            if (employee is null)
+            if (employee == null || employee.CustomerId != customerId)
             {
                 return NotFound();
             }
@@ -86,7 +88,6 @@ namespace ApiWebApp.Controllers.PermissionBased
             employeeDto.UpdateEntity(employee);
             await _employeeRepository.UpdateAsync(employee);
             return Ok();
-
         }
     }
 }

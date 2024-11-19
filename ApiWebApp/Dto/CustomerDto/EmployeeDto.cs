@@ -1,12 +1,10 @@
 ﻿using DAL.Models.ItemsModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiWebApp.Dto.CustomerDto;
-
-
+namespace ApiWebApp.Dto.CustomerDto
+{
     public class EmployeeDto
     {
-        
         public Guid EmployeeId { get; set; }
 
         [Required, MinLength(4), MaxLength(25)]
@@ -22,13 +20,11 @@ namespace ApiWebApp.Dto.CustomerDto;
         public string? JobTitle { get; set; }
 
         [Required]
-        public required Guid CustomerId { get; set; }
+        public  Guid CustomerId { get; set; }
+    }
 
     public class UpdateEmployeeStatusDto
     {
-      
         public bool IsActive { get; set; }
     }
 }
-
-

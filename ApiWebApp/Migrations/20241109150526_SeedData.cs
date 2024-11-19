@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class Seed : Migration
+    public partial class SeedData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -98,8 +98,8 @@ namespace ApiWebApp.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    Logo_Alt = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Logo_Src = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LogoAlt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogoSrc = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -119,22 +119,6 @@ namespace ApiWebApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LoginAttempts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserPermissions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CanRead = table.Column<bool>(type: "bit", nullable: false),
-                    CanWrite = table.Column<bool>(type: "bit", nullable: false),
-                    CanDelete = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserPermissions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -412,11 +396,33 @@ namespace ApiWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CanRead = table.Column<bool>(type: "bit", nullable: false),
+                    CanWrite = table.Column<bool>(type: "bit", nullable: false),
+                    CanDelete = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserPermissions_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tickets",
                 columns: table => new
                 {
                     TicketId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("SqlServer:Identity", "1000, 1"),
                     Title = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -519,6 +525,11 @@ namespace ApiWebApp.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_CustomerId",
                 table: "Tickets",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPermissions_CustomerId",
+                table: "UserPermissions",
                 column: "CustomerId");
         }
 
