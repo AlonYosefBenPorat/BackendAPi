@@ -113,7 +113,6 @@ public static class SeedData
                 Hostname = "server1.acme.com",
                 SerialNumber = "SN123456789",
                 Model = "ProLiant DL380 Gen10",
-                Brand = "HP",
                 Type = "Rack",
                 Vendor = "HP",
                 Ram = "64GB",
@@ -121,7 +120,6 @@ public static class SeedData
                 OperatingSystem = "Windows Server 2019",
                 WarrantyExpiration = DateTime.UtcNow.AddYears(3),
                 Roles = "Web Server, Database Server",
-                Description = "Primary server for Acme Corporation",
                 CreatedAt = DateTime.UtcNow
             };
 

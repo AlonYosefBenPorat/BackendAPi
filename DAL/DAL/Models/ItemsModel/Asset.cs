@@ -23,7 +23,7 @@ namespace DAL.Models.ItemsModel
 
 
 
-        // Navigation property
+
         public Customer? Customer { get; set; }
 
         public Asset()

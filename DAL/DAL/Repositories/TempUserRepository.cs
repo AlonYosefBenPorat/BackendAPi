@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
-using DAL.Models.UsersModel;
+﻿using DAL.Models.UsersModel;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System;
+
 using DAL.Data;
 
 namespace DAL.Repositories

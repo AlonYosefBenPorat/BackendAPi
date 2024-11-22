@@ -1,5 +1,4 @@
-﻿using DAL.Models.ItemsModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ApiWebApp.Dto.CustomerDto
 {
@@ -20,7 +19,7 @@ namespace ApiWebApp.Dto.CustomerDto
         public string? JobTitle { get; set; }
 
         [Required]
-        public  Guid CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
     }
 
     public class UpdateEmployeeStatusDto

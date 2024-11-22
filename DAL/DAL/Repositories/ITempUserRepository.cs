@@ -1,7 +1,5 @@
-﻿using System.Threading.Tasks;
-using DAL.Models.UsersModel;
-using System.Collections.Generic;
-using System;
+﻿using DAL.Models.UsersModel;
+
 
 namespace DAL.Repositories
 {

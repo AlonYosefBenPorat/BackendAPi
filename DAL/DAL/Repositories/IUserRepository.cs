@@ -1,5 +1,4 @@
-﻿using DAL.Data;
-using DAL.Models.UsersModel;
+﻿using DAL.Models.UsersModel;
 using Microsoft.AspNetCore.Identity;
 
 

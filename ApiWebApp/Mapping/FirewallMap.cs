@@ -10,14 +10,13 @@ public static class FirewallMap
         return new Firewall
         {
             Id = Guid.NewGuid(),
-           Brand = firewallDto.Brand,
+            Brand = firewallDto.Brand,
             Version = firewallDto.Version,
             Model = firewallDto.Model,
             SerialNumber = firewallDto.SerialNumber,
             IpAddress = firewallDto.IpAddress,
             MacAddress = firewallDto.MacAddress,
             License = firewallDto.License,
-            
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = null,
             IsActive = firewallDto.IsActive,

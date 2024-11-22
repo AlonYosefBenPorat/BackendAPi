@@ -2,14 +2,13 @@
 using ApiWebApp.Mapping;
 using DAL.Data;
 using DAL.Models.ItemsModel;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static ApiWebApp.Dto.CustomerDto.EmployeeDto;
 
 namespace ApiWebApp.Controllers.PermissionBased
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public class EmployeeController : ControllerBase
     {
         private readonly IRepository<Employee> _employeeRepository;
@@ -23,7 +22,7 @@ namespace ApiWebApp.Controllers.PermissionBased
         public async Task<IActionResult> GetEmployees(Guid customerId)
         {
             var employees = await _employeeRepository.GetAllAsync();
-            var filteredEmployees = employees.Where(e => e.CustomerId == customerId);
+            var filteredEmployees = employees.Where(e => e.CustomerId == customerId).Select(e => e.ToDto());
             return Ok(filteredEmployees);
         }
 
@@ -35,7 +34,7 @@ namespace ApiWebApp.Controllers.PermissionBased
             {
                 return NotFound();
             }
-            return Ok(employee);
+            return Ok(employee.ToDto());
         }
 
         [HttpPost("{customerId}/employee")]
@@ -47,7 +46,7 @@ namespace ApiWebApp.Controllers.PermissionBased
             }
 
             var employee = employeeDto.ToEntity();
-            employee.CustomerId = customerId; // Assign the customer ID
+            employee.CustomerId = customerId; 
             await _employeeRepository.AddAsync(employee);
             return CreatedAtAction("GetEmployee", new { customerId = customerId, id = employee.EmployeeId }, employee.ToDto());
         }
@@ -68,10 +67,10 @@ namespace ApiWebApp.Controllers.PermissionBased
 
             employee.IsActive = updateEmployeeStatusDto.IsActive;
             await _employeeRepository.UpdateAsync(employee);
-            return Ok(employee);
+            return Ok(employee.ToDto());
         }
 
-        [HttpPatch("{customerId}/employee/{id}")]
+        [HttpPut("{customerId}/employee/{id}")]
         public async Task<IActionResult> UpdateEmployee(Guid customerId, Guid id, [FromBody] EmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
@@ -85,9 +84,29 @@ namespace ApiWebApp.Controllers.PermissionBased
                 return NotFound();
             }
 
-            employeeDto.UpdateEntity(employee);
+            // Update the employee entity without changing the CustomerId
+            employee.FullName = employeeDto.FullName;
+            employee.Email = employeeDto.Email;
+            employee.Phone = employeeDto.Phone;
+            employee.IsActive = employeeDto.IsActive;
+            employee.JobTitle = employeeDto.JobTitle;
+
             await _employeeRepository.UpdateAsync(employee);
-            return Ok();
+            return Ok(employee.ToDto());
+        }
+
+
+        [HttpDelete("{customerId}/employee/{id}")]
+        public async Task<IActionResult> DeleteEmployee(Guid customerId, Guid id)
+        {
+            var employee = await _employeeRepository.GetByIdAsync(id);
+            if (employee == null || employee.CustomerId != customerId)
+            {
+                return NotFound();
+            }
+
+            await _employeeRepository.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

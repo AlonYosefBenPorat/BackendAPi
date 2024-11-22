@@ -1,25 +1,33 @@
-﻿using ApiWebApp.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
+using ApiWebApp.DTOs;
 using ApiWebApp.Mapping;
 using ApiWebApp.Services;
-using ApiWebApp.Utilities;
 using DAL.Data;
 using DAL.Models.ItemsModel;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ApiWebApp.Utilities;
 
 namespace ApiWebApp.Controllers.PermissionBased
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    public class CustomerServerController(IRepository<Server> serverRepository, IPermissionService permissionService) : ControllerBase
+    public class CustomerServerController : ControllerBase
     {
-        private readonly IRepository<Server> _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
-        private readonly IPermissionService _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+        private readonly IRepository<Server> _serverRepository;
+        private readonly IPermissionService _permissionService;
+
+        public CustomerServerController(IRepository<Server> serverRepository, IPermissionService permissionService)
+        {
+            _serverRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
+            _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+        }
 
         [HttpGet("{customerId}/Server")]
-
         public async Task<IActionResult> GetServersByCustomerId(Guid customerId)
         {
             var validationResult = await PermissionValidator.ValidateUserAndPermission(User, customerId, _permissionService.CanReadAsync);
@@ -31,7 +39,6 @@ namespace ApiWebApp.Controllers.PermissionBased
             var items = server.Select(ServerMap.ToDto).ToList();
             return Ok(items);
         }
-
 
         [HttpPost("{customerId}/Server")]
         public async Task<ActionResult> AddServer(Guid customerId, [FromBody] ServerDto serverDto)
@@ -60,8 +67,6 @@ namespace ApiWebApp.Controllers.PermissionBased
             var serverResponseDto = createdServer.ToDto();
             return CreatedAtAction(nameof(GetServersByCustomerId), new { customerId = serverDto.CustomerId }, serverResponseDto);
         }
-
-
 
         [HttpPut("{customerId}/Server/{id}")]
         public async Task<IActionResult> UpdateServer(Guid customerId, Guid id, [FromBody] ServerDto serverDto)

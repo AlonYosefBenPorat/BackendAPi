@@ -32,6 +32,7 @@ namespace DAL.Data
             modelBuilder.Entity<Firewall>().ToTable("Firewalls");
             modelBuilder.Entity<Backup>().ToTable("Backups");
             modelBuilder.Entity<Asset>().ToTable("Assets");
+            modelBuilder.Entity<Employee>().ToTable("Employees");
          
 
             // Configure foreign key relationships
@@ -63,6 +64,12 @@ namespace DAL.Data
                 .HasMany(f => f.Firewalls)
                 .WithOne(f => f.Customer)
                 .HasForeignKey(b => b.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Customer>()
+                .HasMany(e=> e.Employees)
+                .WithOne(e => e.Customer)
+                .HasForeignKey(e => e.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
       

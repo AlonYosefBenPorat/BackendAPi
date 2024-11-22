@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiWebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    [Migration("20241109150526_SeedData")]
-    partial class SeedData
+    [Migration("20241122110927_FKEmployee")]
+    partial class FKEmployee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -259,7 +259,7 @@ namespace ApiWebApp.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Models.ItemsModel.Firewall", b =>

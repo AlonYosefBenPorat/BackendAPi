@@ -6,8 +6,7 @@ namespace DAL.Models.ItemsModel
 {
     public class Customer
     {
-        // Removed the unused 'firewalls' field
-
+        
         [Key]
         public Guid Id { get; set; }
 

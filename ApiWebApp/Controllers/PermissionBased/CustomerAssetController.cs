@@ -4,6 +4,7 @@ using ApiWebApp.Services;
 using ApiWebApp.Utilities;
 using DAL.Data;
 using DAL.Models.ItemsModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace ApiWebApp.Controllers.PermissionBased
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class CustomerAssetController(IRepository<Asset> assetRepository, IPermissionService permissionService) : ControllerBase
     {
         private readonly IRepository<Asset> _assetRepository = assetRepository ?? throw new ArgumentNullException(nameof(assetRepository));

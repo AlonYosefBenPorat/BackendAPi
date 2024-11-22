@@ -16,7 +16,7 @@ public class Server
     public string IpAddress { get; set; } = "0.0.0.0";
 
     public string? Model { get; set; }
-    public string? Brand { get; set; }
+    
 
     [Required]
     public string Type { get; set; } = string.Empty;
@@ -28,7 +28,7 @@ public class Server
     public DateTime? WarrantyExpiration { get; set; }
     [Required]
     public string? Roles { get; set; }
-    public string? Description { get; set; }
+ 
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
