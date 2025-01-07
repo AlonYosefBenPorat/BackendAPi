@@ -33,6 +33,7 @@ namespace ApiWebApp.Mapping
             asset.UpdatedAt = DateTime.UtcNow;
             asset.CustomerId = assetDto.CustomerId;
         }
+
         public static AssetDto ToDto(this Asset asset)
         {
             return new AssetDto
