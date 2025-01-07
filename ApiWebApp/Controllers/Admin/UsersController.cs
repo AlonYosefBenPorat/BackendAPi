@@ -6,18 +6,20 @@ using Microsoft.AspNetCore.Identity;
 using DAL.Models.UsersModel;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace ApiWebApp.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "GlobalAdmin")]
+    [EnableCors("AllowSpecificOrigin")]
+   
     public class UsersController(IUserRepository userRepository) : ControllerBase
     {
         private readonly IUserRepository _userRepository = userRepository;
 
-        [EnableCors("AllowAll")]
+        
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin,RedearAdmin,")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userRepository.GetAllUsersAsync();
@@ -32,9 +34,9 @@ namespace ApiWebApp.Controllers.Admin
             return Ok(userList);
         }
 
-        [EnableCors("AllowAll")]
+      
         [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin,RedearAdmin,")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
 
         public async Task<IActionResult> GetUser(string id)
         {
@@ -48,7 +50,7 @@ namespace ApiWebApp.Controllers.Admin
         }
 
         [HttpPost]
-        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Register([FromBody] UserDto userDto)
         {
             try
@@ -96,9 +98,11 @@ namespace ApiWebApp.Controllers.Admin
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+    
+
 
         [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDto updateUserDto)
         {
             if (!ModelState.IsValid)
@@ -164,6 +168,7 @@ namespace ApiWebApp.Controllers.Admin
             return BadRequest(ModelState);
         }
 
+
         [HttpPatch("{id}/reset-password")]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
         public async Task<IActionResult> ResetPassword(string id, [FromBody] ResetPasswordDto resetPasswordDto)
@@ -219,7 +224,7 @@ namespace ApiWebApp.Controllers.Admin
             var result = await _userRepository.UpdateUserAsync(user);
             if (result.Succeeded)
             {
-                // Return the updated status
+             
                 return Ok(new { user.IsEnabled });
             }
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiWebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    [Migration("20241122104751_seed")]
-    partial class Seed
+    [Migration("20241123161909_CrmFieldsUpdate")]
+    partial class CrmFieldsUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,7 @@ namespace ApiWebApp.Migrations
                     b.Property<DateTime?>("ClosedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ContactPersonId")
+                    b.Property<Guid>("ContactEmployeeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -45,25 +45,43 @@ namespace ApiWebApp.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HashTag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsOpen")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("TicketId");
 
-                    b.HasIndex("ContactPersonId");
+                    b.HasIndex("ContactEmployeeId");
 
                     b.HasIndex("CustomerId");
 
@@ -259,7 +277,7 @@ namespace ApiWebApp.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Models.ItemsModel.Firewall", b =>
@@ -370,17 +388,11 @@ namespace ApiWebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Brand")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Hostname")
                         .IsRequired()
@@ -757,7 +769,7 @@ namespace ApiWebApp.Migrations
                 {
                     b.HasOne("DAL.Models.ItemsModel.Employee", "ContactPerson")
                         .WithMany()
-                        .HasForeignKey("ContactPersonId")
+                        .HasForeignKey("ContactEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

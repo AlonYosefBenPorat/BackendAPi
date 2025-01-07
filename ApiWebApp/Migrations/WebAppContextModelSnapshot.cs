@@ -30,10 +30,13 @@ namespace ApiWebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"), 1000L);
 
+                    b.Property<string>("AssignedTo")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("ClosedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ContactPersonId")
+                    b.Property<Guid>("ContactEmployeeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -42,29 +45,88 @@ namespace ApiWebApp.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<string>("EmployeeEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmployeePhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HashTag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsOpen")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("TicketId");
 
-                    b.HasIndex("ContactPersonId");
+                    b.HasIndex("AssignedTo");
+
+                    b.HasIndex("ContactEmployeeId");
 
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("DAL.Models.CrmModel.UserActivity", b =>
+                {
+                    b.Property<int>("UserActivityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserActivityId"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserActivityId");
+
+                    b.HasIndex("TicketId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserActivities");
                 });
 
             modelBuilder.Entity("DAL.Models.ItemsModel.Asset", b =>
@@ -746,9 +808,14 @@ namespace ApiWebApp.Migrations
 
             modelBuilder.Entity("DAL.Models.CrmModel.Ticket", b =>
                 {
+                    b.HasOne("DAL.Models.UsersModel.AppUsers", "AssignedUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedTo")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("DAL.Models.ItemsModel.Employee", "ContactPerson")
                         .WithMany()
-                        .HasForeignKey("ContactPersonId")
+                        .HasForeignKey("ContactEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -758,9 +825,29 @@ namespace ApiWebApp.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("AssignedUser");
+
                     b.Navigation("ContactPerson");
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("DAL.Models.CrmModel.UserActivity", b =>
+                {
+                    b.HasOne("DAL.Models.CrmModel.Ticket", "Ticket")
+                        .WithMany("UserActivities")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Models.UsersModel.AppUsers", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Ticket");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DAL.Models.ItemsModel.Asset", b =>
@@ -939,6 +1026,11 @@ namespace ApiWebApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DAL.Models.CrmModel.Ticket", b =>
+                {
+                    b.Navigation("UserActivities");
                 });
 
             modelBuilder.Entity("DAL.Models.ItemsModel.Customer", b =>

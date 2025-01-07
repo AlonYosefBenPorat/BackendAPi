@@ -1,5 +1,4 @@
-﻿using ApiWebApp.Dto;
-using ApiWebApp.Dto.CustomerDto;
+﻿using ApiWebApp.Dto.CustomerDto;
 using DAL.Models.ItemsModel;
 
 namespace ApiWebApp.Mapping

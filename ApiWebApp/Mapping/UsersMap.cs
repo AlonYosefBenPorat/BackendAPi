@@ -45,14 +45,15 @@ public static class UsersMap
             IsEnabled = userDto.IsEnabled,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = null,
-            LastPasswordUpdated= null,
+            LastPasswordUpdated = null,
             ProfileImage = new Image
             {
-                Alt = userDto.ProfileAlt ?? string.Empty,
-                Src = userDto.ProfileSrc ?? string.Empty
+                Alt = userDto.ProfileImage?.Alt ?? string.Empty,
+                Src = userDto.ProfileImage?.Src ?? string.Empty
             }
         };
     }
+
     public static void UpdateModel(AppUsers user, UserDto userDto)
     {
         user.FirstName = userDto.FirstName ?? user.FirstName;
@@ -62,9 +63,13 @@ public static class UsersMap
         user.IsEnabled = userDto.IsEnabled;
         user.UpdatedAt = DateTime.UtcNow;
 
-        user.ProfileImage ??= new Image();
-        user.ProfileImage.Alt = userDto.ProfileAlt ?? user.ProfileImage.Alt ?? string.Empty;
-        user.ProfileImage.Src = userDto.ProfileSrc ?? user.ProfileImage.Src ?? string.Empty;
+        if (userDto.ProfileImage != null)
+        {
+            user.ProfileImage ??= new Image();
+            user.ProfileImage.Alt = userDto.ProfileImage.Alt ?? user.ProfileImage.Alt ?? string.Empty;
+            user.ProfileImage.Src = userDto.ProfileImage.Src ?? user.ProfileImage.Src ?? string.Empty;
+        }
+
         if (!string.IsNullOrEmpty(userDto.Password))
         {
             var passwordHasher = new PasswordHasher<AppUsers>();
@@ -72,7 +77,4 @@ public static class UsersMap
             user.LastPasswordUpdated = DateTime.UtcNow;
         }
     }
-
-
-
 }

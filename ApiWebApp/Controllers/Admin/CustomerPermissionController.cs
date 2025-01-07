@@ -1,6 +1,7 @@
 ﻿using DAL.Data;
 using DAL.Models.UsersModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,8 @@ namespace ApiWebApp.Controllers.Admin;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+[EnableCors("AllowSpecificOrigin")]
+[Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
 public class CustomerPermissionController(WebAppContext context) : ControllerBase
 {
     private readonly WebAppContext _context = context;

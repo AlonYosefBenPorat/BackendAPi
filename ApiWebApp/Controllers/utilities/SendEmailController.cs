@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ApiWebApp.Services.Interfaces;
-using System.Threading.Tasks;
 using ApiWebApp.Model.AuthModel;
 
 namespace ApiWebApp.Controllers.utilities
@@ -28,35 +27,9 @@ namespace ApiWebApp.Controllers.utilities
             return Ok("Email sent successfully.");
         }
 
-        [HttpPost("send-Newuserlink")]
-        public async Task<IActionResult> SendTempUserLink([FromBody] SendTempUserLinkRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            if (string.IsNullOrEmpty(request.Email))
-            {
-                return BadRequest("Email must be provided.");
-            }
-
-            var link = GenerateTempUserLink(request.UserId);
-            await _emailService.SendNewUserLinkAsync(request.Email, link);
-
-            return Ok($"Welcome Email Sent to {request.Email} ");
-        }
-
-        private string GenerateTempUserLink(Guid userId)
-        {
-            // Assuming your frontend is hosted at http://localhost:3000
-            return $"http://localhost:3000/complete-registration?userId={userId}";
-        }
+        
     }
 
-    public class SendTempUserLinkRequest
-    {
-        public Guid UserId { get; set; }
-        public string? Email { get; set; }
-    }
+
 }
 

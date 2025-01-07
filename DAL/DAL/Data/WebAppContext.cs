@@ -7,8 +7,10 @@ using DAL.Models.CrmModel;
 
 namespace DAL.Data
 {
-    public class WebAppContext(DbContextOptions<WebAppContext> options) : IdentityDbContext<AppUsers>(options)
+    public class WebAppContext : IdentityDbContext<AppUsers>
     {
+        public WebAppContext(DbContextOptions<WebAppContext> options) : base(options) { }
+
         public DbSet<Customer> Customers { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
         public DbSet<Server> Servers { get; set; }
@@ -16,11 +18,10 @@ namespace DAL.Data
         public DbSet<Firewall> Firewalls { get; set; }
         public DbSet<Backup> Backups { get; set; }
         public DbSet<Asset> Assets { get; set; }
-
         public DbSet<Employee> Employees { get; set; }
         public DbSet<LoginAttempt> LoginAttempts { get; set; }
-        public DbSet<AppUsersTemp> AppUsersTemps { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,7 +34,6 @@ namespace DAL.Data
             modelBuilder.Entity<Backup>().ToTable("Backups");
             modelBuilder.Entity<Asset>().ToTable("Assets");
             modelBuilder.Entity<Employee>().ToTable("Employees");
-         
 
             // Configure foreign key relationships
             modelBuilder.Entity<Customer>()
@@ -65,26 +65,20 @@ namespace DAL.Data
                 .WithOne(f => f.Customer)
                 .HasForeignKey(b => b.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             modelBuilder.Entity<Customer>()
-                .HasMany(e=> e.Employees)
+                .HasMany(e => e.Employees)
                 .WithOne(e => e.Customer)
                 .HasForeignKey(e => e.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-      
 
             // Configure ProfileImage as an owned type for AppUsers
             modelBuilder.Entity<AppUsers>(entity =>
             {
                 entity.OwnsOne(c => c.ProfileImage);
             });
-            // Configure ProfileImage as an owned type for AppUsersTemp
-            modelBuilder.Entity<AppUsersTemp>(entity =>
-            {
-                entity.OwnsOne(c => c.ProfileImage);
-            });
 
+           
 
             // Configure relationships for Employee and Ticket
             modelBuilder.Entity<Customer>()
@@ -97,11 +91,7 @@ namespace DAL.Data
                 .HasMany(c => c.Tickets)
                 .WithOne(t => t.Customer)
                 .HasForeignKey(t => t.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
-
-            // Set the initial value for TicketId to start from 1000
+                .OnDelete(DeleteBehavior.Restrict);            
             modelBuilder.Entity<Ticket>()
                 .Property(t => t.TicketId)
                 .UseIdentityColumn(1000, 1);
@@ -110,7 +100,7 @@ namespace DAL.Data
             modelBuilder.Entity<Ticket>()
                 .HasOne(t => t.ContactPerson)
                 .WithMany()
-                .HasForeignKey(t => t.ContactPersonId)
+                .HasForeignKey(t => t.ContactEmployeeId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Configure the relationship between UserPermission and Customer
@@ -119,7 +109,27 @@ namespace DAL.Data
                 .WithMany()
                 .HasForeignKey(up => up.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure the relationship between Ticket and AssignedUser
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.AssignedUser)
+                .WithMany()
+                .HasForeignKey(t => t.AssignedTo)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure the relationship between Ticket and UserActivities
+            modelBuilder.Entity<Ticket>()
+                .HasMany(t => t.UserActivities)
+                .WithOne(ua => ua.Ticket)
+                .HasForeignKey(ua => ua.TicketId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure the relationship between UserActivity and AppUsers
+            modelBuilder.Entity<UserActivity>()
+                .HasOne(ua => ua.User)
+                .WithMany()
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
-        

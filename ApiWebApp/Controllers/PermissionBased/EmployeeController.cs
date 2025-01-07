@@ -2,13 +2,17 @@
 using ApiWebApp.Mapping;
 using DAL.Data;
 using DAL.Models.ItemsModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiWebApp.Controllers.PermissionBased
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [EnableCors("AllowSpecificOrigin")]
+
     public class EmployeeController : ControllerBase
     {
         private readonly IRepository<Employee> _employeeRepository;
@@ -83,8 +87,6 @@ namespace ApiWebApp.Controllers.PermissionBased
             {
                 return NotFound();
             }
-
-            // Update the employee entity without changing the CustomerId
             employee.FullName = employeeDto.FullName;
             employee.Email = employeeDto.Email;
             employee.Phone = employeeDto.Phone;

@@ -12,7 +12,7 @@ using ApiWebApp.Services.Interfaces;
 using DAL.Models.ItemsModel;
 using DAL.Models.utilitiesModel;
 using DAL.Models.UsersModel;
-using ApiWebApp.Configuration;
+
 
 namespace ApiWebApp
 {
@@ -107,17 +107,16 @@ namespace ApiWebApp
             // Add CORS services
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll",
+                options.AddPolicy("AllowSpecificOrigin",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
+                        builder.WithOrigins("http://localhost:5173")
                                .AllowAnyHeader()
                                .AllowAnyMethod();
                     });
             });
 
-            // Register TempUserRepository
-            builder.Services.AddScoped<ITempUserRepository, TempUserRepository>();
+          
 
             // Add services to the container.
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -127,15 +126,7 @@ namespace ApiWebApp
             builder.Services.AddScoped<SignInManager<AppUsers>>(); 
 
 
-           // Register and validate TempUserSettings
-            var tempUserSettingsSection = builder.Configuration.GetSection("TempUserSettings");
-            builder.Services.Configure<TempUserSettings>(tempUserSettingsSection);
-
-            var tempUserSettings = tempUserSettingsSection.Get<TempUserSettings>();
-            if (string.IsNullOrEmpty(tempUserSettings?.TemporaryPassword))
-            {
-                throw new ArgumentException("TemporaryPassword must be provided in appsettings.json");
-            }
+       
 
             var app = builder.Build();
 
@@ -149,7 +140,7 @@ namespace ApiWebApp
             app.UseHttpsRedirection();
 
             // Use the CORS policy globally
-            app.UseCors("AllowAll");
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseAuthentication();
             app.UseAuthorization();

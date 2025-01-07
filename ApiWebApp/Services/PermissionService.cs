@@ -1,9 +1,6 @@
-﻿// PermissionService.cs
-using DAL.Data;
+﻿using DAL.Data;
 using DAL.Models.UsersModel;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
+
 
 namespace ApiWebApp.Services
 {
@@ -36,7 +33,7 @@ namespace ApiWebApp.Services
 
         public async Task<bool> CanWriteAsync(Guid userId, Guid customerId)
         {
-            // Similar to CanReadAsync, but check for write permissions
+           
             _logger.LogInformation($"Checking write permissions for user {userId} on customer {customerId}");
 
             var permission = await _userPermissionRepository.FindOneAsync(up => up.UserId == userId && up.CustomerId == customerId && up.CanWrite);

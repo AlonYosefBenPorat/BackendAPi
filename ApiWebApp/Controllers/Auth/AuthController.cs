@@ -7,9 +7,9 @@ using DAL.Models.AuthModel;
 using DAL.Models.UsersModel;
 using DAL.Models.utilitiesModel;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace ApiWebApp.Controllers.Auth
 {
@@ -40,8 +40,8 @@ namespace ApiWebApp.Controllers.Auth
             _logCleanupService = logCleanupService;
         }
 
-        // Login action
-        [EnableCors("AllowAll")]
+       
+        [EnableCors("AllowSpecificOrigin")]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login login)
         {
@@ -53,7 +53,6 @@ namespace ApiWebApp.Controllers.Auth
             var result = await _signInManager.PasswordSignInAsync(login.Username, login.Password, isPersistent: false, lockoutOnFailure: true);
             var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            // Save Login Attempt
             var loginAttempt = new LoginAttempt
             {
                 UserName = login.Username,
@@ -64,7 +63,6 @@ namespace ApiWebApp.Controllers.Auth
             _context.LoginAttempts.Add(loginAttempt);
             await _context.SaveChangesAsync();
 
-            // Cleanup old logs
             await _logCleanupService.CleanupLogsAsync();
 
             if (result.Succeeded)
@@ -75,7 +73,20 @@ namespace ApiWebApp.Controllers.Auth
                     user.LastLogon = DateTime.UtcNow;
                     await _userManager.UpdateAsync(user);
                     var token = await _tokenService.GenerateJwtToken(user);
-                    return Ok(new { Token = token });
+                    return Ok(new
+                    {
+                        Token = token,
+                        UserID = user.Id,
+                        Email = user.Email ?? string.Empty,
+                        DateOfBirth = user.DateOfBirth?.ToString("yyyy-MM-dd") ?? string.Empty,
+                        FirstName = user.FirstName ?? string.Empty,
+                        LastName = user.LastName ?? string.Empty,
+                        ProfileImage = new
+                        {
+                            Alt = user.ProfileImage?.Alt ?? string.Empty,
+                            Src = user.ProfileImage?.Src ?? string.Empty
+                        }
+                    });
                 }
             }
             else if (result.IsLockedOut)
@@ -86,21 +97,19 @@ namespace ApiWebApp.Controllers.Auth
             return Unauthorized("Invalid login attempt.");
         }
 
-        // Logout action
+        
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            // Implement logout logic if needed
+            
             return Ok();
         }
-
-        // Request password reset
         [HttpPost("request-password-reset")]
         public async Task<IActionResult> RequestPasswordReset([FromBody] PasswordResetRequestDto request)
         {
-            if (string.IsNullOrEmpty(request.Email))
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.OldPassword))
             {
-                return BadRequest("Email must be provided.");
+                return BadRequest("Email and old password must be provided.");
             }
 
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -109,17 +118,48 @@ namespace ApiWebApp.Controllers.Auth
                 return BadRequest("User not found.");
             }
 
+            if (!await _userManager.CheckPasswordAsync(user, request.OldPassword))
+            {
+                return BadRequest("Old password is incorrect.");
+            }
+
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = $"https://localhost:7193/ResetPassword?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(request.Email)}";
 
-            var message = $"Please reset your password by clicking here: {resetLink}";
-            await _emailService.SendEmailAsync(request.Email, "Password Reset Request", message);
-
-            return Ok("Password reset link has been sent to your email.");
+            return Ok(new { Token = token });
         }
 
-        // Reset password
+        [HttpPost("user-password-reset")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
+        {
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Token) || string.IsNullOrEmpty(model.NewPassword))
+            {
+                return BadRequest("Email, token, and new password must be provided.");
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user is null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+            if (result.Succeeded)
+            {
+                user.LastPasswordUpdated = DateTime.UtcNow;
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    return BadRequest("Failed to update user.");
+                }
+                return Ok("Password has been reset successfully.");
+            }
+
+            return BadRequest(string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
+
+       
         [HttpPost("reset-password")]
+
         public async Task<IActionResult> ResetPassword([FromBody] UserResetPasswordDto model)
         {
             if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Token) || string.IsNullOrEmpty(model.OldPassword) || string.IsNullOrEmpty(model.NewPassword))
@@ -150,7 +190,6 @@ namespace ApiWebApp.Controllers.Auth
                 return Ok("Password has been reset successfully.");
             }
 
-            // Return detailed error messages
             return BadRequest(string.Join(", ", result.Errors.Select(e => e.Description)));
         }
     }

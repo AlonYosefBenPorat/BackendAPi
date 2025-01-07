@@ -1,5 +1,4 @@
 ﻿using ApiWebApp.Dto;
-using ApiWebApp.DTOs;
 using ApiWebApp.Mapping;
 using ApiWebApp.Services;
 using ApiWebApp.Utilities;
@@ -7,7 +6,7 @@ using DAL.Data;
 using DAL.Models.ItemsModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+
 
 namespace ApiWebApp.Controllers.PermissionBased;
 

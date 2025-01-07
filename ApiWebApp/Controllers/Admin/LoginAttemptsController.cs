@@ -1,16 +1,16 @@
 ﻿using DAL.Data;
 using DAL.DTOs;
-using DAL.Models.utilitiesModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 
 namespace YourNamespace.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("AllowSpecificOrigin")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "ServiceAdmin,GlobalAdmin")]
     public class LoginAttemptsController(WebAppContext context) : ControllerBase
     {
         private readonly WebAppContext _context = context;

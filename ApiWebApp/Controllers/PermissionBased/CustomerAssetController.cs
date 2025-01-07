@@ -5,7 +5,6 @@ using ApiWebApp.Utilities;
 using DAL.Data;
 using DAL.Models.ItemsModel;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiWebApp.Controllers.PermissionBased

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories;
 
+
 public class TicketRepository : ITicketRepository
 {
     private readonly WebAppContext _context;
     private readonly DbSet<Ticket> _dbSet;
-
 
     public TicketRepository(WebAppContext context)
     {
@@ -19,16 +19,41 @@ public class TicketRepository : ITicketRepository
 
     public async Task<IEnumerable<Ticket>> GetActiveTicketsAsync()
     {
-        return await _context.Tickets.Where(t => t.IsActive).ToListAsync();
+        return await _dbSet
+        .Include(t => t.Customer)
+        .Include(t => t.ContactPerson) 
+        .Include(t => t.AssignedUser)
+        .Include(t => t.UserActivities)
+        .ThenInclude(ua => ua.User)
+        .Where(t => t.IsOpen)
+        .ToListAsync();
     }
+
     public async Task<IEnumerable<Ticket>> GetAllAsync()
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet
+            .Include(t => t.Customer)
+            .Include(t => t.ContactPerson)
+            .Include(t => t.AssignedUser)
+            .Include(t => t.UserActivities)
+            .ThenInclude(ua => ua.User)
+            .ToListAsync();
     }
 
     public async Task<Ticket?> GetByIdAsync(int id)
     {
         return await _dbSet.FindAsync(id);
+    }
+
+    public async Task<Ticket?> GetByIdWithDetailsAsync(int id)
+    {
+        return await _dbSet
+            .Include(t => t.Customer)
+            .Include(t => t.ContactPerson)
+            .Include(t => t.AssignedUser)
+            .Include(t => t.UserActivities)
+            .ThenInclude(ua => ua.User)
+            .FirstOrDefaultAsync(t => t.TicketId == id);
     }
 
     public async Task AddAsync(Ticket entity)

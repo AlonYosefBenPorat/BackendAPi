@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DAL.Models.CrmModel;
-using DAL.Models.utilitiesModel;
+
 
 namespace DAL.Models.ItemsModel
 {

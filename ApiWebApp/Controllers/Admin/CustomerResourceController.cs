@@ -6,12 +6,13 @@ using System.Security.Claims;
 using ApiWebApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using DAL.Models.ItemsModel;
+using Microsoft.AspNetCore.Cors;
 
 namespace ApiWebApp.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+    [EnableCors("AllowSpecificOrigin")]
     public class CustomerResourceController(
         IRepository<Server> serverRepository,
         IRepository<NetworkDevice> networkDeviceRepository,
@@ -30,6 +31,7 @@ namespace ApiWebApp.Controllers.Admin
         private readonly ILogger<CustomerResourceController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         [HttpGet("by-customer/{customerId}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> GetItemsByCustomerId(Guid customerId)
         {
             var servers = await _serverRepository.FindAllAsync(s => s.CustomerId == customerId);
