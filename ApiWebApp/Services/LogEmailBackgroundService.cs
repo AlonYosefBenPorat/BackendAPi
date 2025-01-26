@@ -13,7 +13,7 @@ namespace ApiWebApp.Services
             while (!stoppingToken.IsCancellationRequested)
             {
                 await SendLogsAsync();
-                await Task.Delay(TimeSpan.FromDays(7), stoppingToken);
+                await Task.Delay(TimeSpan.FromDays(360), stoppingToken);
             }
         }
 
@@ -30,7 +30,7 @@ namespace ApiWebApp.Services
                 logText.AppendLine($"{log.AttemptedAt}: {log.UserName} - {log.IsSucceeded} - {log.RemoteIpAddress}");
             }
 
-            await emailService.SendEmailAsync("alon.benporat@gmail.com", "Weekly Logs", logText.ToString());
+            await emailService.SendEmailAsync("alon.benporat@gmail.com", "Yearly Logs", logText.ToString());
         }
     }
 }

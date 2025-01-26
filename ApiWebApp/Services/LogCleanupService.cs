@@ -10,7 +10,7 @@ namespace ApiWebApp.Services
         {
             await Task.Run(async () =>
             {
-                var cutoffDate = DateTime.UtcNow.AddDays(-91);
+                var cutoffDate = DateTime.UtcNow.AddDays(-366);
                 var oldLogs = _context.LoginAttempts.Where(log => log.AttemptedAt < cutoffDate);
                 _context.LoginAttempts.RemoveRange(oldLogs);
                 await _context.SaveChangesAsync();

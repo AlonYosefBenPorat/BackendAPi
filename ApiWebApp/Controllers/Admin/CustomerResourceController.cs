@@ -64,7 +64,7 @@ namespace ApiWebApp.Controllers.Admin
 
             _logger.LogInformation($"User ID: {userId}");
 
-            // Check if the user has read permissions for the customer
+            
             if (!await _permissionService.CanReadAsync(userId, customerId))
             {
                 _logger.LogWarning($"User {userId} does not have read permissions for customer {customerId}");

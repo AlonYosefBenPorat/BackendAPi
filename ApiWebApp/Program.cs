@@ -71,9 +71,9 @@ namespace ApiWebApp
                 options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); // Lockout duration
-                options.Lockout.MaxFailedAccessAttempts = 5; // Maximum failed attempts
-                options.Lockout.AllowedForNewUsers = true; // Allow lockout for new users
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30); 
+                options.Lockout.MaxFailedAccessAttempts = 5; 
+                options.Lockout.AllowedForNewUsers = true; 
             
             })
             .AddEntityFrameworkStores<WebAppContext>()
@@ -170,8 +170,8 @@ namespace ApiWebApp
                 try
                 {
                     var context = services.GetRequiredService<WebAppContext>();
-                    context.Database.Migrate(); // Apply any pending migrations
-                    await SeedData.Initialize(services); // Seed the database
+                    context.Database.Migrate(); 
+                    await SeedData.Initialize(services); 
                 }
                 catch (Exception ex)
                 {

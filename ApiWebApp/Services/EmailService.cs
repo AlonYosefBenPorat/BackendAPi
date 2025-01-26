@@ -2,9 +2,8 @@
 using MimeKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 using DAL.Models.utilitiesModel;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+
 
 namespace ApiWebApp.Services
 {
