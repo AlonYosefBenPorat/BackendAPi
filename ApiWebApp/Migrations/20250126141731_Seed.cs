@@ -12,27 +12,6 @@ namespace ApiWebApp.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AppUsersTemps",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfileImage_Alt = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProfileImage_Src = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsImport = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUsersTemps", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -371,7 +350,6 @@ namespace ApiWebApp.Migrations
                     Hostname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Vendor = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -380,7 +358,6 @@ namespace ApiWebApp.Migrations
                     OperatingSystem = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WarrantyExpiration = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Roles = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -423,18 +400,32 @@ namespace ApiWebApp.Migrations
                 {
                     TicketId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1000, 1"),
-                    Title = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsOpen = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ClosedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ContactPersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmployeeEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmployeePhone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AssignedTo = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ContactEmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HashTag = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tickets", x => x.TicketId);
+                    table.ForeignKey(
+                        name: "FK_Tickets_AspNetUsers_AssignedTo",
+                        column: x => x.AssignedTo,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Tickets_Customers_CustomerId",
                         column: x => x.CustomerId,
@@ -442,10 +433,39 @@ namespace ApiWebApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tickets_Employees_ContactPersonId",
-                        column: x => x.ContactPersonId,
+                        name: "FK_Tickets_Employees_ContactEmployeeId",
+                        column: x => x.ContactEmployeeId,
                         principalTable: "Employees",
                         principalColumn: "EmployeeId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserActivities",
+                columns: table => new
+                {
+                    UserActivityId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserActivities", x => x.UserActivityId);
+                    table.ForeignKey(
+                        name: "FK_UserActivities_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserActivities_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
+                        principalColumn: "TicketId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -518,14 +538,29 @@ namespace ApiWebApp.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tickets_ContactPersonId",
+                name: "IX_Tickets_AssignedTo",
                 table: "Tickets",
-                column: "ContactPersonId");
+                column: "AssignedTo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_ContactEmployeeId",
+                table: "Tickets",
+                column: "ContactEmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_CustomerId",
                 table: "Tickets",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserActivities_TicketId",
+                table: "UserActivities",
+                column: "TicketId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserActivities_UserId",
+                table: "UserActivities",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserPermissions_CustomerId",
@@ -536,9 +571,6 @@ namespace ApiWebApp.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AppUsersTemps");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -573,13 +605,16 @@ namespace ApiWebApp.Migrations
                 name: "Servers");
 
             migrationBuilder.DropTable(
-                name: "Tickets");
+                name: "UserActivities");
 
             migrationBuilder.DropTable(
                 name: "UserPermissions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

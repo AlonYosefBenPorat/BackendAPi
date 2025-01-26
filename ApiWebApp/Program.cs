@@ -13,7 +13,6 @@ using DAL.Models.ItemsModel;
 using DAL.Models.utilitiesModel;
 using DAL.Models.UsersModel;
 
-
 namespace ApiWebApp
 {
     public class Program
@@ -25,7 +24,7 @@ namespace ApiWebApp
                 options.UseSqlServer(builder.Configuration.GetConnectionString("WebAppContext") ?? throw new InvalidOperationException("Connection string 'WebAppContext' not found."),
                 b => b.MigrationsAssembly("ApiWebApp")));
 
-            // Add services to container.
+            // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -71,10 +70,10 @@ namespace ApiWebApp
                 options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30); 
-                options.Lockout.MaxFailedAccessAttempts = 5; 
-                options.Lockout.AllowedForNewUsers = true; 
-            
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
             })
             .AddEntityFrameworkStores<WebAppContext>()
             .AddDefaultTokenProviders();
@@ -116,17 +115,23 @@ namespace ApiWebApp
                     });
             });
 
-          
-
             // Add services to the container.
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddScoped<IEmailService, EmailService>();
 
-            // **Register SignInManager<AppUsers>**
-            builder.Services.AddScoped<SignInManager<AppUsers>>(); 
+            // Register SignInManager<AppUsers>
+            builder.Services.AddScoped<SignInManager<AppUsers>>();
 
+            // Configure Kestrel to increase the header size limit
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestHeadersTotalSize = 32768; // Increase the header size limit
+            });
 
-       
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestHeadersTotalSize = 32768; // Increase the header size limit
+            });
 
             var app = builder.Build();
 
@@ -170,8 +175,8 @@ namespace ApiWebApp
                 try
                 {
                     var context = services.GetRequiredService<WebAppContext>();
-                    context.Database.Migrate(); 
-                    await SeedData.Initialize(services); 
+                    context.Database.Migrate();
+                    await SeedData.Initialize(services);
                 }
                 catch (Exception ex)
                 {

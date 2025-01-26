@@ -581,47 +581,6 @@ namespace ApiWebApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("DAL.Models.UsersModel.AppUsersTemp", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<bool>("IsImport")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("JobTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AppUsersTemps");
-                });
-
             modelBuilder.Entity("DAL.Models.UsersModel.UserPermission", b =>
                 {
                     b.Property<Guid>("Id")
@@ -937,32 +896,6 @@ namespace ApiWebApp.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("AppUsersId");
-                        });
-
-                    b.Navigation("ProfileImage");
-                });
-
-            modelBuilder.Entity("DAL.Models.UsersModel.AppUsersTemp", b =>
-                {
-                    b.OwnsOne("DAL.Models.utilitiesModel.Image", "ProfileImage", b1 =>
-                        {
-                            b1.Property<Guid>("AppUsersTempId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Alt")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Src")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("AppUsersTempId");
-
-                            b1.ToTable("AppUsersTemps");
-
-                            b1.WithOwner()
-                                .HasForeignKey("AppUsersTempId");
                         });
 
                     b.Navigation("ProfileImage");
