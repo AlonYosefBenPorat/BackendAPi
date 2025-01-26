@@ -25,7 +25,7 @@ namespace ApiWebApp
                 options.UseSqlServer(builder.Configuration.GetConnectionString("WebAppContext") ?? throw new InvalidOperationException("Connection string 'WebAppContext' not found."),
                 b => b.MigrationsAssembly("ApiWebApp")));
 
-            // Add services to the container.
+            // Add services to container.
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

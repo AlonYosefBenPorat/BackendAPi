@@ -4,7 +4,6 @@ using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using DAL.Models.utilitiesModel;
 
-
 namespace ApiWebApp.Services
 {
     public class EmailService(IOptions<MailSettings> mailSettings) : IEmailService
